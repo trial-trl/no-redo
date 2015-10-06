@@ -1,0 +1,74 @@
+/* 
+    Created on : 05/10/2015, 23:29:44
+    Author     : TRIAL<Matheus Leonardo dos Santos Martins>
+*/
+
+.red-50 {
+    color: #000;
+    background-color: #FFEBEE;
+}
+
+.red-100 {
+    color: #000;
+    background-color: #FFCDD2;
+}
+
+.red-200 {
+    color: #000;
+    background-color: #EF9A9A;
+}
+
+.red-300 {
+    color: #000;
+    background-color: #E57373;
+}
+
+.red-400 {
+    color: #fff;
+    background-color: #EF5350;
+}
+
+.red-500 {
+    color: #fff;
+    background-color: #F44336;
+}
+
+.red-600 {
+    color: #fff;
+    background-color: #E53935;
+}
+
+.red-700 {
+    color: #fff;
+    background-color: #D32F2F;
+}
+
+.red-800 {
+    color: #fff;
+    background-color: #C62828;
+}
+
+.red-900 {
+    color: #fff;
+    background-color: #B71C1C;
+}
+
+.red-a100 {
+    color: #000;
+    background-color: #FF8A80;
+}
+
+.red-a200 {
+    color: #fff;
+    background-color: #FF5252;
+}
+
+.red-a400 {
+    color: #fff;
+    background-color: #FF1744;
+}
+
+.red-a700 {
+    color: #fff;
+    background-color: #D50000;
+}
