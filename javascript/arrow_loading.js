@@ -6,6 +6,7 @@
 
 var currentRotationValue = 0;
 var rotatingInterval;
+var containerElement;
 var loadingElement;
 var sizeLoading = 128;
 var isShowingLoading = false;
@@ -18,10 +19,15 @@ function instanceLoading(loading) {
     loadingElement = loading;
 }
 
+function setContainer(container) {
+    containerElement = container;
+}
+
 function showLoading() {
+    containerElement.style.display = "block";
     loadingElement.style.width = sizeLoading;
     loadingElement.style.height = sizeLoading;
-    loadingElement.style.display = 'block';
+    loadingElement.style.display = "block";
     loadingElement.style.marginTop = "-" + ((sizeLoading / 2) + 10) + "px";
     loadingElement.style.marginLeft = "-" + ((sizeLoading / 2) + 10) + "px";
     rotatingInterval = setInterval(rotateLoading, 0);
@@ -66,6 +72,7 @@ function rotateLoading() {
 }
 
 function dismissLoading() {
-    loadingElement.style.display = 'none';
+    containerElement.style.display = "none";
+    loadingElement.style.display = "none";
     clearInterval(rotatingInterval);
 }
