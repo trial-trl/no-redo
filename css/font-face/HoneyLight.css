@@ -1,0 +1,16 @@
+/*
+    No Redo₢ Repository.
+
+    Font-face: Honey Script Light.
+*/
+/* 
+    Created on : 16/11/2015, 19:24:28
+    Author     : TRIAL<Matheus Leonardo dos Santos Martins>
+*/
+
+@font-face {
+    font-family: "HoneyLight";
+    font-style: normal;
+    src: local('HoneyScript-Light'), url(http://no-redo.trialent.com/repository/fonts/HoneyScript-Light.ttf) format('truetype');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
