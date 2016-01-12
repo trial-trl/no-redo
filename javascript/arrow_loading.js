@@ -4,68 +4,73 @@
  * and open the template in the editor.
  */
 
-var currentRotationValue = 0;
-var rotatingInterval;
-var loadingElement;
-var sizeLoading = 128;
-var isShowingLoading = false;
-
 var LOADING_STATE_NORMAL = "arrow_loading";
 var LOADING_STATE_ERROR = "arrow_loading_error";
 var LOADING_STATE_WAITING = "arrow_loading_waiting";
 
-function instanceLoading(loading) {
-    loadingElement = loading;
-}
+var sizeLoading = 128;
+var state = "arrow_loading";
 
-function showLoading() {
-    loadingElement.style.width = sizeLoading;
-    loadingElement.style.height = sizeLoading;
-    loadingElement.style.display = 'block';
-    loadingElement.style.marginTop = "-" + ((sizeLoading / 2) + 10) + "px";
-    loadingElement.style.marginLeft = "-" + ((sizeLoading / 2) + 10) + "px";
-    rotatingInterval = setInterval(rotateLoading, 0);
-}
+var support = false;
 
-function setSize(size) {
-    sizeLoading = size;
-}
-
-function setLoading(state) {
-    loadingElement.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".png";
-    currentLoadingState = state;
-}
-
-function rotateLoading() {
-    switch (currentLoadingState) { 
-        case LOADING_STATE_NORMAL:
-            if (currentRotationValue <= 360) {
-                loadingElement.style.transform = 'rotateZ(' + currentRotationValue + 'deg)';
-                currentRotationValue += 1.2;
-            } else {
-                currentRotationValue = 1.2;
-            }
-            break;
-        case LOADING_STATE_WAITING:
-            if (currentRotationValue <= 360) {
-                loadingElement.style.transform = 'rotateZ(' + currentRotationValue + 'deg)';
-                currentRotationValue += 0.3;
-            } else {
-                currentRotationValue = 0.3;
-            }
-            break;
-        case LOADING_STATE_ERROR:
-            if (currentRotationValue > 0) {
-                loadingElement.style.transform = 'rotateZ(' + currentRotationValue + 'deg)';
-                currentRotationValue -= 0.4;
-            } else {
-                currentRotationValue = 360;
-            }
-            break;
+function showLoading(container, add_attr) {
+    var movie = document.createElement("video");
+    container.style.display = "block";
+    container.style.opacity = 0;
+    animate({
+        duration: 100,
+        delta: function (p) {
+    	    return p;
+        },
+    	step: function (delta) {
+    	    container.style.opacity = 1 * delta;
+    	}
+    });/*
+    if (movie.canPlayType("video/mp4; codecs='avc1.4D401E, mp4a.40.2'") == "probably") {
+    	movie.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".mp4";
+    	support = true;
+    } else if (movie.canPlayType("video/ogg; codecs='theora, vorbis'") == "probably") {
+    	movie.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".ogg";
+    	support = true;
+    } else if (movie.canPlayType("video/webm; codecs='vp8.0, vorbis'") == "probably") {
+    	movie.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".webm";
+    	support = true;
     }
+    if (support) {
+	movie.width = sizeLoading;
+	movie.autoplay = true;
+    	movie.loop = true;
+    	movie.style.marginLeft = -(sizeLoading / 2);
+    	container.appendChild(movie);
+    } else {*/
+        var gif = document.createElement("img");
+        if (add_attr == null) {
+            gif.setAttribute("id", "loading");
+        } else {
+            gif.setAttribute(add_attr[0][0], add_attr[0][1]);
+        }
+        gif.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".gif";
+        gif.width = sizeLoading;
+    	gif.style.marginLeft = -(sizeLoading / 2) + "px";
+    	gif.style.marginTop = "-48px";
+    	container.appendChild(gif);
+    //}
 }
 
-function dismissLoading() {
-    loadingElement.style.display = 'none';
-    clearInterval(rotatingInterval);
+function dismissLoading(container) {
+    var loading = container.children[0];
+    container.style.opacity = 1;
+    animate({
+        duration: 100,
+        delta: function (p) {
+    	    return p;
+        },
+    	step: function (delta) {
+    	    container.style.opacity = 1 - delta;
+    	}
+    });
+    setTimeout(function () {
+        container.style.display = "none";
+    }, 100);
+    container.removeChild(loading);
 }
