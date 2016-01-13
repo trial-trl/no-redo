@@ -20,31 +20,66 @@
 
 var TRANSFORM_CONTEXT_MENU = 1;
 
-function confirmationDialog(dialog, background, data, clickPositiveButton) {
+function confirmationDialog(dialog, background, data, clickPositiveButton, options) {
+    if (dialog.style.display == "none") {
+	if (options != null) {
+	    var title = dialog.children[0];
+	    title.innerHTML = options.title;
+	    var message = dialog.children[1];
+	    message.innerHTML = options.message;
+	    if (dialog.children[2] && options.positive_button) {
+	    	var positive = dialog.children[2];
+	    	positive.innerHTML = options.positive_button;
+	    }
+	    if (dialog.children[3] && options.negative_button) {
+	    	var negative = dialog.children[3];
+	    	negative.innerHTML = options.negative_button;
+	    }
+	    if (dialog.children[4] && options.neutral_button) {
+	    	var neutral = dialog.children[4];
+	    	neutral.innerHTML = options.neutral_button;
+	    }
+	    if (options.margin_top) {
+	    	dialog.style.marginTop = options.margin_top;
+	    }
+	}
 	dialog.style.opacity = "0";
 	background.style.opacity = "0";
     	dialog.style.display = "block";
     	background.style.display = "block";
     	animate({
-    	    duration : 100,
+    	    duration : options.duration | 700,
     	    delta : function (p) {
-    	    	return p;
+    	    	return easing.easeInOutQuart(p);
     	    },
     	    step : function (delta) {
     	    	dialog.style.opacity = 1 * delta;
     	    	background.style.opacity = 1 * delta;
     	    }
     	});
-        background.onclick = function () {
-            dismissDialog(dialog, background);
-        };
-        dialog.getElementsByTagName("a")[0].onclick = function () {
-            dismissDialog(dialog, background);
-            clickPositiveButton(data);
-        };
-        dialog.getElementsByTagName("a")[1].onclick = function () {
-            dismissDialog(dialog, background);
-        };
+    }
+    background.onclick = function (e) {
+        if (options.ondismiss) {
+            options.ondismiss(e, options, dialog, background);
+        } else {
+            dismissDialog(dialog, background, e, options);
+        }
+    };
+    dialog.children[2].onclick = function (e) {
+        if (options.ondismiss) {
+            options.ondismiss(e, options, dialog, background);
+        } else {
+            dismissDialog(dialog, background, e, options);
+        }
+        clickPositiveButton(data);
+    };
+    dialog.children[3].onclick = function (e) {
+        if (options.ondismiss) {
+            options.ondismiss(e, options, dialog, background);
+        } else {
+            dismissDialog(dialog, background, e, options);
+        }
+    };
 }
 
 function alertDialog(dialog, background) {
@@ -58,19 +93,21 @@ function alertDialog(dialog, background) {
         };
 }
 
-function dismissDialog(dialog, background) {
+function dismissDialog(dialog, background, e) {
     animate({
-    	duration : 100,
-    	delta : function (p) {
-    	    return p;
+    	duration: 700,
+    	delta: function (p) {
+    	    return easing.easeInOutQuart(p);
     	},
-    	step : function (delta) {
-	    dialog.style.opacity = window.getComputedStyle(dialog, null).getPropertyValue("opacity") - delta;
-	    background.style.opacity = window.getComputedStyle(background, null).getPropertyValue("opacity") - delta;
+    	step: function (delta) {
+	    dialog.style.opacity = 1 - delta;
+	    background.style.opacity = 1 - delta;
     	}
     });
-    dialog.style.display = 'none';
-    background.style.display = 'none';
+    setTimeout(function () {
+        dialog.style.display = "none";
+        background.style.display = "none";
+    }, 100);
 }
 
 function showPopup(target, background, top) {
@@ -100,6 +137,7 @@ function showPopup(target, background, top) {
         background.onclick = function () {
             closePopup(target, background, top);
         };
+        document.getElementsByTagName("html")[0].style.overflowY = "hidden";
 }
 
 function closePopup(target, background, top) {
@@ -125,9 +163,10 @@ function closePopup(target, background, top) {
     	target.style.display = 'none';
 	background.style.display = 'none'; 
     }, 200);
+    document.getElementsByTagName("html")[0].style.overflowY = "auto";
 }
 
-function transformFloatingActionButton(fab, transform) {
+function transformFloatingActionButton(fab, transform, data) {
         if (transform === TRANSFORM_CONTEXT_MENU) {
             fab.children[0].style.display = 'none';
             fab.style.padding = '0';
@@ -137,7 +176,7 @@ function transformFloatingActionButton(fab, transform) {
             	    return p; 
            	},
            	step : function (delta) {
-           	    fab.style.width = (370 * delta) + "px";
+           	    fab.style.width = (data.width * delta) + "px";
            	    fab.style.borderRadius = ((60 * delta) - 60) + "px";
            	    fab.style.right = (-30 * delta) + "px";
            	}
@@ -158,7 +197,6 @@ function restoreFloatingActionButton(fab, restore) {
         if (restore === TRANSFORM_CONTEXT_MENU) {
             fab.children[1].style.display = "none";
             fab.style.padding = "21px 21px";
-            fab.style.width = "370px";
             animate({
             	duration : 300,
             	delta : function (p) { 
@@ -181,8 +219,9 @@ function restoreFloatingActionButton(fab, restore) {
 }
 
 function openNavigationDrawer(drawer, background, page) {
-    var width = +(window.getComputedStyle(drawer, null).getPropertyValue("width").replace("px", ""));
+    var width = +(drawer.getAttribute("data-width"));
     drawer.style.display = "block";
+    drawer.style.width = width + "px";
     background.style.display = "block";
     if (drawer.classList.contains("below-of-page")) {
     animate({
@@ -250,12 +289,10 @@ function handleToolbarPosition(toolbar) {
     var offsetToolbar = toolbar.offsetTop;
     window.onscroll = function (e) {
         if (window.pageYOffset > offsetToolbar)  {
-            //toolbar.classList.remove("toolbar-relative");
             toolbar.classList.add("toolbar-fixed");
             toolbar.style.top = 0;
         } else {
             toolbar.classList.remove("toolbar-fixed");
-            //toolbar.classList.add("toolbar-relative");
             toolbar.style.top = offsetToolbar + "px";
         }
     }
