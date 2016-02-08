@@ -29,11 +29,14 @@ const DB_PREFIX = 'trial105_';
 
 // Database names
 const DATABASE_TRIAL = 'trial';
+const DATABASE_SERVICES = 'services';
 const DATABASE_CLICKER = 'clicker';
 const DATABASE_USERS = 'users';
 const DATABASE_DOWNLOADS = 'downloads';
 const DATABASE_NO_REDO = 'no_redo';
+const DATABASE_SOLIDARITY_MAP = 'mapadasolidariedade';
 const DATABASE_ANNOTATION = 'annotation';
+const DATABASE_VIRTUAL_HERITAGE_CONTROL = 'virtual_heritage_control';
 
 // Table names
 const TABLE_USERS = 'users';
@@ -45,9 +48,11 @@ const TABLE_JOB_TITLES = 'job_titles';
 const TABLE_GOALS = 'goals';
 const TABLE_TYPE_PROJECTS = 'type_projects';
 const TABLE_PROJECTS = 'projects';
+const TABLE_IMAGES_PROJECTS = 'images_projects';
 const TABLE_STUDY_MATERIALS = 'study_materials';
 const TABLE_MEMBERS = 'members';
 const TABLE_ANNOTATIONS = 'annotations';
+const TABLE_SET_OF_QUICK_ACTIONS = 'set_quick_actions';
 
 // Request response messages
 const MESSAGE_EXIST = 'E';
@@ -56,9 +61,14 @@ const MESSAGE_SAVED_WITH_SUCCESS = 'SWS';
 const MESSAGE_EMAIL_OR_PASSWORD_INVALID = 'EPI';
 const MESSAGE_NOT_ACTIVATED = 'NA';
 const MESSAGE_ERROR = 'ERR';
+const MESSAGE_ERROR_PASSWORD_INCORRECT = 'ERR_PI';
+
+const TRIAL_ACCOUNT_TYPE_INSTITUTION = 'institution';
+const TRIAL_ACCOUNT_TYPE_USER = 'user';
 
 // Paths
-const PATH_IMAGES = '../../../clicker/images/';
+const PATH_CLICKER_QUESTIONS = '../../../clicker/images/questions';
+const PATH_CLICKER_BASE_TEXTS = '../../../clicker/base_texts/';
 
 // Emails
 const EMAIL_CONTACT_TRIAL = 'contato@trialent.com';
@@ -77,18 +87,35 @@ const PERMISSION_USER = "USER";
 // Server requests
 const REQUEST_AUTHENTICATION = 'auth';
 const REQUEST_CREATE_TRIAL_ACCOUNT = 'sign';
+const REQUEST_LOGOUT = 'lgout';
 const REQUEST_SIGN_OUT = 'sgout';
 const REQUEST_GET_MEMBERS = 'gmembs';
 const REQUEST_SIGN_PROJECT = 'sprojc';
+const REQUEST_SIGN_NEW_PROJECT_IMAGE = 'snprig';
+const REQUEST_DELETE_PROJECT = 'dprojc';
 const REQUEST_SIGN_ANNOTATION = 'sannot';
 const REQUEST_DELETE_ANNOTATION = 'dannot';
 const REQUEST_SIGN_STUDY_MATERIAL = 'ssymtl';
 const REQUEST_CHANGE_STATUS = 'ustats';
 const REQUEST_SIGN_GOAL = 'sgoal';
+const REQUEST_DELETE_GOAL = 'dgoal';
 const REQUEST_SIGN_JOB_TITLE = 'sjobtt';
 
 const IMAGE_PROFILE = 'img_profile';
 
+// User cookies
+const COOKIE_ID_TRIAL = 'TRL_TU_idTRIAL';
+const COOKIE_NAME = 'TRL_TU_name';
+const COOKIE_EMAIL = 'TRL_TU_email';
+const COOKIE_PERMISSION = 'TRL_TU_permission';
+
+// Institution cookies
+const COOKIE_TI_ID_TRIAL = 'TRL_TI_idTRIAL';
+const COOKIE_TI_NAME = 'TRL_TI_name';
+const COOKIE_TI_EMAIL = 'TRL_TI_email';
+
+// Common cookie's
+const COOKIE_TYPE = 'TRL_type';
 
 /*
  * No Redo service
@@ -96,9 +123,23 @@ const IMAGE_PROFILE = 'img_profile';
 
 // Status
 const STATUS_CONCLUDED = 'CONCLUDED';
+const STATUS_NOT_CONCLUDED = 'NOT_CONCLUDED';
 const STATUS_PENDING = 'PENDING';
 const STATUS_FROZEN = 'FROZEN';
 const STATUS_CANCELED = 'CANCELED';
 
 // Cookies
 const COOKIE_NO_REDO_COMPANY = 'NR_company';
+const COOKIE_NO_REDO_ID_MEMBER = 'NR_id_member';
+
+/*
+ * Clicker service
+ */
+
+const CLICKER_TYPE_TEACHER = 'TEACHER';
+const CLICKER_TYPE_STUDENT = 'STUDENT';
+ 
+// Cookies
+const COOKIE_CLICKER_ID = 'TRL_CL__id';
+const COOKIE_CLICKER_INSTITUTION = 'TRL_CL__institution';
+const COOKIE_CLICKER_TYPE = 'TRL_CL__type';
