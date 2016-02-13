@@ -1,0 +1,267 @@
+/*
+Copyright 2015 Cliente.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+/* 
+    Created on : 07/07/2015, 15:57:42
+    Author     : TRIAL<Matheus Leonardo dos Santos Martins>
+*/
+
+.toolbar {
+    float: left;
+    width: 100%;
+    height: 64px;
+    z-index: 1;
+}
+
+.small-toolbar {
+    float: left;
+    width: 100%;
+    height: 40px;
+    z-index: 1;
+}
+
+.color-toolbar {
+    background-color: #eee;
+}
+
+.button-toolbar {
+    position: relative;
+    padding: 12px 21px;
+    background-color: transparent;
+}
+
+.button-toolbar:hover {
+    background-color: #eee;
+    color: #008cc6;
+}
+
+.margin-top-toolbar {
+    margin-top: 64px;
+    padding-bottom: 64px;
+}
+
+.margin-top-small-toolbar {
+    margin-top: 40px;
+}
+
+.toolbar-fixed {
+    position: fixed;
+    float: none;
+    top: 0;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.2);
+    -webkit-transform: translateZ(0)
+}
+
+.toolbar-absolute {
+    position: absolute;
+    box-shadow: none;
+}
+
+.toolbar-relative {
+    position: relative;
+    float: left;
+}
+
+.floating-action-button {
+    position: relative;
+    text-align: center;
+    border-radius: 60px;
+    background-position: 50% 50%;
+    //box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    transition: 0.1s all ease-in-out;
+    z-index: 2;
+}
+
+.floating-action-button:hover {
+    //box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
+    cursor: pointer;
+}
+
+.floating-action-button:active {
+    //box-shadow: 0 6px 6px rgba(0, 0, 0, 0.4);
+}
+
+.fab-corner-bottom-right {
+    position: fixed;
+    float: right;
+    right: 30px;
+    bottom: 30px;
+}
+
+.default-fab-size {
+    width: 64px;
+    height: 64px;
+}
+
+.min-fab-size {
+    width: 25px;
+    height: 25px;
+}
+
+.no-fab-shadow, .no-fab-shadow:hover {
+    box-shadow: none;
+}
+
+.material-design-popup {
+    position: fixed;
+    display: none;
+    float: left;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 0 6px 6px rgba(0, 0, 0, 0.4);
+    z-index: 4;
+}
+
+.material-design-popup > section {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.material-design-alert {
+    position: fixed;
+    display: none;
+    top: 50%;
+    left: 50%;
+    //margin-left: -140px;
+    width: 280px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    border-radius: 1px;
+    background: #fff;
+    z-index: 4;
+}
+
+.material-design-alert > #title {
+    padding: 24px 24px 10px 24px;
+    font-size: 23px;
+    font-weight: 600;
+    color: #000;
+}
+
+.material-design-alert > #message {
+    color: #777;
+}
+
+.material-design-alert > #message, .material-design-alert > #content {
+    padding: 10px 24px 24px 24px;
+    font-size: 18px;
+}
+
+.material-design-alert > a {
+    position: relative;
+    float: right;
+    padding: 14px;
+    margin: 8px 8px 8px 0;
+    text-align: center;
+    min-width: 48px;
+    color: #5aa9ff;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.material-design-alert > a:hover {
+    cursor: pointer;
+    background-color: #eee;
+}
+
+.material-design-input {
+    resize: none;
+    padding: 5px 0; 
+    background: none; 
+    border: none; 
+    border-bottom: 2px solid #777;
+}
+
+.material-design-input:focus {
+    outline: 0;
+}
+
+.material-design-select {
+    padding: 5px 0;
+    margin: 5px 0;
+    background: #fff;
+    border-radius: 8px;
+    height: 100%;
+    box-shadow: 0 3px 2px rgba(0, 0, 0, 0.3);
+}
+
+.material-design-navigation-drawer {
+    position: fixed;
+    display: none;
+    float: left;
+    height: 100%;
+    background-color: #fff;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+}
+
+.material-design-navigation-drawer ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.material-design-navigation-drawer ul li a {
+    position: relative;
+    float: left;
+    width: 100%;
+    padding: 10px 0;
+    text-decoration: none;
+}
+
+.material-design-navigation-drawer ul li a .icon {
+    width: 43px;
+    padding: 0 15px;
+}
+
+.material-design-navigation-drawer ul li a:hover {
+    background-color: #eee;
+}
+
+.below-of-page {
+    left: 0;
+    z-index: -1;
+}
+
+.background-opacity-below-of-page {
+    position: fixed;
+    display: none;
+    float: left;
+    width: 100%;
+    height: 100%;
+    background: none;
+    box-shadow: 0 0 18px rgba(0, 0, 0, 0.6);
+    z-index: 20;
+}
+
+.above-of-page {
+    left: -320px;
+    z-index: 20;
+}
+
+.add-fab-padding {
+    padding: 15px 21px;
+}
+
+.match-parent {
+    width: 100%;
+}
+
+.centralize-vertically-in-toolbar {
+    position: fixed;
+    top: 0;
+    transform: translateY(13px);
+}
