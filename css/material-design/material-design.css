@@ -49,6 +49,7 @@ limitations under the License.
 
 .margin-top-toolbar {
     margin-top: 64px;
+    padding-bottom: 64px;
 }
 
 .margin-top-small-toolbar {
@@ -75,17 +76,21 @@ limitations under the License.
 
 .floating-action-button {
     position: relative;
-    float: left;
     text-align: center;
     border-radius: 60px;
     background-position: 50% 50%;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    //box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+    transition: 0.1s all ease-in-out;
     z-index: 2;
 }
 
 .floating-action-button:hover {
+    //box-shadow: 0 6px 10px rgba(0, 0, 0, 0.4);
     cursor: pointer;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+}
+
+.floating-action-button:active {
+    //box-shadow: 0 6px 6px rgba(0, 0, 0, 0.4);
 }
 
 .fab-corner-bottom-right {
@@ -96,9 +101,8 @@ limitations under the License.
 }
 
 .default-fab-size {
-    width: 60px;
-    height: 60px;
-    padding: 22px 0;
+    width: 64px;
+    height: 64px;
 }
 
 .min-fab-size {
@@ -123,12 +127,17 @@ limitations under the License.
     z-index: 4;
 }
 
+.material-design-popup > section {
+    height: 100%;
+    overflow-y: auto;
+}
+
 .material-design-alert {
     position: fixed;
     display: none;
     top: 50%;
     left: 50%;
-    margin-left: -140px;
+    //margin-left: -140px;
     width: 280px;
     box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
     border-radius: 1px;
@@ -144,9 +153,12 @@ limitations under the License.
 }
 
 .material-design-alert > #message {
+    color: #777;
+}
+
+.material-design-alert > #message, .material-design-alert > #content {
     padding: 10px 24px 24px 24px;
     font-size: 18px;
-    color: #777;
 }
 
 .material-design-alert > a {
@@ -191,7 +203,6 @@ limitations under the License.
     position: fixed;
     display: none;
     float: left;
-    width: 320px;
     height: 100%;
     background-color: #fff;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
@@ -250,6 +261,7 @@ limitations under the License.
 }
 
 .centralize-vertically-in-toolbar {
+    position: fixed;
     top: 0;
     transform: translateY(13px);
 }
