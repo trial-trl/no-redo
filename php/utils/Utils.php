@@ -20,16 +20,32 @@ function selectDB($con, $table, $columns, $whereClause, $inputParameters) {
     return $response;
 }
     
-function insertDB($con, $table, $columns, $values) {
-    $names = createParameterNames($columns);
-    $input_parameters = createArrayParameters($names['exploded'], $values);
-    $con->prepare("INSERT INTO $table ($columns) VALUES (".$names['imploded'].")")->execute($input_parameters);
+function insertDB($con, $table, $columns, $values, $select = null) {
+    if ($select == null) {
+	$names = createParameterNames($columns);
+	$input_parameters = createArrayParameters($names['exploded'], $values);
+    	$sql = "INSERT INTO $table ($columns) VALUES (" . $names['imploded'] . ")";
+    } else {
+	$input_parameters = $values;
+    	$sql = $columns != null ? "INSERT INTO $table ($columns) $select" : "INSERT INTO $table $select";
+    }
+    $con->prepare($sql)->execute($input_parameters);
     $result['id'] = $con->lastInsertId();
     return $result;
 }
     
-function updateDB($con, $table, $values, $where, $inputParameters) {
-    return $con->prepare("UPDATE $table SET $values WHERE $where")->execute($inputParameters);
+function updateDB($con, $table, $values, $where, $input_parameters) {
+    $names = createParameterNames($values);
+    $prepare_where = createParameterNames($where);
+    $new_values = createUpdateDBString($values, $names['exploded']);
+    $new_where = createUpdateDBString($where, $prepare_where['exploded']);
+    $total = count($names['exploded']);
+    for ($i = 0, $total_where = count($prepare_where['exploded']); $i < $total_where; $i++) {
+        $new_total = $total + $i;
+        $names['exploded'][$new_total] = $prepare_where['exploded'][$i];
+    }
+    $new_input_parameters = createArrayParameters($names['exploded'], $input_parameters);
+    return $con->prepare("UPDATE $table SET $new_values WHERE $new_where")->execute($new_input_parameters);
 }
     
 function deleteDB($con, $table, $where, $inputParameters) {
@@ -47,6 +63,27 @@ function createParameterNames($string_with_names) {
     return $string_with_new_names;
 }
 
+function appendPrefix($prefix, $needle, $explode = null, $implode_when_finish = true) {
+    $values = $explode != null ? explode($explode, $needle) : $needle;
+    $new_values = [];
+    foreach ($values as $key => $value) {
+        $new_values[$key] = $prefix . $value;
+    }
+    $result = $new_values;
+    if ($implode_when_finish) {
+    	$result['imploded'] = implode(', ', $new_values);
+    }
+    return $result;
+}
+
+function createUpdateDBString($string, $bind_names) {
+    $new_string = explode(', ', $string);
+    for ($i = 0, $total = count($new_string); $i < $total; $i++) {
+        $new_string[$i] = $new_string[$i] . ' = ' . $bind_names[$i];
+    }
+    return implode(', ', $new_string);
+}
+
 function createArrayParameters($names, $values) {
     $array = [];
     for ($i = 0, $total = count($values); $i < $total; $i++) {
@@ -54,33 +91,15 @@ function createArrayParameters($names, $values) {
     }
     return $array;
 }
-    
-function compare($value, $compare, $type_comparison) {
-    if ($type_comparison === OPERATION_IDENTIC) {
-        return $value === $compare;
-    } else if ($type_comparison === OPERATION_MORE_OR_EQUAL) {
-        return $value >= $compare;
-    } else if ($type_comparison === OPERATION_LESS_OR_EQUAL) {
-        return $value <= $compare;
-    } else if ($type_comparison === OPERATION_DIFERENT) {
-        return $value !== $compare;
-    } else if ($type_comparison === OPERATION_MORE) {
-        return $value > $compare;
-    } else if ($type_comparison === OPERATION_LESS) {
-        return $value < $compare;
-    } else {
-        return null;
-    }
-}
 
 function createFederatedTable($con, $database, $table, $columns) {
-    $new_table = "federated_$table";
-    $shd = $con->prepare('CREATE TABLE federated_'.$table.' ($columns) ENGINE=FEDERATED; DEFAULT CHARSET=latin1 CONNECTION="mysql://".DB_USER.":".DB_PASSWORD."@localhost/$database/$table"');
+    $new_table = 'federated_' . $table;
+    $shd = $con->prepare('DROP TABLE IF EXISTS ' . $new_table . '; CREATE TABLE ' . $new_table . ' (' . $columns . ') ENGINE=FEDERATED DEFAULT CHARSET=latin1 CONNECTION="mysql://' . DB_USER . ':' . DB_PASSWORD . '@localhost/' . $database . '/' . $table . '"');
     $shd->execute();
     return $new_table;
 }
 
-function sendEmail($from, $to, $subject, $message, $returnMessage) {
+function sendEmail($from, $to, $subject, $message) {
     $headers = "Content-Type: text/html; charset=UTF-8\n";
     $headers .= "From: TRIAL<$from>\n";
     $headers .= "X-Sender: <$from>\n";
@@ -89,9 +108,7 @@ function sendEmail($from, $to, $subject, $message, $returnMessage) {
     $headers .= "Return-Path: <$from>\n";
     $headers .= "MIME-Version: 1.0\n";
         
-    mail($to, $subject, $message, $headers);
-        
-    echo $returnMessage;
+    return mail($to, $subject, $message, $headers);
 }
 
 function constructActivationMessage($to) {
@@ -117,9 +134,31 @@ function urlExist($type_url, $url) {
     } else {
         switch ($type_url) {
             case IMAGE_PROFILE:
-                $img = 'http://www.trialent.com/images/arrow.png';
+                $img = '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
                 break;
         }
     }
     return $img;
+}
+
+function pathExists($dir, $create = true) {
+    if (file_exists($dir)) {
+        return true;
+    } else {
+        if ($create) {
+            mkdir($dir, 0777, true);
+            return true;
+        }
+        return false;
+    }
+}
+
+function uploadBase64Image($image, $dir, $filename) {
+    $decodedImage = base64_decode($image);
+    if (!file_exists($dir)) {
+        mkdir($dir, 0777, true);
+    }
+    $file = fopen($dir.'/'.$filename, 'wb');
+    fwrite($file, $decodedImage);
+    fclose($file);
 }
