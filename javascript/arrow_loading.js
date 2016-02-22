@@ -27,13 +27,13 @@ function showLoading(container, add_attr) {
     	}
     });/*
     if (movie.canPlayType("video/mp4; codecs='avc1.4D401E, mp4a.40.2'") == "probably") {
-    	movie.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".mp4";
+    	movie.src = "/no-redo/images/TRIAL/loading/" + sizeLoading + "/" + state + ".mp4";
     	support = true;
     } else if (movie.canPlayType("video/ogg; codecs='theora, vorbis'") == "probably") {
-    	movie.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".ogg";
+    	movie.src = "/no-redo/images/TRIAL/loading/" + sizeLoading + "/" + state + ".ogg";
     	support = true;
     } else if (movie.canPlayType("video/webm; codecs='vp8.0, vorbis'") == "probably") {
-    	movie.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".webm";
+    	movie.src = "/no-redo/images/TRIAL/loading/" + sizeLoading + "/" + state + ".webm";
     	support = true;
     }
     if (support) {
@@ -49,7 +49,7 @@ function showLoading(container, add_attr) {
         } else {
             gif.setAttribute(add_attr[0][0], add_attr[0][1]);
         }
-        gif.src = "http://no-redo.trialent.com/repository/images/TRIAL/loading/" + sizeLoading + "/" + state + ".gif";
+        gif.src = "/no-redo/images/TRIAL/loading/" + sizeLoading + "/" + state + ".gif";
         gif.width = sizeLoading;
     	gif.style.marginLeft = -(sizeLoading / 2) + "px";
     	gif.style.marginTop = "-48px";
