@@ -6,9 +6,6 @@
  * and open the template in the editor.
  */
 
-include_once 'utils/Utils.php';
-include_once 'utils/Constant.php';
-
 class TRIALAccount {
     
     private $con;
@@ -26,7 +23,7 @@ class TRIALAccount {
         if ($check != null) { 
             $result['message'] = MESSAGE_EXIST;
         } else {
-            $result = insertDB($this->con, TABLE_USERS, 'name, last_name, birthday, sex, email, city, state, zip, password, how, permission, activated, ip, date_register, hour_register', array(ucwords($name), ucwords($last_name), date_format(new DateTime($birthday), 'Y-m-d'), strtoupper($sex), $email, '', '', $zip, password_hash($pass, PASSWORD_DEFAULT), '', 'USER', 'no', getIP(), date('Y-m-d'), date('H:i:s')));
+            $result = insertDB($this->con, TABLE_USERS, 'name, last_name, birthday, sex, email, city, state, zip, password, how, permission, activated, ip, date_register, hour_register', array(ucwords($name), ucwords($last_name), date_format(new DateTime($birthday), 'Y-m-d'), strtoupper($sex), $email, null, null, $zip, password_hash($pass, PASSWORD_DEFAULT), '', 'USER', 'no', getIP(), date('Y-m-d'), date('H:i:s')));
             $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
         }
         return $result;
@@ -41,6 +38,26 @@ class TRIALAccount {
             $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
         }
         return $result;
+    }
+    
+    public function authenticateUserById($id, $password) {
+        $account = selectDB($this->con, TABLE_USERS, 'name, last_name, email, password, activated, permission', 'WHERE id = :id', array(':id' => $id))[0];
+        if ($account != null) {
+            $equal = password_verify($password, $account['password']) ? true : $password === $account['password'];
+            if ($equal) {
+            	$result['message'] = $this->accountIsActivated($account['activated']) ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED;
+	        $this->concludeAuthenticationWeb($equal, $result['message'], $account, TRIAL_ACCOUNT_TYPE_USER);
+	        $result['id'] = $account['id'];
+	        $result['name'] = $account['name'];
+	        $result['last_name'] = $account['last_name'];
+	        $result['permission'] = $account['permission'];
+            } else {
+            	$result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+            }
+        } else {
+            $result['message'] = MESSAGE_NOT_EXIST;
+        }
+	return $result;
     }
     
     public function authenticateUser($email, $password, $type_account = TRIAL_ACCOUNT_TYPE_USER) {
@@ -87,32 +104,32 @@ class TRIALAccount {
     private function makePermanentLogin($name_cookies, $value_cookies, $duration) {
         $exploded_names = explode(',', $name_cookies);
         for ($i = 0, $total = count($exploded_names); $i < $total; $i++) {
-            setcookie($exploded_names[$i], $value_cookies[$i], $duration != DURATION_INDEFINED ? $duration : time() + (60 * 60 * 24 * 365), '/', '.trialent.com');
+            setcookie($exploded_names[$i], $value_cookies[$i], $duration != DURATION_INDEFINED ? $duration : time() + (60 * 60 * 24 * 365), '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
         }
     }
     
     public function logout() {
         $time = time() - 3600;
-        setcookie(COOKIE_ID_TRIAL, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_NAME, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_EMAIL, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_TI_ID_TRIAL, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_TI_NAME, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_TI_EMAIL, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_PERMISSION, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_TYPE, null, $time, '/', '.trialent.com');
+        setcookie(COOKIE_ID_TRIAL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_NAME, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_EMAIL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_TI_ID_TRIAL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_TI_NAME, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_TI_EMAIL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_PERMISSION, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_TYPE, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
     }
     
     public function signOut() {
         $time = time() - 3600;
-        setcookie(COOKIE_ID_TRIAL, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_NAME, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_EMAIL, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_TI_ID_TRIAL, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_TI_NAME, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_TI_EMAIL, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_PERMISSION, null, $time, '/', '.trialent.com');
-        setcookie(COOKIE_TYPE, null, $time, '/', '.trialent.com');
+        setcookie(COOKIE_ID_TRIAL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_NAME, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_EMAIL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_TI_ID_TRIAL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_TI_NAME, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_TI_EMAIL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_PERMISSION, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        setcookie(COOKIE_TYPE, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
     }
     
     public function changeProfileImage($id, $image) {
