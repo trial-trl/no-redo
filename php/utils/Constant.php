@@ -32,11 +32,13 @@ const DATABASE_TRIAL = 'trial';
 const DATABASE_SERVICES = 'services';
 const DATABASE_CLICKER = 'clicker';
 const DATABASE_USERS = 'users';
+const DATABASE_GAMES = 'games';
 const DATABASE_DOWNLOADS = 'downloads';
 const DATABASE_NO_REDO = 'no_redo';
 const DATABASE_SOLIDARITY_MAP = 'mapadasolidariedade';
 const DATABASE_ANNOTATION = 'annotation';
 const DATABASE_VIRTUAL_HERITAGE_CONTROL = 'virtual_heritage_control';
+const DATABASE_STORE = 'store';
 
 // Table names
 const TABLE_USERS = 'users';
@@ -51,7 +53,6 @@ const TABLE_PROJECTS = 'projects';
 const TABLE_IMAGES_PROJECTS = 'images_projects';
 const TABLE_STUDY_MATERIALS = 'study_materials';
 const TABLE_MEMBERS = 'members';
-const TABLE_USERS = 'users';
 const TABLE_ANNOTATIONS = 'annotations';
 const TABLE_SET_OF_QUICK_ACTIONS = 'set_quick_actions';
 
