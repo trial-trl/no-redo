@@ -228,10 +228,9 @@ function showHideElement(action) {
 }
 
 function scrollToTarget(options) {
-    var initialScroll = options.orientation == "vertical" ? window.pageYOffset : window.pageXOffset, goTo = options.orientation == "vertical" ? options.target.offsetTop : options.target.offsetLeft;
-    goTo = initialScroll - goTo;
+    var initialScroll = options.orientation === "vertical" ? window.pageYOffset : window.pageXOffset, goTo = options.orientation === "vertical" ? options.target.offsetTop : options.target.offsetLeft;
     if (initialScroll > goTo) {
-        goTo = -goTo;
+        goTo = -(initialScroll - goTo);
     }
     if (options.additional_scroll) {
     	var additional_scroll = options.additional_scroll.split("|");
@@ -247,47 +246,39 @@ function scrollToTarget(options) {
             return options.animation_function ? options.animation_function(p) : easing.easeInOutQuart(p);
         },
         step: function (delta) {
-            if (options.orientation == "vertical") {
+            if (options.orientation === "vertical") {
                 window.scrollTo(0, initialScroll + (goTo * delta));
             } else {
+                //alert(initialScroll + " ===== " + goTo);
                 window.scrollTo(initialScroll + (goTo * delta), 0);
             }
         }
     });
 }
 
-function handleTabClick(dataContent, tabs, contents) {
+function handleTabClick(options) {
+    var dataContent = options.current_tab.getAttribute(options.attr || "trial-corresponding-element");
     if (currentData !== dataContent) {
-        var tabs;
-        if (tabs == null) {
-            tabs = document.getElementById("tabs").getElementsByTagName("ul")[0].getElementsByTagName("li");
-        }
-        var contents;
-        if (contents == null) {
-            contents = document.getElementsByClassName("tab-content");
-        }
-        for (var i = 0, total = tabs.length; i < total; i++) {
-            if (tabs == null) {
-            var t = tabs[i];
-            var a = t.getElementsByTagName("a")[0];
-            a.classList.remove("current-tab");
-            if (t.getAttribute("data-content") === dataContent) {
-                a.classList.add("current-tab");
+        for (var i = 0, total = options.tabs.length; i < total; i++) {
+            var tab = options.tabs[i];
+            if (tab === null || tab === undefined) {
+                tab.classList.remove(options.add_class || "current-tab");
+                if (tab.getAttribute(options.attr || "trial-corresponding-element") === dataContent) {
+                    tab.classList.add(options.add_class || "current-tab");
+                    continue;
+                }
                 continue;
-            }
-            continue;
             } else {
-            var tab = tabs[i];
-            tab.classList.remove("current-tab");
-            if (tab.getAttribute("data-content") === dataContent) {
-                tab.classList.add("current-tab");
-                continue;
-            }
+                tab.classList.remove(options.add_class || "current-tab");
+                if (tab.getAttribute(options.attr || "trial-corresponding-element") === dataContent) {
+                    tab.classList.add(options.add_class || "current-tab");
+                    continue;
+                }
             }
         }
-        for (var i = 0, total = contents.length; i < total; i++) {
-            var c = contents[i];
-            if (c.getAttribute("data-content") !== dataContent) {
+        for (var i = 0, total = options.contents.length; i < total; i++) {
+            var c = options.contents[i];
+            if (c.getAttribute(options.attr || "trial-corresponding-element") !== dataContent) {
 	        c.style.opacity = 1;
 	        animate({
 	            duration : 100,
@@ -298,10 +289,10 @@ function handleTabClick(dataContent, tabs, contents) {
 	                c.style.opacity = 1 - (delta * 1);
 	            }
 	        });
-	        c.classList.add("not-display");
+	        c.classList.add(options.visibility_class_control || "not-display");
 	        continue;
 	    }
-	    c.classList.remove("not-display");
+	    c.classList.remove(options.visibility_class_control || "not-display");
 	    animate({
 	        duration : 100,
 	        delta : function (p) {
@@ -321,6 +312,7 @@ function loadPage(options) {
         if (readyState === 4) {
             var section = document.createElement("section");
             section.innerHTML = response;
+            options.onloadpage(response, section, options);
             var r = section.getElementsByClassName("ajax-content")[0];
             createHistory(response, options);
             options.into.innerHTML = r.innerHTML;

@@ -36,6 +36,7 @@ const DATABASE_GAMES = 'games';
 const DATABASE_DOWNLOADS = 'downloads';
 const DATABASE_NO_REDO = 'no_redo';
 const DATABASE_SOLIDARITY_MAP = 'mapadasolidariedade';
+const DATABASE_JOBS_NOW = 'jobs_now';
 const DATABASE_ANNOTATION = 'annotation';
 const DATABASE_VIRTUAL_HERITAGE_CONTROL = 'virtual_heritage_control';
 
