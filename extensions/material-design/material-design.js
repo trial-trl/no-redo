@@ -122,7 +122,7 @@ function showPopup(target, background, top) {
         animate({
             duration : 200,
             delta : function (p) {
-            	return p;
+            	return easing.easeInOutQuart(p);
             },
             step : function (delta) {
         	target.style.opacity = 1 * delta;
@@ -147,7 +147,7 @@ function closePopup(target, background, top) {
     animate({
         duration : 200,
         delta : function (p) {
-            return p;
+            return easing.easeInOutQuart(p);
         },
         step : function (delta) {
        	    target.style.opacity = 1 - (delta * 1);
@@ -173,7 +173,7 @@ function transformFloatingActionButton(fab, transform, data) {
             animate({
             	duration : 400,
             	delta : function (p) {
-            	    return p; 
+            	    return easing.easeInOutQuart(p); 
            	},
            	step : function (delta) {
            	    fab.style.width = (data.width * delta) + "px";
@@ -200,7 +200,7 @@ function restoreFloatingActionButton(fab, restore) {
             animate({
             	duration : 300,
             	delta : function (p) { 
-            	    return p; 
+            	    return easing.easeInOutQuart(p); 
            	}, 
            	step : function (delta) {
            	    if ((+(window.getComputedStyle(fab, null).getPropertyValue("width").replace("px", "")) - 5) >= 69) {
@@ -227,7 +227,7 @@ function openNavigationDrawer(drawer, background, page) {
     animate({
     	duration : 200,
     	delta : function (p) {
-    	    return p;
+    	    return easing.easeInOutQuart(p);
     	},
     	step : function (delta) {
     	    page.style.left = (delta * width) + "px";
@@ -242,7 +242,7 @@ function openNavigationDrawer(drawer, background, page) {
     animate({
     	duration : 200,
     	delta : function (p) {
-    	    return p;
+    	    return easing.easeInOutQuart(p);
     	},
     	step : function (delta) {
     	    drawer.style.left = -width + (delta * width) + "px";
@@ -261,7 +261,7 @@ function closeNavigationDrawer(drawer, background, to, page) {
     animate({
     	duration : 200,
     	delta : function (p) {
-    	    return p;
+    	    return easing.easeInOutQuart(p);
     	},
     	step : function (delta) {
    	    page.style.left = (to - (delta * to)) + "px";
@@ -272,7 +272,7 @@ function closeNavigationDrawer(drawer, background, to, page) {
     animate({
     	duration : 200,
     	delta : function (p) {
-    	    return p;
+    	    return easing.easeInOutQuart(p);
     	},
     	step : function (delta) {
     	    drawer.style.left = "-" + (to * delta) + "px";
