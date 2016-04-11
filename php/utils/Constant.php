@@ -39,6 +39,7 @@ const DATABASE_SOLIDARITY_MAP = 'mapadasolidariedade';
 const DATABASE_JOBS_NOW = 'jobs_now';
 const DATABASE_ANNOTATION = 'annotation';
 const DATABASE_VIRTUAL_HERITAGE_CONTROL = 'virtual_heritage_control';
+const DATABASE_STORE = 'store';
 
 // Table names
 const TABLE_USERS = 'users';
@@ -69,15 +70,15 @@ const TRIAL_ACCOUNT_TYPE_INSTITUTION = 'institution';
 const TRIAL_ACCOUNT_TYPE_USER = 'user';
 
 // Paths
-const PATH_CLICKER_QUESTIONS = '../../../clicker/images/questions';
-const PATH_CLICKER_BASE_TEXTS = '../../../clicker/base_texts/';
+const PATH_CLICKER_QUESTIONS = '../images/questions';
+const PATH_CLICKER_BASE_TEXTS = '../base_texts/';
 
 // Emails
 const EMAIL_CONTACT_TRIAL = 'contato@trialent.com';
 
 const SUBJECT_ACTIVATION_ACCOUNT = 'Link de ativação da conta TRIAL';
 
-const DURATION_INDEFINED = 0;
+const DURATION_INDEFINED = -1;
 const DURATION_FULL_DAY = 86400;
 const DURATION_HALF_DAY = 43200;
 
