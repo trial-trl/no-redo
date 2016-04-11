@@ -67,7 +67,7 @@ class TRIALAccount {
             $account = selectDB($this->con, TABLE_INSTITUTIONS, 'id, type, name, email, password, activated', 'WHERE email = :email', array(':email' => $email))[0];
         }
         if ($account != null) {
-            $equal = $password === $account['password'];
+            $equal = password_verify($password, $account['password']) ? true : $password === $account['password'];
             if ($equal) {
             	$result['message'] = $this->accountIsActivated($account['activated']) ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED;
 	        $this->concludeAuthenticationWeb($equal, $result['message'], $account, $type_account, $permanent);
@@ -113,7 +113,7 @@ class TRIALAccount {
         setcookie(COOKIE_ID_TRIAL, null, $time);
         setcookie(COOKIE_NAME, null, $time);
         setcookie(COOKIE_EMAIL, null, $time);
-        setcookie(COOKIE_TI_ID_TRIAL, null/*, $time, '/', '.trialent.com'*/);
+        setcookie(COOKIE_TI_ID_TRIAL, null, $time);
         setcookie(COOKIE_TI_NAME, null, $time);
         setcookie(COOKIE_TI_EMAIL, null, $time);
         setcookie(COOKIE_PERMISSION, null, $time);
@@ -125,7 +125,7 @@ class TRIALAccount {
         setcookie(COOKIE_ID_TRIAL, null, $time);
         setcookie(COOKIE_NAME, null, $time);
         setcookie(COOKIE_EMAIL, null, $time);
-        setcookie(COOKIE_TI_ID_TRIAL, null/*, $time, '/', '.trialent.com'*/);
+        setcookie(COOKIE_TI_ID_TRIAL, null, $time);
         setcookie(COOKIE_TI_NAME, null, $time);
         setcookie(COOKIE_TI_EMAIL, null, $time);
         setcookie(COOKIE_PERMISSION, null, $time);
@@ -187,10 +187,13 @@ class TRIALAccount {
     }
     
     public function accountIsActivated($column_activated) {
-        if ($column_activated === 'no') { 
-            return true;
-        }
-        return false;
+        return !$column_activated;
+    }
+    
+    public function getAllAccounts($user) {
+        $accounts = selectDB($this->con, DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial', 'clicker.id AS clicker_id, clicker.type AS clicker_type, clicker.register_date AS clicker_register_date, clicker.register_time AS clicker_register_time', 'LEFT JOIN ' . DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id WHERE trial.id = :user', array(':user' => $user))[0];
+        $accounts['message'] = $accounts != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        return $accounts;
     }
     
 }

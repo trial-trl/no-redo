@@ -8,10 +8,13 @@ and open the template in the editor.
     Author     : Matheus Leonardo dos Santos Martins
 */
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
 }
 
 .text-center {
@@ -162,25 +165,16 @@ body {
     background: #333;
 }
 
-#footer-links ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-#footer-links ul a {
-    text-decoration: none;
-    color: #e2e2e2;
-}
-
-#footer-links ul a li {
+#footer-links a {
     display: inline;
     line-height: 40px;
     margin: 0 15px;
+    color: #e2e2e2;
+    text-decoration: none;
     transition: 0.1s all ease-out;
 }
 
-#footer-links ul a li:hover {
+#footer-links a:hover {
     color: #fff;
     transition: 0.1s all ease-in;
 }
