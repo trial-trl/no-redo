@@ -308,11 +308,13 @@ function handleTabClick(options) {
 }
 
 function loadPage(options) {
-    sendAjax(options.event, {data: null, url: options.url, type: "json"}, null, null, function (readyState, response) {
+    sendAjax(options.event, {data: null, url: options.url, type: "json"}, null, options.beforestart ? options.beforestart() : null, function (readyState, response) {
         if (readyState === 4) {
             var section = document.createElement("section");
             section.innerHTML = response;
-            options.onloadpage(response, section, options);
+            if (options.onloadpage) {
+                options.onloadpage(response, section, options);
+            }
             var r = section.getElementsByClassName("ajax-content")[0];
             createHistory(response, options);
             options.into.innerHTML = r.innerHTML;
