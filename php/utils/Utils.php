@@ -141,6 +141,23 @@ function urlExist($type_url, $url) {
     return $img;
 }
 
+function getBrowserInfo() {
+    $ch = curl_init();
+    $url = 'http://www.useragentstring.com/?uas=' . curl_escape($ch, $_SERVER['HTTP_USER_AGENT']) . '&getJSON=all';
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $agent = json_decode(curl_exec($ch));
+    curl_close($ch);
+    return $agent;
+}
+
+function getAge($birthday) {
+    list($year, $month, $date) = explode('-', $birthday);
+    $today = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
+    $date_birthday = mktime(0, 0, 0, $month, $date, $year);
+    return floor((((($today - $date_birthday) / 60) / 60) / 24) / 365.25);
+}
+
 function pathExists($dir, $create = true) {
     if (file_exists($dir)) {
         return true;
