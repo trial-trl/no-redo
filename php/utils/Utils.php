@@ -151,13 +151,6 @@ function getBrowserInfo() {
     return $agent;
 }
 
-function getAge($birthday) {
-    list($year, $month, $date) = explode('-', $birthday);
-    $today = mktime(0, 0, 0, date('m'), date('d'), date('Y'));
-    $date_birthday = mktime(0, 0, 0, $month, $date, $year);
-    return floor((((($today - $date_birthday) / 60) / 60) / 24) / 365.25);
-}
-
 function pathExists($dir, $create = true) {
     if (file_exists($dir)) {
         return true;
