@@ -78,7 +78,7 @@ const EMAIL_CONTACT_TRIAL = 'contato@trialent.com';
 
 const SUBJECT_ACTIVATION_ACCOUNT = 'Link de ativação da conta TRIAL';
 
-const DURATION_INDEFINED = -1;
+const DURATION_INDEFINED = 0;
 const DURATION_FULL_DAY = 86400;
 const DURATION_HALF_DAY = 43200;
 
@@ -146,3 +146,8 @@ const CLICKER_TYPE_STUDENT = 'STUDENT';
 const COOKIE_CLICKER_ID = 'TRL_CL__id';
 const COOKIE_CLICKER_INSTITUTION = 'TRL_CL__institution';
 const COOKIE_CLICKER_TYPE = 'TRL_CL__type';
+ 
+// Cookies
+const COOKIE_FIX_IT_ID = 'TRL_FI__id';
+const COOKIE_FIX_IT_LOCALIZATION = 'TRL_FI__localization';
+const COOKIE_FIX_IT_AVATAR = 'TRL_FI__avatar';
