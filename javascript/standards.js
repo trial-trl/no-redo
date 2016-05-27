@@ -1,6 +1,12 @@
 function openWindow(options) {
     options.event.preventDefault();
     var top = options.event !== null && options.event !== undefined ? options.event.clientY : window.innerHeight / 2, left = options.event !== null && options.event !== undefined ? options.event.clientX : window.innerWidth / 2;
+    if (options.freeze === null || options.freeze === undefined) {
+        options.freeze = true;
+    }
+    if (options.freeze) {
+        document.documentElement.style.overflow = "hidden";
+    }
     options.window.style.top = top + "px";
     options.window.style.left = left + "px";
     options.window.style.opacity = 0;
@@ -114,6 +120,7 @@ function openWindow(options) {
 
 function openWindoww(e, openwindow, finished, options) {
     e.preventDefault();
+    document.documentElement.style.overflow = "hidden";
     var top = e != null ? e.clientY : window.innerHeight / 2, left = e != null ? e.clientX : window.innerWidth / 2;
     options.window = options.window != null ? options.window : openwindow;
     options.window.style.top = top + "px";
@@ -248,6 +255,7 @@ function openWindoww(e, openwindow, finished, options) {
 
 function closeWindow(e, openedwindow, options) {
     e.preventDefault();
+    document.documentElement.style.overflow = "auto";
     var top = e.clientY, left = e.clientX;
     options.window.style.opacity = 1;
     animate({
@@ -319,6 +327,12 @@ function checkForElementPadding(element) {
 }
 
 function pageTransition(options) {
+    if (options.freeze === null || options.freeze === undefined) {
+        options.freeze = true;
+    }
+    if (options.freeze) {
+        document.documentElement.style.overflow = "hidden";
+    }
     this.el_init_bottom = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("bottom").replace("px", ""));
     this.el_init_right = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("right").replace("px", ""));
     this.el_init_width = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("width").replace("px", ""));
@@ -354,6 +368,7 @@ function pageTransition(options) {
 }
 
 function restorePage(options) {
+    document.documentElement.style.overflow = "auto";
     this.el_init_bottom = 30;
     this.el_init_right = 30;
     this.el_init_width = 64;
