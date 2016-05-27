@@ -308,7 +308,7 @@ function handleTabClick(options) {
 }
 
 function loadPage(options) {
-    sendAjax(options.event, {data: null, url: options.url, type: "json"}, null, options.beforestart ? options.beforestart() : null, function (readyState, response) {
+    sendAjax(options.event, {data: null, url: options.url, type: "json"}, null, null, function (readyState, response) {
         if (readyState === 4) {
             var section = document.createElement("section");
             section.innerHTML = response;

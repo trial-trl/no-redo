@@ -17,6 +17,13 @@ body {
     padding: 0;
 }
 
+nr-title-truncate {
+    float: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .text-center {
     position: relative;
     float: left;
