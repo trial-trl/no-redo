@@ -17,7 +17,7 @@ body {
     padding: 0;
 }
 
-nr-title-truncate {
+nr-title-truncate, .title-truncate {
     float: left;
     white-space: nowrap;
     overflow: hidden;
