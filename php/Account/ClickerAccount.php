@@ -18,9 +18,9 @@ class ClickerAccount {
     public function authenticateUser($id_trial) {
         $profile = $this->getProfile($id_trial);
         if ($profile['message'] === MESSAGE_EXIST) {
-            setcookie(COOKIE_CLICKER_ID, $profile['id'], time() + (60 * 60 * 24 * 365), '/', 'trialent.com');
-            setcookie(COOKIE_CLICKER_INSTITUTION, $profile['institution'], time() + (60 * 60 * 24 * 365), '/', 'trialent.com');
-            setcookie(COOKIE_CLICKER_TYPE, $profile['type'], time() + (60 * 60 * 24 * 365), '/', 'trialent.com');
+            setcookie(COOKIE_CLICKER_ID, $profile['id'], time() + (60 * 60 * 24 * 365), '/', 'localhost');
+            setcookie(COOKIE_CLICKER_INSTITUTION, $profile['institution'], time() + (60 * 60 * 24 * 365), '/', 'localhost');
+            setcookie(COOKIE_CLICKER_TYPE, $profile['type'], time() + (60 * 60 * 24 * 365), '/', 'localhost');
         }
         return $profile;
     }

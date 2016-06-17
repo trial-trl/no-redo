@@ -6,6 +6,13 @@
  * and open the template in the editor.
  */
 
+include_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/php/utils/Constant.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/php/utils/Utils.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/php/ConnectDB.php';
+include_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/php/Map.php';
+date_default_timezone_set('America/Sao_Paulo');
+$request = json_decode(file_get_contents('php://input'));
+
 class Map {
     
     private $con;
@@ -27,4 +34,29 @@ class Map {
         return $counties;
     }
     
+}
+
+if ($request != null) {
+    $r = $request->{'r'};
+    $requestType = 'mobile';
+} else {
+    if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
+	$r = filter_input(INPUT_GET, 'r');
+    } else {
+	$r = filter_input(INPUT_POST, 'r');
+    }
+    $requestType = 'web';
+}
+
+$instance_class = new Map();
+    
+if ($requestType === 'mobile') {
+    switch ($r) {
+        case 'gcntes':
+            echo json_encode($instance_class->getCounties($request->{'state'}));
+            break;
+    }
+} else if ($requestType === 'web') {
+    switch ($r) {
+    }
 }
