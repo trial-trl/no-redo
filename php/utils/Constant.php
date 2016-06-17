@@ -40,6 +40,8 @@ const DATABASE_JOBS_NOW = 'jobs_now';
 const DATABASE_ANNOTATION = 'annotation';
 const DATABASE_VIRTUAL_HERITAGE_CONTROL = 'virtual_heritage_control';
 const DATABASE_STORE = 'store';
+const DATABASE_STREET_RACE = 'street_race';
+const DATABASE_DIGITAL_BOOKLET = 'digital_booklet';
 
 // Table names
 const TABLE_USERS = 'users';
@@ -133,6 +135,7 @@ const STATUS_CANCELED = 'CANCELED';
 
 // Cookies
 const COOKIE_NO_REDO_COMPANY = 'NR_company';
+const COOKIE_NO_REDO_MEMBER_COMPANIES = 'NR_member_companies';
 const COOKIE_NO_REDO_ID_MEMBER = 'NR_id_member';
 
 /*

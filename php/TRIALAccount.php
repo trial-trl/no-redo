@@ -13,7 +13,7 @@ class TRIALAccount {
     const MOBILE_CONTEXT = 'mobile';
     const WEB_CONTEXT = 'web';
     
-    public function __construct($context) {
+    public function __construct() {
         $instanceClass = new ConnectDB(DB_DATABASE, DB_USER, DB_PASSWORD, DB_PREFIX.DATABASE_USERS);
         $this->con = $instanceClass->connect();
     }
@@ -119,6 +119,11 @@ class TRIALAccount {
         setcookie(COOKIE_TI_EMAIL, null, $time, '/', 'localhost');
         setcookie(COOKIE_PERMISSION, null, $time, '/', 'localhost');
         setcookie(COOKIE_TYPE, null, $time, '/', 'localhost');
+        setcookie(COOKIE_CLICKER_ID, null, $time, '/', 'localhost');
+        setcookie(COOKIE_CLICKER_INSTITUTION, null, $time, '/', 'localhost');
+        setcookie(COOKIE_CLICKER_TYPE, null, $time, '/', 'localhost');
+        setcookie(COOKIE_NO_REDO_ID_MEMBER, null, time() - 3600, '/', 'localhost');
+        setcookie(COOKIE_NO_REDO_COMPANY, null, time() - 3600, '/', 'localhost');
         /*
         setcookie(COOKIE_ID_TRIAL, null, $time, '/', '.trialent.com');
         setcookie(COOKIE_NAME, null, $time, '/', '.trialent.com');
@@ -128,6 +133,11 @@ class TRIALAccount {
         setcookie(COOKIE_TI_EMAIL, null, $time, '/', '.trialent.com');
         setcookie(COOKIE_PERMISSION, null, $time, '/', '.trialent.com');
         setcookie(COOKIE_TYPE, null, $time, '/', '.trialent.com');
+        setcookie(COOKIE_CLICKER_ID, null, $time, '/', '.trialent.com');
+        setcookie(COOKIE_CLICKER_INSTITUTION, null, $time, '/', '.trialent.com');
+        setcookie(COOKIE_CLICKER_TYPE, null, $time, '/', '.trialent.com');
+        setcookie(COOKIE_NO_REDO_ID_MEMBER, null, time() - 3600, '/', '.trialent.com');
+        setcookie(COOKIE_NO_REDO_COMPANY, null, time() - 3600, '/', '.trialent.com');
          */
     }
     
@@ -197,6 +207,12 @@ class TRIALAccount {
         }
         return false;
     }
+    
+    public function getAllAccounts($user) {
+        $accounts = selectDB($this->con, DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial', 'clicker.id AS clicker_id, clicker.type AS clicker_type, clicker.register_date AS clicker_register_date, clicker.register_time AS clicker_register_time', 'LEFT JOIN ' . DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id WHERE trial.id = :user', array(':user' => $user))[0];
+        $accounts['message'] = $accounts != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        return $accounts;
+    }
 
     public function getHowKnowRegisters() {
         $get = selectDB($this->con, 'how_know', 'id, how', null, null);
@@ -230,6 +246,13 @@ class TRIALAccount {
         $result = $check != null ? $check[0] : $check;
         $result['message'] = $check != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
         return $result;
+    }
+    
+}
+
+class DecodeInstitutionInfos {
+    
+    public function __construct($infos) {
     }
     
 }
