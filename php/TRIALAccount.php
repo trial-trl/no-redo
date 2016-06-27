@@ -10,9 +10,6 @@ class TRIALAccount {
     
     private $con;
     
-    const MOBILE_CONTEXT = 'mobile';
-    const WEB_CONTEXT = 'web';
-    
     public function __construct() {
         $instanceClass = new ConnectDB(DB_DATABASE, DB_USER, DB_PASSWORD, DB_PREFIX.DATABASE_USERS);
         $this->con = $instanceClass->connect();
@@ -89,9 +86,9 @@ class TRIALAccount {
         if ($is_password_equals) {
             if ($message != MESSAGE_NOT_ACTIVATED) {
                 if ($type === TRIAL_ACCOUNT_TYPE_USER) {
-                    $this->makePermanentLogin(COOKIE_ID_TRIAL . ',' . COOKIE_NAME . ',' . COOKIE_EMAIL . ',' . COOKIE_PERMISSION . ',' . COOKIE_TYPE, array($account['id'], $account['name'], $account['email'], $account['permission'], $type), $permanent == 1 ? DURATION_INDEFINED : 0);
+                    $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$account['id'], $account['name'], $account['email'], $account['permission'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
                 } else {
-                    $this->makePermanentLogin(COOKIE_TI_ID_TRIAL . ',' . COOKIE_TI_NAME . ',' . COOKIE_TI_EMAIL . ',' . COOKIE_TYPE, array($account['id'], $account['name'], $account['email'], $type), $permanent == 1 ? DURATION_INDEFINED : 0);
+                    $this->makePermanentLogin([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['id'], $account['name'], $account['email'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
                 }
             }
         }
@@ -103,27 +100,35 @@ class TRIALAccount {
     }
     
     private function makePermanentLogin($name_cookies, $value_cookies, $duration) {
-        $exploded_names = explode(',', $name_cookies);
-        for ($i = 0, $total = count($exploded_names); $i < $total; $i++) {
-            setcookie($exploded_names[$i], $value_cookies[$i], $duration != DURATION_INDEFINED ? $duration : time() + (60 * 60 * 24 * 365), '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        for ($i = 0, $total = count($name_cookies); $i < $total; $i++) {
+            $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
+            setcookie($name_cookies[$i], $value_cookies[$i], $duration != DURATION_INDEFINED ? $duration : strtotime('+30 days'), '/', $domain);
         }
     }
     
     public function logout() {
-        $time = time() - 3600;
-        setcookie(COOKIE_ID_TRIAL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_NAME, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_EMAIL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_TI_ID_TRIAL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_TI_NAME, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_TI_EMAIL, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_PERMISSION, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_TYPE, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_CLICKER_ID, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_CLICKER_INSTITUTION, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_CLICKER_TYPE, null, $time, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_NO_REDO_ID_MEMBER, null, time() - 3600, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
-        setcookie(COOKIE_NO_REDO_COMPANY, null, time() - 3600, '/', $_SERVER['SERVER_NAME'] == 'localhost' ? 'localhost' : `.$_SERVER[SERVER_NAME]`);
+        $result = [];
+        $i = 0;
+        $host = $_SERVER['HTTP_HOST'];
+        foreach ($_COOKIE as $key => $value) {
+            if (strpos($key, 'TRL_') !== false) {
+                if ($host !== 'localhost') {
+                    if (strpos($key, 'SR') !== false) {
+                        $domain = 'serginho.trialent.com';
+                    } else if (strpos($key, 'CL') !== false) {
+                        $domain = 'clicker.trialent.com';
+                    } else {
+                        $domain = '.trialent.com';
+                    }
+                } else {
+                    $domain = $host;
+                }
+                setcookie($key, null, time() - 3600, '/', $domain);
+                $result[$i++] = ['Key' => $key, 'Domain' => $domain, 'Status' => 'Deleted'];
+            }
+            $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
+        }
+        return $result;
     }
     
     public function changeProfileImage($id, $image) {
