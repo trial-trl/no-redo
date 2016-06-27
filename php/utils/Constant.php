@@ -39,8 +39,8 @@ const DATABASE_SOLIDARITY_MAP = 'mapadasolidariedade';
 const DATABASE_JOBS_NOW = 'jobs_now';
 const DATABASE_ANNOTATION = 'annotation';
 const DATABASE_VIRTUAL_HERITAGE_CONTROL = 'virtual_heritage_control';
-const DATABASE_STORE = 'store';
 const DATABASE_STREET_RACE = 'street_race';
+const DATABASE_STORE = 'store';
 const DATABASE_DIGITAL_BOOKLET = 'digital_booklet';
 
 // Table names
@@ -123,6 +123,11 @@ const COOKIE_TI_EMAIL = 'TRL_TI_email';
 const COOKIE_TYPE = 'TRL_type';
 
 /*
+ * Url's
+ */
+const URL_ACCOUNT = 'http://account.trialent.com/';
+
+/*
  * No Redo service
  */
 
@@ -134,9 +139,9 @@ const STATUS_FROZEN = 'FROZEN';
 const STATUS_CANCELED = 'CANCELED';
 
 // Cookies
-const COOKIE_NO_REDO_COMPANY = 'NR_company';
-const COOKIE_NO_REDO_MEMBER_COMPANIES = 'NR_member_companies';
-const COOKIE_NO_REDO_ID_MEMBER = 'NR_id_member';
+const COOKIE_NO_REDO_COMPANY = 'TRL_NR__company';
+const COOKIE_NO_REDO_MEMBER_COMPANIES = 'TRL_NR__member_companies';
+const COOKIE_NO_REDO_ID_MEMBER = 'TRL_NR__id_member';
 
 /*
  * Clicker service
@@ -150,7 +155,17 @@ const COOKIE_CLICKER_ID = 'TRL_CL__id';
 const COOKIE_CLICKER_INSTITUTION = 'TRL_CL__institution';
 const COOKIE_CLICKER_TYPE = 'TRL_CL__type';
  
+/*
+ * Fix It service
+ */
+
 // Cookies
 const COOKIE_FIX_IT_ID = 'TRL_FI__id';
 const COOKIE_FIX_IT_LOCALIZATION = 'TRL_FI__localization';
 const COOKIE_FIX_IT_AVATAR = 'TRL_FI__avatar';
+
+/*
+ * Street Race service
+ */
+const COOKIE_STREET_RACE_ID = 'TRL_SR__id';
+const COOKIE_STREET_RACE_TYPE = 'TRL_SR__type';
