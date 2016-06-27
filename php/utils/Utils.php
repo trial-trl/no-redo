@@ -151,6 +151,19 @@ function getBrowserInfo() {
     return $agent;
 }
 
+function request($url, $data = null) {
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    if ($data != null) {
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+    }
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    $response = curl_exec($ch);
+    curl_close($ch);
+    return $response;
+}
+
 function pathExists($dir, $create = true) {
     if (file_exists($dir)) {
         return true;
