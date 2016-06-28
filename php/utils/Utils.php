@@ -38,7 +38,7 @@ function updateDB($con, $table, $values, $where, $input_parameters) {
     $names = createParameterNames($values);
     $prepare_where = createParameterNames($where);
     $new_values = createUpdateDBString($values, $names['exploded']);
-    $new_where = createUpdateDBString($where, $prepare_where['exploded']);
+    $new_where = createUpdateDBString($where, $prepare_where['exploded'], ' AND ');
     $total = count($names['exploded']);
     for ($i = 0, $total_where = count($prepare_where['exploded']); $i < $total_where; $i++) {
         $new_total = $total + $i;
@@ -56,7 +56,11 @@ function createParameterNames($string_with_names) {
     $exploded_names = explode(', ', $string_with_names);
     $new_names = [];
     for ($i = 0, $total = count($exploded_names); $i < $total; $i++) {
-        $new_names[$i] = ':' . $exploded_names[$i];
+        $name = $exploded_names[$i];
+        if (strpos($name, '.') != false) {
+            $name = explode('.', $name)[1];
+        }
+        $new_names[$i] = ':' . $name;
     }
     $string_with_new_names['exploded'] = $new_names;
     $string_with_new_names['imploded'] = implode(', ', $new_names);
@@ -76,18 +80,22 @@ function appendPrefix($prefix, $needle, $explode = null, $implode_when_finish = 
     return $result;
 }
 
-function createUpdateDBString($string, $bind_names) {
+function createUpdateDBString($string, $bind_names, $concat = ', ') {
     $new_string = explode(', ', $string);
     for ($i = 0, $total = count($new_string); $i < $total; $i++) {
         $new_string[$i] = $new_string[$i] . ' = ' . $bind_names[$i];
     }
-    return implode(', ', $new_string);
+    return implode($concat, $new_string);
 }
 
 function createArrayParameters($names, $values) {
     $array = [];
     for ($i = 0, $total = count($values); $i < $total; $i++) {
-        $array[$names[$i]] = $values[$i];
+        $name = $names[$i];
+        if (strpos($name, '.') != false) {
+            $name = explode('.', $name)[1];
+        }
+        $array[$name] = $values[$i];
     }
     return $array;
 }
