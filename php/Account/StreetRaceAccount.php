@@ -35,10 +35,6 @@ class StreetRaceAccount {
         $result = selectDB($this->con, 'users', 'id, user, type, can_use_app', 'WHERE user = :user', [':user' => $user]);
         if ($result != null) {
             $result = $result[0];
-            if ($result['type'] !== 'STUDENT') {
-                unset($result);
-                $result = [];
-            }
         } else {
             $result['user'] = $user;
             $result['type'] = 'STUDENT';
