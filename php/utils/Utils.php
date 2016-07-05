@@ -56,11 +56,7 @@ function createParameterNames($string_with_names) {
     $exploded_names = explode(', ', $string_with_names);
     $new_names = [];
     for ($i = 0, $total = count($exploded_names); $i < $total; $i++) {
-        $name = $exploded_names[$i];
-        if (strpos($name, '.') != false) {
-            $name = explode('.', $name)[1];
-        }
-        $new_names[$i] = ':' . $name;
+        $new_names[$i] = ':' . $exploded_names[$i];
     }
     $string_with_new_names['exploded'] = $new_names;
     $string_with_new_names['imploded'] = implode(', ', $new_names);
@@ -91,11 +87,7 @@ function createUpdateDBString($string, $bind_names, $concat = ', ') {
 function createArrayParameters($names, $values) {
     $array = [];
     for ($i = 0, $total = count($values); $i < $total; $i++) {
-        $name = $names[$i];
-        if (strpos($name, '.') != false) {
-            $name = explode('.', $name)[1];
-        }
-        $array[$name] = $values[$i];
+        $array[$names[$i]] = $values[$i];
     }
     return $array;
 }
@@ -147,6 +139,16 @@ function urlExist($type_url, $url) {
         }
     }
     return $img;
+}
+
+function urlExists($url) {
+    clearstatcache();
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_NOBODY, true);
+    curl_exec($ch);
+    $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    return $code == 200;
 }
 
 function getBrowserInfo() {
