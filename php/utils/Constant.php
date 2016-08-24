@@ -68,8 +68,12 @@ const MESSAGE_NOT_ACTIVATED = 'NA';
 const MESSAGE_ERROR = 'ERR';
 const MESSAGE_ERROR_PASSWORD_INCORRECT = 'ERR_PI';
 
+const MESSAGE_MEMBER_WITHOUT_INSTITUTION = 'MWI';
+
 const TRIAL_ACCOUNT_TYPE_INSTITUTION = 'institution';
 const TRIAL_ACCOUNT_TYPE_USER = 'user';
+
+const TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER = 'institution_member';
 
 // Paths
 const PATH_CLICKER_QUESTIONS = '../images/questions';
