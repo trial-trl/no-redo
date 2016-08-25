@@ -46,6 +46,7 @@ const DATABASE_DIGITAL_BOOKLET = 'digital_booklet';
 // Table names
 const TABLE_USERS = 'users';
 const TABLE_INSTITUTIONS = 'institutions';
+const TABLE_GOVERNMENTS = 'governments';
 const TABLE_DIVISIONS = 'divisions';
 const TABLE_GUIDES = 'guides';
 const TABLE_FUNCTIONS = 'functions';
@@ -76,6 +77,9 @@ const TRIAL_ACCOUNT_TYPE_USER = 'user';
 
 // Added: 23/08/2016, ~21:11:14
 const TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER = 'institution_member';
+
+// Added: 25/08/2016, ~13:23:48
+const TRIAL_ACCOUNT_TYPE_GOVERNMENT = 'government';
 
 // Paths
 const PATH_CLICKER_QUESTIONS = '../images/questions';
@@ -124,6 +128,11 @@ const COOKIE_PERMISSION = 'TRL_TU_permission';
 const COOKIE_TI_ID_TRIAL = 'TRL_TI_idTRIAL';
 const COOKIE_TI_NAME = 'TRL_TI_name';
 const COOKIE_TI_EMAIL = 'TRL_TI_email';
+
+// Institution cookies
+const COOKIE_TG_ID_TRIAL = 'TRL_TG_idTRIAL';
+const COOKIE_TG_NAME = 'TRL_TG_name';
+const COOKIE_TG_EMAIL = 'TRL_TG_email';
 
 // Common cookie's
 const COOKIE_TYPE = 'TRL_type';
