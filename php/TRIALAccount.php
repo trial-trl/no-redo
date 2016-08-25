@@ -1,5 +1,4 @@
 <?php
-
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -17,10 +16,10 @@ class TRIALAccount {
     
     public function createTRIALAccount($name, $last_name, $birthday, $sex, $zip, $email, $pass) {
         $check = selectDB($this->con, TABLE_USERS, 'email', 'WHERE email = :email', [':email' => $email]);
-        if ($check != null) { 
+        if ($check != null) {
             $result['message'] = MESSAGE_EXIST;
         } else {
-            $result = insertDB($this->con, TABLE_USERS, 'name, last_name, birthday, sex, email, city, state, zip, password, how, permission, activated, ip, date_register, hour_register', [ucwords($name), ucwords($last_name), date_format(new DateTime($birthday), 'Y-m-d'), strtoupper($sex), $email, null, null, $zip, password_hash($pass, PASSWORD_DEFAULT), '', 'USER', 'no', getIP(), date('Y-m-d'), date('H:i:s')]);
+            $result = insertDB($this->con, TABLE_USERS, 'name, last_name, birthday, sex, email, city, state, zip, password, how, permission, activated, ip, date_register, hour_register', [ucwords($name), ucwords($last_name), date_format(new DateTime($birthday), 'Y-m-d'), strtoupper($sex), $email, null, null, $zip, password_hash($pass, PASSWORD_DEFAULT), '', 'USER', 0, getIP(), date('Y-m-d'), date('H:i:s')]);
             $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
         }
         return $result;
@@ -31,7 +30,18 @@ class TRIALAccount {
         if ($check != null) { 
             $result['message'] = MESSAGE_EXIST;
         } else {
-            $result = insertDB($this->con, TABLE_INSTITUTIONS, 'cnpj, name, infos, email, password, activated, register_date, register_time', [$cnpj, $name, $infos, $email, password_hash($password, PASSWORD_DEFAULT), 'no', date('Y-m-d'), date('H:i:s')]);
+            $result = insertDB($this->con, TABLE_INSTITUTIONS, 'cnpj, name, infos, email, password, activated, register_date, register_time', [$cnpj, $name, $infos, $email, password_hash($password, PASSWORD_DEFAULT), 0, date('Y-m-d'), date('H:i:s')]);
+            $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
+        }
+        return $result;
+    }
+    
+    public function createGovernmentalTRIALAccount($cnpj, $name, $infos, $email, $password) {
+        $check = selectDB($this->con, TABLE_GOVERNMENTALS, 'email', 'WHERE email = :email', [':email' => $email]);
+        if ($check != null) { 
+            $result['message'] = MESSAGE_EXIST;
+        } else {
+            $result = insertDB($this->con, TABLE_GOVERNMENTALS, 'name, email, password, activated, register_date_time', [$name, $email, password_hash($password, PASSWORD_DEFAULT), 0, date('Y-m-d H:i:s')]);
             $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
         }
         return $result;
@@ -107,6 +117,22 @@ class TRIALAccount {
         return $result;
     }
     
+    private function governmentAuth($email, $password, $permanent = 0) {
+        $account = selectDB($this->con, TABLE_GOVERNMENTS, 'id, name, email, password, activated', 'WHERE email = :email', [':email' => $email]);
+        if ($account != null) {
+            $account = $account[0];
+            if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
+	        $result = ['message' => $this->accountIsActivated($account['activated']) ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $account['id'], 'name' => $account['name'], 'permission' => isset($account['permission']) ? $account['permission'] : ''];
+	        $this->concludeAuthenticationWeb($result['message'], $account, TRIAL_ACCOUNT_TYPE_GOVERNMENT, $permanent);
+            } else {
+            	$result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+            }
+        } else {
+            $result['message'] = MESSAGE_NOT_EXIST;
+        }
+        return $result;
+    }
+    
     public function authenticateUser($email, $password, $type_account = TRIAL_ACCOUNT_TYPE_USER, $permanent = 0) {
         switch ($type_account) {
             case TRIAL_ACCOUNT_TYPE_USER:
@@ -118,18 +144,28 @@ class TRIALAccount {
             case TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER:
                 $result = $this->institutionMemberAuth($email, $password, $permanent);
                 break;
+            case TRIAL_ACCOUNT_TYPE_GOVERNMENT:
+                $result = $this->governmentAuth($email, $password, $permanent);
+                break;
         }
 	return $result;
     }
     
     private function concludeAuthenticationWeb($message, $account, $type, $permanent) {
         if ($message === MESSAGE_EXIST) {
-            if ($type === TRIAL_ACCOUNT_TYPE_USER) {
-                $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$account['id'], $account['name'], $account['email'], $account['permission'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
-            } else if ($type === TRIAL_ACCOUNT_TYPE_INSTITUTION) {
-                $this->makePermanentLogin([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['id'], $account['name'], $account['email'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
-            } else {
-                $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_PERMISSION, COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['member_id'], $account['member_name'], $account['member_permission'], $account['id'], $account['name'], $account['email'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
+            switch ($type) {
+                case TRIAL_ACCOUNT_TYPE_USER:
+                    $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$account['id'], $account['name'], $account['email'], $account['permission'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
+                    break;
+                case TRIAL_ACCOUNT_TYPE_INSTITUTION:
+                    $this->makePermanentLogin([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['id'], $account['name'], $account['email'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
+                    break;
+                case TRIAL_ACCOUNT_TYPE_GOVERNMENT:
+                    $this->makePermanentLogin([COOKIE_TG_ID_TRIAL, COOKIE_TG_NAME, COOKIE_TG_EMAIL, COOKIE_TYPE], [$account['id'], $account['name'], $account['email'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
+                    break;
+                case TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER:
+                    $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_PERMISSION, COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['member_id'], $account['member_name'], $account['member_permission'], $account['id'], $account['name'], $account['email'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
+                    break;
             }
         }
     }
