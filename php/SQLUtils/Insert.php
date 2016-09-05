@@ -44,7 +44,7 @@ class Insert extends Query implements InsertClauses {
     public function run() {
 	$prepared = $this->prepareToBind($this->columns);
 	$input_parameters = $this->prepareInputParameters($prepared, $this->values);
-        $this->conn->prepare('"INSERT INTO ' . $this->table . ' ' . ($this->columns != null ? '(' . $this->columns . ') ' : null) . 'VALUES(' . implode(', ', $prepared) . ')')->execute($input_parameters);
+        $this->conn->prepare('INSERT INTO ' . $this->table . ' ' . ($this->columns != null ? '(' . $this->columns . ') ' : null) . 'VALUES(' . implode(', ', $prepared) . ')')->execute($input_parameters);
         return ['id' => $this->conn->lastInsertId()];
     }
 

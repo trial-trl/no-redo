@@ -48,7 +48,7 @@ abstract class Query {
     /**
      * @param string $columns
      */
-    public function prepareToBind(string $columns) {
+    public function prepareToBind($columns) {
         $exploded_columns = explode(',', preg_replace('/\s+/', '', $columns));
         $prepared_columns = [];
         foreach ($exploded_columns as $i => $column) {
