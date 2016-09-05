@@ -111,6 +111,10 @@ class Select extends Query implements SelectClauses {
         $this->order_by = 'ORDER BY ' . implode(', ', $order_by);
         return $this;
     }
+    
+    public function prepare() {
+        $this->query("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->order_by $this->group_by");
+    }
 
     public function rightJoin($right_join) {
         $this->right_join = 'RIGHT JOIN ' . (gettype($right_join) === 'array' ? implode(' RIGHT JOIN ', $right_join) : $right_join);
@@ -119,7 +123,8 @@ class Select extends Query implements SelectClauses {
 
     public function run() {
         $response = [];
-        $shd = $this->conn->prepare("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->order_by $this->group_by");
+        $this->prepare();
+        $shd = $this->conn->prepare($this->query());
         $shd->execute($this->values);
         if ($shd->rowCount()) {
             if ($this->to_class != null) {
