@@ -10,7 +10,19 @@
  */
 abstract class Query {
     
+    private $query;
+    private $bind;
+    
     public $conn;
+    
+    /**
+     * 
+     * 
+     * @param PDO $conn
+     */
+    public function __construct(PDO $conn) {
+        $this->conn = $conn;
+    }
     
     /**
      * 
@@ -44,6 +56,24 @@ abstract class Query {
      * @param array $values
      */
     abstract public function values(array $values);
+    
+    abstract public function prepare();
+    
+    public function query($query = null) {
+        if ($query == null) {
+            return $this->query;
+        } else {
+            $this->query = $query;
+        }
+    }
+    
+    public function bind($bind = null) {
+        if ($bind == null) {
+            return $this->bind;
+        } else {
+            $this->bind = $bind;
+        }
+    }
     
     /**
      * @param string $columns
