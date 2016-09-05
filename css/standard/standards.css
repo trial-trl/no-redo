@@ -17,6 +17,19 @@ body {
     padding: 0;
 }
 
+trl-table {
+    display: table;
+}
+
+trl-trow {
+    display: table-row;
+    width: 100%;
+}
+
+trl-tcolumn {
+    display: table-cell;
+}
+
 nr-title-truncate, .title-truncate {
     float: left;
     white-space: nowrap;
