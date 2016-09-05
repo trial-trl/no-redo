@@ -42,6 +42,8 @@ const DATABASE_VIRTUAL_HERITAGE_CONTROL = 'virtual_heritage_control';
 const DATABASE_STREET_RACE = 'street_race';
 const DATABASE_STORE = 'store';
 const DATABASE_DIGITAL_BOOKLET = 'digital_booklet';
+// Added on: 04/09/2016, 17:20:54
+const DATABASE_FIX_IT = 'fix_it';
 
 // Table names
 const TABLE_USERS = 'users';

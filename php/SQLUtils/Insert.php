@@ -1,0 +1,61 @@
+<?php
+/**
+ * Description of Select
+ * 
+ * Created on 04/09/2016, ~22:09:29
+ * @author Matheus Leonardo dos Santos Martins
+ * @copyright (c) 2016, TRIAL
+ * 
+ * @package SQLUtils
+ */
+
+require_once 'Query.php';
+require_once 'InsertClauses.php';
+
+class Insert extends Query implements InsertClauses {
+    
+    /**
+     * Columns that'll be returned in this query.
+     * 
+     * @var string 
+     */
+    public $columns;
+    /**
+     * Main database table name that this query will run in.
+     * 
+     * @var string 
+     */
+    public $table;
+    /**
+     * Values.
+     * 
+     * @var string
+     */
+    public $values;
+    
+    public function columns($columns) {
+        if (gettype($columns) === 'array') {
+            $columns = implode(',', $columns);
+        }
+        $this->columns = $columns;
+        return $this;
+    }
+
+    public function run() {
+	$prepared = $this->prepareToBind($this->columns);
+	$input_parameters = $this->prepareInputParameters($prepared, $this->values);
+        $this->conn->prepare('"INSERT INTO ' . $this->table . ' ' . ($this->columns != null ? '(' . $this->columns . ') ' : null) . 'VALUES(' . implode(', ', $prepared) . ')')->execute($input_parameters);
+        return ['id' => $this->conn->lastInsertId()];
+    }
+
+    public function table($table) {
+        $this->table = $table;
+        return $this;
+    }
+    
+    public function values(array $values) {
+        $this->values = $values;
+        return $this;
+    }
+
+}
