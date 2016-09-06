@@ -47,7 +47,7 @@ class Institution implements JsonSerializable {
     }
     
     public function setInfos($infos) {
-        $this->infos = $infos;
+        $this->infos = new DecodeInstitutionInfos($infos);
         return $this;
     }
     
@@ -55,13 +55,37 @@ class Institution implements JsonSerializable {
         $this->activated = $activated;
         return $this;
     }
+    
+    public function getId() {
+        return $this->id;
+    }
+    
+    public function getCNPJ() {
+        return $this->cnpj;
+    }
+    
+    public function getName() {
+        return $this->name;
+    }
+    
+    public function getEmail() {
+        return $this->email;
+    }
+    
+    public function getInfos() {
+        return $this->infos;
+    }
+    
+    public function isActivated() {
+        return $this->activated;
+    }
 
     public function jsonSerialize() {
         return ['a' => $this->jsonSerialize()];
     }
 
 }
-
+ 
 class DecodeInstitutionInfos {
     
     private $infos;
