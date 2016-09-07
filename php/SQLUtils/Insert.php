@@ -44,12 +44,17 @@ class Insert extends Query implements InsertClauses {
     public function prepare() {
 	$prepared = $this->prepareToBind($this->columns);
 	$this->bind($this->prepareInputParameters($prepared, $this->values));
-        $this->query('INSERT INTO ' . $this->table . ' ' . ($this->columns != null ? '(' . $this->columns . ') ' : null) . 'VALUES(' . implode(', ', $prepared) . ')');
+        $this->statement = $this->conn->prepare('INSERT INTO ' . $this->table . ' ' . ($this->columns != null ? '(' . $this->columns . ') ' : null) . 'VALUES(' . implode(', ', $prepared) . ')');
     }
 
     public function run() {
-        $this->conn->prepare($this->query())->execute($this->bind());
-        return ['id' => $this->conn->lastInsertId()];
+        $this->statement->execute($this->bind());
+        if ($this->statement) {
+            return ['id' => $this->conn->lastInsertId()];
+        } else {
+            $error_info = $this->statement->errorInfo();
+            return ['error' => true, 'error_info' => ['SQLSTATE' => $error_info[0], 'code' => $error_info[1], 'message' => $error_info[2]]];
+        }
     }
 
     public function table($table) {
