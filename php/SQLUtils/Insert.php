@@ -48,13 +48,9 @@ class Insert extends Query implements InsertClauses {
     }
 
     public function run() {
-        $this->statement->execute($this->bind());
-        if ($this->statement) {
+        return new QueryResponse(&$this->statement, &$this->bind(), function () {
             return ['id' => $this->conn->lastInsertId()];
-        } else {
-            $error_info = $this->statement->errorInfo();
-            return ['error' => true, 'error_info' => ['SQLSTATE' => $error_info[0], 'code' => $error_info[1], 'message' => $error_info[2]]];
-        }
+        });
     }
 
     public function table($table) {
