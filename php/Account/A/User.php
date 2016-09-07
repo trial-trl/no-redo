@@ -8,10 +8,7 @@
  * 
  * @package SQLUtils
  */
-class User implements JsonSerializable {
-    
-    const MALE = 'M';
-    const FEMALE = 'F';
+class User {
     
     private $id;
     private $name;
@@ -30,6 +27,14 @@ class User implements JsonSerializable {
     private $password;
     private $activated;
     private $permission;
+    
+    public function __construct($search) {
+        if (gettype($search) === 'string') {
+            (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
+        } else if (gettype($search) === 'integer') {
+            (new Select($this->con))->table(TABLE_USERS)->columns('name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
+        }
+    }
     
     public function setId($id) {
         $this->id = $id;
@@ -68,7 +73,7 @@ class User implements JsonSerializable {
                 $this->sex = $sex;
                 return $this;
             default:
-                throw new InvalidArgumentException('Sex arg must be one of these values: User::MALE | User::FEMALE');
+                throw new InvalidArgumentException('Sex arg must be one of these values: Sex::MALE | Sex::FEMALE');
         }
     }
     
@@ -210,15 +215,14 @@ class User implements JsonSerializable {
     public function getPermission() {
         return $this->permission;
     }
+
+}
+
+class Sex {
     
-    public function save($con) {
-        return (new Insert($con))->table(TABLE_USERS)->columns('name, last_name, birthday, sex, email, zip, password, ip, register_date_time')->values([$this->getName(), $this->getLastName(), $this->getBirthday(), $this->getSex(), $this->getEmail(), $this->getPostalCode(), $this->getPassword(), '', date('Y-m-d H:i:s')])->run();
-    }
-
-    public function jsonSerialize() {
-        return ['a' => $this->jsonSerialize()];
-    }
-
+    const MALE = 'M';
+    const FEMALE = 'F';
+    
 }
 
 class SchoolingLevel {
