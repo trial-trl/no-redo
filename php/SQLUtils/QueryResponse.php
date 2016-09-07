@@ -10,21 +10,50 @@
  */
 class QueryResponse {
     
-    public function existRows() {
-        return null;
+    private $statement;
+    private $success;
+    private $query_error;
+    private $result;
+    
+    public function __construct($statement, $bind, $success = null) {
+        $this->statement = $statement;
+        $this->success = $this->statement->execute($bind);
+        if ($this->success()) {
+            if ($success) {
+                $this->setResult($success());
+            }
+        } else {
+            $this->setError(new QueryError($this->statement->errorInfo()));
+        }
     }
     
-    public function error() {
-        return true;
+    public function existRows() {
+        return $this->success() ? $this->statement->rowCount() > 0 : false;
+    }
+    
+    public function success() {
+        return $this->success;
+    }
+    
+    private function setResult($result) {
+        $this->result = $result;
+    }
+    
+    public function getResult() {
+        return $this->result;
+    }
+    
+    private function setError(QueryError $error) {
+        $this->query_error = $error;
     }
     
     public function getError() {
-        return new QueryError();
+        return $this->query_error;
     }
 
 }
 
-class QueryError {
+class QueryError implements JsonSerializable {
     
     private $code;
     private $sqlstate;
@@ -47,5 +76,9 @@ class QueryError {
     public function getMessage() {
         return $this->message;
     }
-    
+
+    public function jsonSerialize() {
+        return ['code' => $this->getCode(), 'sqlstate' => $this->getSQLState(), 'message' => $this->getMessage];
+    }
+
 }
