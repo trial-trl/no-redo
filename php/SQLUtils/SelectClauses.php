@@ -58,4 +58,14 @@ interface SelectClauses {
      */
     public function where($where);
     
+    /**
+     * 
+     * 
+     * @param int $mode
+     * @param mixed $object
+     * @param array $construct
+     * @return \Select
+     */
+    public function fetchMode($mode, $object = null, $construct = null);
+    
 }

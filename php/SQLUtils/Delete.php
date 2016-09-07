@@ -68,12 +68,12 @@ class Delete extends Query implements DeleteClauses {
     public function prepare() {
 	$prepared = $this->prepareToBind($this->columns);
 	$this->bind($this->prepareInputParameters($prepared, $this->values));
-        $this->query('DELETE' . ($this->option != null ? ' ' . $this->option : null) . ' FROM ' . $this->table . ($this->where != null ? ' ' . $this->where : null) . ($this->order_by != null ? ' ' . $this->order_by : null) . ($this->limit != null ? ' ' . $this->limit : null));
+        $this->statement = $this->conn->prepare('DELETE' . ($this->option != null ? ' ' . $this->option : null) . ' FROM ' . $this->table . ($this->where != null ? ' ' . $this->where : null) . ($this->order_by != null ? ' ' . $this->order_by : null) . ($this->limit != null ? ' ' . $this->limit : null));
     }
 
     public function run() {
         $this->prepare();
-        $this->conn->prepare($this->query())->execute($this->bind);
+        $this->statement->execute($this->bind);
         return ['id' => $this->conn->lastInsertId()];
     }
 

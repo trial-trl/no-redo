@@ -57,7 +57,7 @@ class User implements JsonSerializable {
     }
     
     public function setBirthday($birthday) {
-        $this->birthday = $birthday;
+        $this->birthday = date_format(new DateTime($birthday), 'Y-m-d');
         return $this;
     }
     
@@ -199,12 +199,20 @@ class User implements JsonSerializable {
         return $this->email;
     }
     
+    private function getPassword() {
+        return $this->password;
+    }
+    
     public function isActivated() {
-        return $this->activated;
+        return !$this->activated;
     }
     
     public function getPermission() {
         return $this->permission;
+    }
+    
+    public function save($con) {
+        return (new Insert($con))->table(TABLE_USERS)->columns('name, last_name, birthday, sex, email, zip, password, ip, register_date_time')->values([$this->getName(), $this->getLastName(), $this->getBirthday(), $this->getSex(), $this->getEmail(), $this->getPostalCode(), $this->getPassword(), '', date('Y-m-d H:i:s')])->run();
     }
 
     public function jsonSerialize() {

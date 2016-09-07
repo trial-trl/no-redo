@@ -27,6 +27,12 @@ class Select extends Query implements SelectClauses {
      */
     public $construct_args;
     /**
+     * Fetch args.
+     * 
+     * @var array 
+     */
+    public $fetch_mode;
+    /**
      * GROUP BY clause that'll be used in this query.
      * 
      * @var string 
@@ -92,6 +98,11 @@ class Select extends Query implements SelectClauses {
         return $this;
     }
 
+    public function fetchMode($mode, $object = null, $construct = null) {
+        $this->fetch_mode = ['mode' => $mode, 'object' => $object, 'construct' => $construct];
+        return $this;
+    }
+
     public function groupBy($group_by) {
         $this->group_by = 'GROUP BY ' . (gettype($group_by) === 'array' ? implode(', ', $group_by) : $group_by);
         return $this;
@@ -113,36 +124,44 @@ class Select extends Query implements SelectClauses {
     }
     
     public function prepare() {
-        $this->query("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->order_by $this->group_by");
+        $this->statement = $this->conn->prepare("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->order_by $this->group_by");
     }
 
     public function rightJoin($right_join) {
         $this->right_join = 'RIGHT JOIN ' . (gettype($right_join) === 'array' ? implode(' RIGHT JOIN ', $right_join) : $right_join);
         return $this;
     }
+    
+    private function setFetchMode() {
+        if ($this->fetch_mode['mode'] && $this->fetch_mode['object'] && $this->fetch_mode['construct']) {
+            $this->statement->setFetchMode($this->fetch_mode['mode'], $this->fetch_mode['object'], $this->fetch_mode['construct']);
+        } else if ($this->fetch_mode['mode'] && $this->fetch_mode['object']) {
+            $this->statement->setFetchMode($this->fetch_mode['mode'], $this->fetch_mode['object']);
+        } else if ($this->fetch_mode['mode']) {
+            $this->statement->setFetchMode($this->fetch_mode['mode']);
+        } else {
+            $this->statement->setFetchMode(PDO::FETCH_ASSOC);
+        }
+    }
 
     public function run() {
         $response = [];
         $this->prepare();
-        $shd = $this->conn->prepare($this->query());
-        $shd->execute($this->values);
-        if ($shd->rowCount()) {
-            if ($this->to_class != null) {
-                if ($this->construct_args != null) {
-                    $response = $shd->fetchAll(PDO::FETCH_CLASS | PDO::FETCH_PROPS_LATE, $this->to_class, $this->construct_args);
-                } else {
-                    $response = $shd->fetchAll(PDO::FETCH_CLASS, $this->to_class);
+        $this->setFetchMode();
+        if ($this->statement->execute($this->values)) {
+            $response = [];
+            $count_rows = $this->statement->rowCount();
+            if ($count_rows) {
+                $response = $this->statement->fetchAll();
+                if ($this->fetch_mode['mode'] == null) {
+                    $response['total'] = $count_rows;
                 }
-            } else {
-                $count = 0;
-                while ($r = $shd->fetch(PDO::FETCH_ASSOC)) {
-                    $response[$count] = $r;
-                    $count++;
-                }
-                $response['total'] = $shd->rowCount();
             }
+            return $response;
+        } else {
+            $error_info = $this->statement->errorInfo();
+            return ['error' => true, 'error_info' => ['SQLSTATE' => $error_info[0], 'code' => $error_info[1], 'message' => $error_info[2]]];
         }
-        return $response;
     }
 
     public function table($table) {
