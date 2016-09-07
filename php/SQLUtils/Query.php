@@ -10,10 +10,10 @@
  */
 abstract class Query {
     
-    private $query;
     private $bind;
     
     public $conn;
+    public $statement;
     
     /**
      * 
@@ -58,14 +58,6 @@ abstract class Query {
     abstract public function values(array $values);
     
     abstract public function prepare();
-    
-    public function query($query = null) {
-        if ($query == null) {
-            return $this->query;
-        } else {
-            $this->query = $query;
-        }
-    }
     
     public function bind($bind = null) {
         if ($bind == null) {
