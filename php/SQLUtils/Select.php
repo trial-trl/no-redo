@@ -19,73 +19,75 @@ class Select extends Query implements SelectClauses {
      * 
      * @var string 
      */
-    public $columns;
+    private $columns;
     /**
      * Defines the construct args of determined class when the query result will be fetched into him.
      * 
      * @var string
      */
-    public $construct_args;
+    private $construct_args;
     /**
      * Fetch args.
      * 
      * @var array 
      */
-    public $fetch_mode;
+    private $fetch_mode;
     /**
      * GROUP BY clause that'll be used in this query.
      * 
      * @var string 
      */
-    public $group_by;
+    private $group_by;
     /**
      * INNER JOIN clause that'll be used in this query.
      * 
      * @var string 
      */
-    public $inner_join;
+    private $inner_join;
     /**
      * LEFT JOIN clause that'll be used in this query.
      * 
      * @var string 
      */
-    public $left_join;
+    private $left_join;
     /**
      * ORDER BY clause that'll be used in this query.
      * 
      * @var string 
      */
-    public $order_by;
+    private $order_by;
     /**
      * RIGHT JOIN clause that'll be used in this query.
      * 
      * @var string 
      */
-    public $right_join;
+    private $right_join;
     /**
      * Main database table name that this query will run in.
      * 
      * @var string 
      */
-    public $table;
+    private $table;
     /**
      * Defines the name of class the query result will be fetched into.
      * 
      * @var string
      */
-    public $to_class;
+    private $to_class;
     /**
      * Values.
      * 
      * @var string
      */
-    public $values;
+    private $values;
     /**
      * WHERE clause that'll be used in this query.
      * 
      * @var string 
      */
-    public $where;
+    private $where;
+    
+    private $no_response = false; 
     
     public function columns($columns) {
         /*if (gettype($columns) === 'string') {
@@ -143,12 +145,16 @@ class Select extends Query implements SelectClauses {
             $this->statement->setFetchMode(PDO::FETCH_ASSOC);
         }
     }
+    
+    public function noResponse() {
+        $this->no_response = true;
+        return $this;
+    }
 
     public function run() {
-        $response = [];
         $this->prepare();
         $this->setFetchMode();
-        if ($this->statement->execute($this->values)) {
+        return new QueryResponse(&$this->statement, &$this->values, !$this->no_response ? function () {
             $response = [];
             $count_rows = $this->statement->rowCount();
             if ($count_rows) {
@@ -158,10 +164,7 @@ class Select extends Query implements SelectClauses {
                 }
             }
             return $response;
-        } else {
-            $error_info = $this->statement->errorInfo();
-            return ['error' => true, 'error_info' => ['SQLSTATE' => $error_info[0], 'code' => $error_info[1], 'message' => $error_info[2]]];
-        }
+        } : null);
     }
 
     public function table($table) {

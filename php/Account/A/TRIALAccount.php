@@ -24,8 +24,9 @@ class TRIALAccount {
     }
     
     public function createTRIALAccount($name, $last_name, $birthday, $sex, $zip, $email, $pass) {
-        $result = (new User())->setName(ucwords($name))->setLastName(ucwords($last_name))->setBirthday($birthday)->setSex($sex)->setPostalCode($zip)->setEmail($email)->setPassword(password_hash($pass, PASSWORD_DEFAULT))->save($this->con);
-        $result['message'] = isset($result['error']) ? MESSAGE_ERROR : MESSAGE_SAVED_WITH_SUCCESS;
+        $user = (new NewUser())->setName(ucwords($name))->setLastName(ucwords($last_name))->setBirthday($birthday)->setSex($sex)->setPostalCode($zip)->setEmail($email)->setPassword(password_hash($pass, PASSWORD_DEFAULT))->save($this->con);
+        $result = $user->success() ? $user->getResult()[0] : ['error' => $user->getError()];
+        $result['message'] = $user->success() ? MESSAGE_SAVED_WITH_SUCCESS : MESSAGE_ERROR;
         return $result;
     }
     
@@ -53,34 +54,42 @@ class TRIALAccount {
     
     public function authenticateUserById($id, $password) {
         $user = (new Select($this->con))->table(TABLE_USERS)->columns('name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $id])->fetchMode(PDO::FETCH_CLASS, 'User')->run();
-        if (!isset($user['error'])) {
-            $user = $user[0];
-            if ($user->checkPassword($password)) {
-	        $result = ['message' => $user->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
-	        $this->concludeAuthenticationWeb($result['message'], $user, TRIAL_ACCOUNT_TYPE_USER);
+        if ($user->success()) {
+            if ($user->existRows()) {
+                $user = $user->getResult()[0];
+                if ($user->checkPassword($password)) {
+                    $result = ['message' => $user->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
+                    $this->concludeAuthenticationWeb($result['message'], $user, TRIAL_ACCOUNT_TYPE_USER);
+                } else {
+                    $result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+                }
             } else {
-            	$result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+            	$result['message'] = MESSAGE_NOT_EXIST;
             }
         } else {
-            $result['message'] = MESSAGE_ERROR;
+            $result = ['error' => json_encode($user->getError()), 'message' => MESSAGE_ERROR];
         }
 	return $result;
     }
     
     private function userAuth($email, $password, $permanent = 0) {
-        $account = selectDB($this->con, TABLE_USERS, 'id, name, last_name, email, password, activated, permission', 'WHERE email = :email', [':email' => $email]);
-        if ($account != null) {
-            $account = $account[0];
-            if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
-	        $result = ['message' => $this->accountIsActivated($account['activated']) ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $account['id'], 'name' => $account['name'], 'last_name' => $account['last_name'], 'permission' => $account['permission']];
-	        $this->concludeAuthenticationWeb($result['message'], $account, TRIAL_ACCOUNT_TYPE_USER, $permanent);
+        $user = (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $email])->run();
+        if ($user->success()) {
+            if ($user->existRows()) {
+                $user = $user->getResult()[0];
+                if ($user->checkPassword($password)) {
+                    $result = ['message' => $user->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
+                    $this->concludeAuthenticationWeb($result['message'], $user, TRIAL_ACCOUNT_TYPE_USER);
+                } else {
+                    $result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+                }
             } else {
-            	$result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+            	$result['message'] = MESSAGE_NOT_EXIST;
             }
         } else {
-            $result['message'] = MESSAGE_NOT_EXIST;
+            $result = ['error' => json_encode($user->getError()), 'message' => MESSAGE_ERROR];
         }
-        return $result;
+	return $result;
     }
     
     private function institutionAuth($email, $password, $permanent = 0) {
