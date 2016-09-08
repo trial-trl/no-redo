@@ -11,6 +11,7 @@
 
 require_once 'Query.php';
 require_once 'InsertClauses.php';
+require_once 'QueryResponse.php';
 
 class Insert extends Query implements InsertClauses {
     
@@ -48,7 +49,8 @@ class Insert extends Query implements InsertClauses {
     }
 
     public function run() {
-        return new QueryResponse(&$this->statement, &$this->bind(), function () {
+        $this->prepare();
+        return new QueryResponse($this->statement, $this->bind(), function () {
             return ['id' => $this->conn->lastInsertId()];
         });
     }

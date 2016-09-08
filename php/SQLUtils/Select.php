@@ -11,6 +11,7 @@
 
 require_once 'Query.php';
 require_once 'SelectClauses.php';
+require_once 'QueryResponse.php';
 
 class Select extends Query implements SelectClauses {
     
@@ -154,7 +155,7 @@ class Select extends Query implements SelectClauses {
     public function run() {
         $this->prepare();
         $this->setFetchMode();
-        return new QueryResponse(&$this->statement, &$this->values, !$this->no_response ? function () {
+        return new QueryResponse($this->statement, $this->values, function () {
             $response = [];
             $count_rows = $this->statement->rowCount();
             if ($count_rows) {
@@ -164,7 +165,7 @@ class Select extends Query implements SelectClauses {
                 }
             }
             return $response;
-        } : null);
+        });
     }
 
     public function table($table) {

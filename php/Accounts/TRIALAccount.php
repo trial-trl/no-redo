@@ -1,26 +1,26 @@
 <?php
 /**
- * Description of Institution
+ * Description of TRIALAccount
  * 
- * Last edition: 25/08/2016, 14:29:40
+ * Last edition: 07/09/2016, 18:30:46
  *
- * Created on 06/09/2016, 19:20:18
+ * Created on 05/09/2016, ~20:18:19
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @package SQLUtils
+ * @package Accounts
  */
 
-require_once 'User.php';
-require_once 'Institution.php';
+require_once 'Profile/User.php';
+require_once 'Profile/Institution.php';
+require_once '/../SQLUtils/Select.php';
 
 class TRIALAccount {
     
     private $con;
     
     public function __construct() {
-        $instanceClass = new ConnectDB(DB_DATABASE, DB_USER, DB_PASSWORD, DB_PREFIX . DATABASE_USERS);
-        $this->con = $instanceClass->connect();
+        $this->con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->setDatabase(DB_DATABASE)->setUsername(DB_USER)->setPassword(DB_PASSWORD)->connect();
     }
     
     public function createTRIALAccount($name, $last_name, $birthday, $sex, $zip, $email, $pass) {
@@ -73,7 +73,7 @@ class TRIALAccount {
     }
     
     private function userAuth($email, $password, $permanent = 0) {
-        $user = (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $email])->run();
+        $user = (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $email])->fetchMode(PDO::FETCH_CLASS, 'User')->run();
         if ($user->success()) {
             if ($user->existRows()) {
                 $user = $user->getResult()[0];
@@ -265,7 +265,7 @@ class TRIALAccount {
     }
     
     public function getAllAccounts($user) {
-        $accounts = selectDB($this->con, DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial', 'clicker.id AS clicker_id, clicker.type AS clicker_type, clicker.register_date AS clicker_register_date, clicker.register_time AS clicker_register_time', 'LEFT JOIN ' . DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id WHERE trial.id = :user', [':user' => $user])[0];
+        $accounts = (new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('clicker.id AS clicker_id, clicker.type AS clicker_type, clicker.register_date AS clicker_register_date, clicker.register_time AS clicker_register_time')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $user])[0];
         $accounts['message'] = $accounts != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
         return $accounts;
     }
@@ -277,11 +277,11 @@ class TRIALAccount {
     }
     
     public function checkEmail($email) {
-        $email = (new Select($this->con))->table(TABLE_USERS)->columns('id')->where('email = :email')->values([':email' => $email])->run();
-        if ($email != null) {
-            $response['id'] = $exist[0]['id'];
+        $user = new User($this->con, $email);
+        if ($user->getId() != null) {
+            $response['id'] = $user->getId();
         }
-        $response['message'] = $exist != null ?  MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        $response['message'] = $user->getId() != null ?  MESSAGE_EXIST : MESSAGE_NOT_EXIST;
         return $response;
     }
     
@@ -299,13 +299,6 @@ class TRIALAccount {
         $result = $check != null ? $check[0] : $check;
         $result['message'] = $check != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
         return $result;
-    }
-    
-}
-
-class DecodeInstitutionInfos {
-    
-    public function __construct($infos) {
     }
     
 }

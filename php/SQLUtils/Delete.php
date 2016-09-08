@@ -11,6 +11,7 @@
 
 require_once 'Query.php';
 require_once 'DeleteClauses.php';
+require_once 'QueryResponse.php';
 
 class Delete extends Query implements DeleteClauses {
     
@@ -73,8 +74,9 @@ class Delete extends Query implements DeleteClauses {
 
     public function run() {
         $this->prepare();
-        $this->statement->execute($this->bind);
-        return ['id' => $this->conn->lastInsertId()];
+        return new QueryResponse($this->statement, $this->bind(), function () {
+            return true;
+        });
     }
 
     public function table($table) {
