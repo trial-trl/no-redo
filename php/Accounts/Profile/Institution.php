@@ -6,7 +6,7 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @package SQLUtils
+ * @package Profile
  */
 class Institution implements JsonSerializable {
     
@@ -47,7 +47,7 @@ class Institution implements JsonSerializable {
     }
     
     public function setInfos($infos) {
-        $this->infos = new DecodeInstitutionInfos($infos);
+        $this->infos = new DecodeInstitutionInfos(base64_decode($infos));
         return $this;
     }
     
@@ -93,7 +93,7 @@ class DecodeInstitutionInfos {
     private $main_activity;
     
     public function __construct($infos) {
-        $this->infos = json_decode($infos);
+        $this->infos = json_decode(utf8_encode($infos));
         $this->setMainActivity();
         $this->situation_date = $this->infos->{'data_situacao'};
         $this->type = $this->infos->{'tipo'};
@@ -103,7 +103,7 @@ class DecodeInstitutionInfos {
         $this->setSecondaryActivities();
         $this->situation = $this->infos->{'situacao'};
         $this->sublocality = $this->infos->{'situacao'};
-        $this->route = $this->infos->{'logadouro'};
+        $this->route = $this->infos->{'logradouro'};
         $this->street_number = $this->infos->{'numero'};
         $this->postal_code = $this->infos->{'cep'};
         $this->county = $this->infos->{'municipio'};
@@ -122,7 +122,7 @@ class DecodeInstitutionInfos {
     }
     
     private function setMainActivity() {
-        $activity = $this->infos->{'atividade_principal'}->{0};
+        $activity = $this->infos->{'atividade_principal'}[0];
         $this->main_activity = new InstitutionActivity($activity->{'code'}, $activity->{'text'});
     }
     
