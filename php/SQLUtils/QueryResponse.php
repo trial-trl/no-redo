@@ -15,7 +15,7 @@ class QueryResponse {
     private $query_error;
     private $result;
     
-    public function __construct($statement, $bind, $success = null) {
+    public function __construct(&$statement, &$bind, $success) {
         $this->statement = $statement;
         $this->success = $this->statement->execute($bind);
         if ($this->success()) {
