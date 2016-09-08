@@ -11,6 +11,7 @@
 
 require_once __DIR__ . '/Query.php';
 require_once __DIR__ . '/InsertClauses.php';
+require_once __DIR__ . '/QueryResponse.php';
 
 class Insert extends Query implements InsertClauses {
     
@@ -48,7 +49,8 @@ class Insert extends Query implements InsertClauses {
     }
 
     public function run() {
-        return new QueryResponse(&$this->statement, &$this->bind(), function () {
+        $this->prepare();
+        return new QueryResponse($this->statement, $this->bind(), function () {
             return ['id' => $this->conn->lastInsertId()];
         });
     }

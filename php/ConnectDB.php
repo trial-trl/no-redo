@@ -8,21 +8,39 @@
 
 class ConnectDB {
     
-    private $database;
-    private $username;
-    private $password;
+    private $database = 'mysql';
+    private $host = 'localhost';
+    private $username = 'root';
+    private $password = '';
     private $database_name;
     
-    public function __construct($database, $username, $password, $database_name) {
-        $this->database = $database;
-        $this->username = $username;
-        $this->password = $password;
+    public function __construct($database_name) {
         $this->database_name = $database_name;
+    }
+    
+    public function setDatabase($database) {
+        $this->database = $database;
+        return $this;
+    }
+    
+    public function setHost($host) {
+        $this->host = $host;
+        return $this;
+    }
+    
+    public function setUsername($username) {
+        $this->username = $username;
+        return $this;
+    }
+    
+    public function setPassword($password) {
+        $this->password = $password;
+        return $this;
     }
     
     public function connect() {
         try {
-            $con = new PDO("$this->database:host=localhost;dbname=$this->database_name", $this->username, $this->password);
+            $con = new PDO("$this->database:host=$this->host;dbname=$this->database_name", $this->username, $this->password);
             $con->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             return $con;
         } catch (PDOException $e) {

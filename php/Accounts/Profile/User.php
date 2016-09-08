@@ -6,33 +6,37 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @package SQLUtils
+ * @package Profile
  */
 class User {
     
-    private $id;
-    private $name;
-    private $last_name;
-    private $rg;
-    private $cpf;
-    private $birthday;
-    private $sex;
-    private $nationality;
-    private $location = [];
-    private $phone;
-    private $cell_phone;
-    private $schooling_level;
-    private $main_occupation;
-    private $email;
-    private $password;
-    private $activated;
-    private $permission;
+    public $id;
+    public $name;
+    public $last_name;
+    public $rg;
+    public $cpf;
+    public $birthday;
+    public $sex;
+    public $nationality;
+    public $location = [];
+    public $phone;
+    public $cell_phone;
+    public $schooling_level;
+    public $main_occupation;
+    public $email;
+    public $password;
+    public $activated;
+    public $permission;
     
-    public function __construct($search) {
-        if (gettype($search) === 'string') {
-            (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
-        } else if (gettype($search) === 'integer') {
-            (new Select($this->con))->table(TABLE_USERS)->columns('name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
+    public function __construct() {
+        $con = func_get_arg(0);
+        $search = func_get_arg(1);
+        if ($con && $search) {
+            if (gettype($search) === 'string') {
+                (new Select($con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
+            } else if (gettype($search) === 'integer') {
+                (new Select($con))->table(TABLE_USERS)->columns('name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
+            }
         }
     }
     
