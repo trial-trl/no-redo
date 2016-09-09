@@ -14,10 +14,11 @@ class Institution implements JsonSerializable {
     private $cnpj;
     private $name;
     private $email;
+    private $password;
     private $infos;
     private $activated;
     
-    public function __construct($id, $cnpj = null, $name = null, $email = null, $infos = null, $activated = null) {
+    public function __construct($id = null, $cnpj = null, $name = null, $email = null, $infos = null, $activated = null) {
         $this->setId($id);
         $this->setCNPJ($cnpj);
         $this->setName($name);
@@ -47,13 +48,17 @@ class Institution implements JsonSerializable {
     }
     
     public function setInfos($infos) {
-        $this->infos = new DecodeInstitutionInfos(base64_decode($infos));
+        $this->infos = $infos ? new DecodeInstitutionInfos(base64_decode($infos)) : null;
         return $this;
     }
     
     public function setActivated($activated) {
         $this->activated = $activated;
         return $this;
+    }
+    
+    public function checkPassword($password) {
+        return password_verify($password, $this->password) || $this->password === $password;
     }
     
     public function getId() {

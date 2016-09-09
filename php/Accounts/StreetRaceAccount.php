@@ -11,8 +11,7 @@ class StreetRaceAccount {
     private $con;
     
     public function __construct() {
-        $instanceClass = new ConnectDB(DB_DATABASE, DB_USER, DB_PASSWORD, DB_PREFIX . DATABASE_STREET_RACE);
-        $this->con = $instanceClass->connect();
+        $this->con = (new ConnectDB(DB_PREFIX . DATABASE_STREET_RACE))->connect();
     }
     
     public function authenticateUser($id_trial) {
