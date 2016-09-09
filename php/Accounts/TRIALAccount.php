@@ -20,7 +20,7 @@ class TRIALAccount {
     private $con;
     
     public function __construct() {
-        $this->con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->setDatabase(DB_DATABASE)->setUsername(DB_USER)->setPassword(DB_PASSWORD)->connect();
+        $this->con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
     }
     
     public function createTRIALAccount($name, $last_name, $birthday, $sex, $zip, $email, $pass) {
@@ -79,7 +79,7 @@ class TRIALAccount {
                 $user = $user->getResult()[0];
                 if ($user->checkPassword($password)) {
                     $result = ['message' => $user->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
-                    $this->concludeAuthenticationWeb($result['message'], $user, TRIAL_ACCOUNT_TYPE_USER);
+                    $this->concludeAuthenticationWeb($user, TRIAL_ACCOUNT_TYPE_USER, $permanent);
                 } else {
                     $result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
                 }
@@ -93,17 +93,21 @@ class TRIALAccount {
     }
     
     private function institutionAuth($email, $password, $permanent = 0) {
-        $account = selectDB($this->con, TABLE_INSTITUTIONS, 'id, name, email, password, activated', 'WHERE email = :email', [':email' => $email]);
-        if ($account != null) {
-            $account = $account[0];
-            if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
-	        $result = ['message' => $this->accountIsActivated($account['activated']) ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $account['id'], 'name' => $account['name'], 'permission' => isset($account['permission']) ? $account['permission'] : ''];
-	        $this->concludeAuthenticationWeb($result['message'], $account, TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER, $permanent);
-            } else {
-            	$result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+        $account = (new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where('email = :email')->values([':email' => $email])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run();
+        if ($account->success()) {
+            if ($account->existRows()) {
+                $account = $account->getResult()[0];
+                if ($account->checkPassword($password)) {
+                    $result = ['message' => $account->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName()];
+                    $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER, $permanent);
+                } else {
+                    $result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+                }
+            }  else {
+                $result['message'] = MESSAGE_NOT_EXIST;
             }
         } else {
-            $result['message'] = MESSAGE_NOT_EXIST;
+            $result = ['error' => json_encode($account->getError()), 'message' => MESSAGE_ERROR];
         }
         return $result;
     }
@@ -114,7 +118,7 @@ class TRIALAccount {
             $account = $account[0];
             if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
 	        $result = ['message' => $account['have_institution'] ? MESSAGE_EXIST : MESSAGE_MEMBER_WITHOUT_INSTITUTION, 'institutions' => ['have_institutions' => $account['have_institution']], 'member' => ['id' => $account['member_id'], 'name' => $account['member_name'], 'permission' => $account['member_permission']]];
-	        $this->concludeAuthenticationWeb($result['message'], $account, TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER, $permanent);
+	        $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER, $permanent);
                 if ($account['have_institution']) {
                     $result['institutions']['total_institutions'] = $account['total_institutions'];
                     $account = ['id' => explode(', ', $account['id']), 'name' => explode(', ', $account['name']), 'email' => explode(', ', $account['email'])];
@@ -137,7 +141,7 @@ class TRIALAccount {
             $account = $account[0];
             if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
 	        $result = ['message' => $this->accountIsActivated($account['activated']) ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $account['id'], 'name' => $account['name'], 'permission' => isset($account['permission']) ? $account['permission'] : ''];
-	        $this->concludeAuthenticationWeb($result['message'], $account, TRIAL_ACCOUNT_TYPE_GOVERNMENT, $permanent);
+	        $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_GOVERNMENT, $permanent);
             } else {
             	$result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
             }
@@ -168,7 +172,7 @@ class TRIALAccount {
     private function concludeAuthenticationWeb($account, $type, $permanent) {
         switch ($type) {
             case TRIAL_ACCOUNT_TYPE_USER:
-                $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), $account->getPermission(), $type], $permanent == 1 ? DURATION_INDEFINED : 0);
+                $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$account->getId(), $account->getName(), $account->getEmail(), $account->getPermission(), $type], $permanent == 1 ? DURATION_INDEFINED : 0);
                 break;
             case TRIAL_ACCOUNT_TYPE_INSTITUTION:
                 $this->makePermanentLogin([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), $type], $permanent == 1 ? DURATION_INDEFINED : 0);
