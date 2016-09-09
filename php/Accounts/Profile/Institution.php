@@ -18,13 +18,7 @@ class Institution implements JsonSerializable {
     private $infos;
     private $activated;
     
-    public function __construct($id = null, $cnpj = null, $name = null, $email = null, $infos = null, $activated = null) {
-        $this->setId($id);
-        $this->setCNPJ($cnpj);
-        $this->setName($name);
-        $this->setEmail($email);
-        $this->setInfos($infos);
-        $this->setActivated($activated);
+    public function __construct($id = null) {
     }
     
     public function setId($id) {
@@ -82,7 +76,7 @@ class Institution implements JsonSerializable {
     }
     
     public function isActivated() {
-        return $this->activated;
+        return !$this->activated;
     }
 
     public function jsonSerialize() {
