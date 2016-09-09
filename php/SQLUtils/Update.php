@@ -16,6 +16,18 @@ require_once 'QueryResponse.php';
 class Delete extends Query implements DeleteClauses {
     
     /**
+     * Columns that'll be returned in this query.
+     * 
+     * @var string 
+     */
+    private $columns;
+    /**
+     * GROUP BY clause that'll be used in this query.
+     * 
+     * @var string 
+     */
+    public $group_by;
+    /**
      * Limit rows.
      * 
      * @var string
@@ -27,12 +39,6 @@ class Delete extends Query implements DeleteClauses {
      * @var string
      */
     private $option;
-    /**
-     * GROUP BY clause that'll be used in this query.
-     * 
-     * @var string 
-     */
-    private $order_by;
     /**
      * Main database table name that this query will run in.
      * 
@@ -50,7 +56,15 @@ class Delete extends Query implements DeleteClauses {
      * 
      * @var string 
      */
-    private $where;
+    public $where;
+    
+    public function columns($columns) {
+        if (gettype($columns) === 'array') {
+            $columns = implode(',', $columns);
+        }
+        $this->columns = $columns;
+        return $this;
+    }
     
     public function prepare() {
 	$prepared = $this->prepareToBind($this->columns);
@@ -85,8 +99,8 @@ class Delete extends Query implements DeleteClauses {
         return $this;
     }
     
-    public function orderBy($order_by) {
-        $this->order_by = 'ORDER BY ' . $order_by;
+    public function groupBy($group_by) {
+        $this->group_by = 'GROUP BY ' . $group_by;
         return $this;
     }
     
