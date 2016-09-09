@@ -99,7 +99,7 @@ class TRIALAccount {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
                     $result = ['message' => $account->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName()];
-                    $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER, $permanent);
+                    $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION, $permanent);
                 } else {
                     $result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
                 }
