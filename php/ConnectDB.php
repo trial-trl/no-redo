@@ -1,17 +1,22 @@
 <?php
-
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Description of ConnectDB
+ *
+ * Created on 08/09/2016, 12:47:21
+ * @author Matheus Leonardo dos Santos Martins
+ * @copyright (c) 2016, TRIAL
+ * 
+ * @package TRIAL
  */
+
+require_once 'utils/Constant.php';
 
 class ConnectDB {
     
-    private $database = 'mysql';
+    private $database = DB_DATABASE;
     private $host = 'localhost';
-    private $username = 'root';
-    private $password = '';
+    private $username = DB_USER;
+    private $password = DB_PASSWORD;
     private $database_name;
     
     public function __construct($database_name) {
