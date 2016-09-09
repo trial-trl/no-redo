@@ -122,7 +122,7 @@ class Select extends Query implements SelectClauses {
     }
 
     public function orderBy($order_by) {
-        $this->order_by = 'ORDER BY ' . implode(', ', $order_by);
+        $this->order_by = 'ORDER BY ' . (gettype($order_by) === 'array' ? implode(', ', $order_by) : $order_by);
         return $this;
     }
     

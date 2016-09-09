@@ -2,6 +2,8 @@
 /**
  * Description of FixItAccount
  * 
+ * ConnectDB adapted to new version on 08/09/2016, ~20:47:28
+ * 
  * Created on 05/09/2016, ~16:11:40
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
@@ -17,8 +19,7 @@ class FixItAccount {
     private $con;
     
     public function __construct() {
-        $instanceClass = new ConnectDB(DB_DATABASE, DB_USER, DB_PASSWORD, DB_PREFIX . DATABASE_STREET_RACE);
-        $this->con = $instanceClass->connect();
+        $this->con = (new ConnectDB(DB_PREFIX . DATABASE_STREET_RACE))->connect();
     }
     
     public function authenticateUser($id_trial) {

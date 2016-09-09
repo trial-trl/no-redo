@@ -11,8 +11,8 @@
  * @package SQLUtils
  */
 
-require_once 'Account/TRIAL/User.php';
-require_once 'Account/TRIAL/Institution.php';
+require_once 'Accounts/Profile/User.php';
+require_once 'Accounts/Profile/Institution.php';
 
 require_once 'SQLUtils/Select.php';
 

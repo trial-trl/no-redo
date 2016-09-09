@@ -29,13 +29,15 @@ class User {
     public $permission;
     
     public function __construct() {
-        $con = func_get_arg(0);
-        $search = func_get_arg(1);
-        if ($con && $search) {
-            if (gettype($search) === 'string') {
-                (new Select($con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
-            } else if (gettype($search) === 'integer') {
-                (new Select($con))->table(TABLE_USERS)->columns('name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
+        if (func_num_args() >= 2) {
+            $con = func_get_arg(0);
+            $search = func_get_arg(1);
+            if ($con && $search) {
+                if (gettype($search) === 'string') {
+                    (new Select($con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
+                } else if (gettype($search) === 'integer') {
+                    (new Select($con))->table(TABLE_USERS)->columns('name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
+                }
             }
         }
     }
