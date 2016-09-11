@@ -41,7 +41,7 @@ abstract class Query {
      */
     abstract public function columns($columns);
     
-    abstract public function run();
+    abstract public function run() : QueryResponse;
     
     /**
      * 
@@ -70,7 +70,7 @@ abstract class Query {
     /**
      * @param string $columns
      */
-    public function prepareToBind($columns) {
+    public function prepareToBind($columns) : array {
         $exploded_columns = explode(',', preg_replace('/\s+/', '', $columns));
         $prepared_columns = [];
         foreach ($exploded_columns as $i => $column) {
@@ -84,7 +84,7 @@ abstract class Query {
      * @param array $values Values to be binded
      * @return array
      */
-    public function prepareInputParameters(array $prepared_columns, array $values) {
+    public function prepareInputParameters(array $prepared_columns, array $values) : array {
         $input_parameters = [];
         foreach ($values as $i => $value) {
             $input_parameters[$prepared_columns[$i]] = $value;

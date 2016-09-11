@@ -80,19 +80,20 @@ class Institution implements JsonSerializable {
     }
 
     public function jsonSerialize() {
-        return ['a' => $this->jsonSerialize()];
+        return ['id' => $this->id, 'cnpj' => $this->cnpj, 'name' => $this->name, 'email' => $this->email, 'infos' => $this->infos != null ? $this->infos->encoded : null, 'activated' => $this->activated];
     }
 
 }
  
 class DecodeInstitutionInfos {
     
+    public $encoded;
     private $infos;
     
     private $main_activity;
     
     public function __construct($infos) {
-        $this->infos = json_decode(utf8_encode($infos));
+        $this->encoded = $this->infos = json_decode(utf8_encode($infos));
         $this->setMainActivity();
         $this->situation_date = $this->infos->{'data_situacao'};
         $this->type = $this->infos->{'tipo'};
@@ -134,7 +135,7 @@ class DecodeInstitutionInfos {
     
 }
 
-class InstitutionActivity {
+class InstitutionActivity implements JsonSerializable {
     
     private $code;
     private $text;
@@ -150,6 +151,10 @@ class InstitutionActivity {
     
     public function getText() {
         return $this->text;
+    }
+    
+    public function jsonSerialize() {
+        return ['code' => $this->code, 'text' => $this->text];
     }
     
 }

@@ -52,6 +52,12 @@ class Select extends Query implements SelectClauses {
      */
     private $left_join;
     /**
+     * Limit rows.
+     * 
+     * @var string
+     */
+    private $limit;
+    /**
      * ORDER BY clause that'll be used in this query.
      * 
      * @var string 
@@ -120,6 +126,11 @@ class Select extends Query implements SelectClauses {
         $this->left_join = 'LEFT JOIN ' . (gettype($left_join) === 'array' ? implode(' LEFT JOIN ', $left_join) : $left_join);
         return $this;
     }
+    
+    public function limit($limit) {
+        $this->limit = 'LIMIT ' . $limit;
+        return $this;
+    }
 
     public function orderBy($order_by) {
         $this->order_by = 'ORDER BY ' . (gettype($order_by) === 'array' ? implode(', ', $order_by) : $order_by);
@@ -127,7 +138,7 @@ class Select extends Query implements SelectClauses {
     }
     
     public function prepare() {
-        $this->statement = $this->conn->prepare("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->order_by $this->group_by");
+        $this->statement = $this->conn->prepare("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->order_by $this->group_by $this->limit");
     }
 
     public function rightJoin($right_join) {
@@ -152,7 +163,7 @@ class Select extends Query implements SelectClauses {
         return $this;
     }
 
-    public function run() {
+    public function run() : QueryResponse {
         $this->prepare();
         $this->setFetchMode();
         return new QueryResponse($this->statement, $this->values, function () {
@@ -160,9 +171,7 @@ class Select extends Query implements SelectClauses {
             $count_rows = $this->statement->rowCount();
             if ($count_rows) {
                 $response = $this->statement->fetchAll();
-                if ($this->fetch_mode['mode'] == null) {
-                    $response['total'] = $count_rows;
-                }
+                $response['total'] = $count_rows;
             }
             return $response;
         });

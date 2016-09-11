@@ -1,8 +1,8 @@
 <?php
 /**
- * Description of Delete
+ * Description of Update
  * 
- * Created on 05/09/2016, ~18:23:18
+ * Created on 08/09/2016, 12:54:20
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
@@ -13,7 +13,7 @@ require_once __DIR__ . '/Query.php';
 require_once __DIR__ . '/DeleteClauses.php';
 require_once __DIR__ . '/QueryResponse.php';
 
-class Delete extends Query implements DeleteClauses {
+class Update extends Query {
     
     /**
      * Columns that'll be returned in this query.
@@ -72,7 +72,7 @@ class Delete extends Query implements DeleteClauses {
         $this->statement = $this->conn->prepare('DELETE' . ($this->option != null ? ' ' . $this->option : null) . ' FROM ' . $this->table . ($this->where != null ? ' ' . $this->where : null) . ($this->order_by != null ? ' ' . $this->order_by : null) . ($this->limit != null ? ' ' . $this->limit : null));
     }
 
-    public function run() {
+    public function run() : QueryResponse {
         $this->prepare();
         return new QueryResponse($this->statement, $this->bind(), function () {
             return true;
