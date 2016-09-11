@@ -48,7 +48,7 @@ class Insert extends Query implements InsertClauses {
         $this->statement = $this->conn->prepare('INSERT INTO ' . $this->table . ' ' . ($this->columns != null ? '(' . $this->columns . ') ' : null) . 'VALUES(' . implode(', ', $prepared) . ')');
     }
 
-    public function run() {
+    public function run() : QueryResponse {
         $this->prepare();
         return new QueryResponse($this->statement, $this->bind(), function () {
             return ['id' => $this->conn->lastInsertId()];
