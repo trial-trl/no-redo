@@ -13,9 +13,20 @@
 
 require_once 'Profile/User.php';
 require_once 'Profile/Institution.php';
-require_once '/../SQLUtils/Select.php';
 
 class TRIALAccount {
+    
+    // Added on 10/09/2016, 15:32:01
+    const USER = 'user';
+    
+    // Added on 10/09/2016, 15:31:26
+    const INSTITUTION = 'institution';
+    
+    // Added on 10/09/2016, 15:58:25
+    const INSTITUTION_MEMBER = 'institution_member';
+    
+    // Added on 10/09/2016, 15:32:26
+    const GOVERNMENT = 'government';
     
     private $con;
     
@@ -26,17 +37,17 @@ class TRIALAccount {
     public function createTRIALAccount($name, $last_name, $birthday, $sex, $zip, $email, $pass) {
         $user = (new NewUser())->setName(ucwords($name))->setLastName(ucwords($last_name))->setBirthday($birthday)->setSex($sex)->setPostalCode($zip)->setEmail($email)->setPassword(password_hash($pass, PASSWORD_DEFAULT))->save($this->con);
         $result = $user->success() ? $user->getResult()[0] : ['error' => $user->getError()];
-        $result['message'] = $user->success() ? MESSAGE_SAVED_WITH_SUCCESS : MESSAGE_ERROR;
+        $result['message'] = $user->success() ? Message::SAVED_WITH_SUCCESS : Message::ERROR;
         return $result;
     }
     
     public function createInstitutionalTRIALAccount($cnpj, $name, $infos, $email, $password) {
         $check = selectDB($this->con, TABLE_INSTITUTIONS, 'email, cnpj', 'WHERE cnpj = :cnpj AND email = :email', [':cnpj' => $cnpj, ':email' => $email]);
         if ($check != null) { 
-            $result['message'] = MESSAGE_EXIST;
+            $result['message'] = Message::EXIST;
         } else {
             $result = insertDB($this->con, TABLE_INSTITUTIONS, 'cnpj, name, infos, email, password, activated, register_date, register_time', [$cnpj, $name, $infos, $email, password_hash($password, PASSWORD_DEFAULT), 0, date('Y-m-d'), date('H:i:s')]);
-            $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
+            $result['message'] = Message::SAVED_WITH_SUCCESS;
         }
         return $result;
     }
@@ -44,10 +55,10 @@ class TRIALAccount {
     public function createGovernmentalTRIALAccount($cnpj, $name, $infos, $email, $password) {
         $check = selectDB($this->con, TABLE_GOVERNMENTALS, 'email', 'WHERE email = :email', [':email' => $email]);
         if ($check != null) { 
-            $result['message'] = MESSAGE_EXIST;
+            $result['message'] = Message::EXIST;
         } else {
             $result = insertDB($this->con, TABLE_GOVERNMENTALS, 'name, email, password, activated, register_date_time', [$name, $email, password_hash($password, PASSWORD_DEFAULT), 0, date('Y-m-d H:i:s')]);
-            $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
+            $result['message'] = Message::SAVED_WITH_SUCCESS;
         }
         return $result;
     }
@@ -58,16 +69,16 @@ class TRIALAccount {
             if ($user->existRows()) {
                 $user = $user->getResult()[0];
                 if ($user->checkPassword($password)) {
-                    $result = ['message' => $user->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
+                    $result = ['message' => $user->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
                     $this->concludeAuthenticationWeb($result['message'], $user, TRIAL_ACCOUNT_TYPE_USER);
                 } else {
-                    $result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+                    $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
             } else {
-            	$result['message'] = MESSAGE_NOT_EXIST;
+            	$result['message'] = Message::NOT_EXIST;
             }
         } else {
-            $result = ['error' => json_encode($user->getError()), 'message' => MESSAGE_ERROR];
+            $result = ['error' => json_encode($user->getError()), 'message' => Message::ERROR];
         }
 	return $result;
     }
@@ -78,16 +89,16 @@ class TRIALAccount {
             if ($user->existRows()) {
                 $user = $user->getResult()[0];
                 if ($user->checkPassword($password)) {
-                    $result = ['message' => $user->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
+                    $result = ['message' => $user->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
                     $this->concludeAuthenticationWeb($user, TRIAL_ACCOUNT_TYPE_USER, $permanent);
                 } else {
-                    $result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+                    $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
             } else {
-            	$result['message'] = MESSAGE_NOT_EXIST;
+            	$result['message'] = Message::NOT_EXIST;
             }
         } else {
-            $result = ['error' => json_encode($user->getError()), 'message' => MESSAGE_ERROR];
+            $result = ['error' => json_encode($user->getError()), 'message' => Message::ERROR];
         }
 	return $result;
     }
@@ -98,16 +109,16 @@ class TRIALAccount {
             if ($account->existRows()) {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName()];
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName()];
                     $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION, $permanent);
                 } else {
-                    $result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+                    $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
             }  else {
-                $result['message'] = MESSAGE_NOT_EXIST;
+                $result['message'] = Message::NOT_EXIST;
             }
         } else {
-            $result = ['error' => json_encode($account->getError()), 'message' => MESSAGE_ERROR];
+            $result = ['error' => json_encode($account->getError()), 'message' => Message::ERROR];
         }
         return $result;
     }
@@ -117,7 +128,7 @@ class TRIALAccount {
         if ($account != null) {
             $account = $account[0];
             if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
-	        $result = ['message' => $account['have_institution'] ? MESSAGE_EXIST : MESSAGE_MEMBER_WITHOUT_INSTITUTION, 'institutions' => ['have_institutions' => $account['have_institution']], 'member' => ['id' => $account['member_id'], 'name' => $account['member_name'], 'permission' => $account['member_permission']]];
+	        $result = ['message' => $account['have_institution'] ? Message::EXIST : Message::MEMBER_WITHOUT_INSTITUTION, 'institutions' => ['have_institutions' => $account['have_institution']], 'member' => ['id' => $account['member_id'], 'name' => $account['member_name'], 'permission' => $account['member_permission']]];
 	        $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER, $permanent);
                 if ($account['have_institution']) {
                     $result['institutions']['total_institutions'] = $account['total_institutions'];
@@ -127,10 +138,10 @@ class TRIALAccount {
                     }
                 }
             } else {
-            	$result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+            	$result['message'] = Message::ERROR_PASSWORD_INCORRECT;
             }
         } else {
-            $result['message'] = MESSAGE_NOT_EXIST;
+            $result['message'] = Message::NOT_EXIST;
         }
         return $result;
     }
@@ -140,13 +151,13 @@ class TRIALAccount {
         if ($account != null) {
             $account = $account[0];
             if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
-	        $result = ['message' => $this->accountIsActivated($account['activated']) ? MESSAGE_EXIST : MESSAGE_NOT_ACTIVATED, 'id' => $account['id'], 'name' => $account['name'], 'permission' => isset($account['permission']) ? $account['permission'] : ''];
+	        $result = ['message' => $this->accountIsActivated($account['activated']) ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account['id'], 'name' => $account['name'], 'permission' => isset($account['permission']) ? $account['permission'] : ''];
 	        $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_GOVERNMENT, $permanent);
             } else {
-            	$result['message'] = MESSAGE_ERROR_PASSWORD_INCORRECT;
+            	$result['message'] = Message::ERROR_PASSWORD_INCORRECT;
             }
         } else {
-            $result['message'] = MESSAGE_NOT_EXIST;
+            $result['message'] = Message::NOT_EXIST;
         }
         return $result;
     }
@@ -213,52 +224,52 @@ class TRIALAccount {
                 setcookie($key, null, time() - 3600, '/', $domain);
                 $result[$i++] = ['Key' => $key, 'Domain' => $domain, 'Status' => 'Deleted'];
             }
-            $result['message'] = MESSAGE_SAVED_WITH_SUCCESS;
+            $result['message'] = Message::SAVED_WITH_SUCCESS;
         }
         return $result;
     }
     
     public function getProfile($id) {
         $get = selectDB($this->con, TABLE_USERS, 'id, name, last_name, birthday, city, state, zip, email, permission', 'WHERE id = :id', [':id' => $id]);
-        $get['message'] = $get != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        $get['message'] = $get != null ? Message::EXIST : Message::NOT_EXIST;
         return $get;
     }
     
     public function getProfiles($ids) {
         $get = selectDB($this->con, TABLE_USERS, 'id, name, last_name, birthday, city, state, zip, email, permission', 'WHERE id IN (' . $ids . ')', null);
-        $get['message'] = $get != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        $get['message'] = $get != null ? Message::EXIST : Message::NOT_EXIST;
         return $get;
     }
     
     public function getProfilesByPermission($permission) {
         $get = selectDB($this->con, TABLE_USERS, 'id, name, last_name, email, permission', 'WHERE permission = :permission ORDER BY name ASC', [':permission' => $permission]);
-        $get['message'] = $get != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        $get['message'] = $get != null ? Message::EXIST : Message::NOT_EXIST;
         return $get;
     }
     
     public function changeProfileData($id, $name, $last_name, $email) {
         $update = updateDB($this->con, TABLE_USERS, 'name = :name, last_name = :last_name, email = :email', 'WHERE id = :id', [':name' => $name, ':last_name' => $last_name, ':email' => $email, ':id' => $id]);
-        return ['message' => $update ? MESSAGE_SAVED_WITH_SUCCESS : MESSAGE_ERROR, 'echo_message' => 'Informações de perfil atualizadas!'];
+        return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Informações de perfil atualizadas!'];
     }
     
     public function changeLocalizationData($id, $city, $state, $zip) {
         $update = updateDB($this->con, TABLE_USERS, 'city = :city, state = :state, zip = :zip', 'WHERE id = :id', [':city' => $city, ':state' => $state, ':zip' => $zip, ':id' => $id]);
-        return ['message' => $update ? MESSAGE_SAVED_WITH_SUCCESS : MESSAGE_ERROR, 'echo_message' => 'Informações de localização atualizadas!'];
+        return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Informações de localização atualizadas!'];
     }
     
     public function changePassword($id, $old_password, $new_password) {
         $update = updateDB($this->con, TABLE_USERS, 'password = :password', 'WHERE id = :id AND password = :old_password', [':password' => $new_password, ':id' => $id, ':old_password' => $old_password]);
-        return ['message' => $update ? MESSAGE_SAVED_WITH_SUCCESS : MESSAGE_ERROR, 'echo_message' => 'Senha alterada!'];
+        return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Senha alterada!'];
     }
     
     public function recoverChangePassword($user, $new_password) {
         $update = updateDB($this->con, TABLE_USERS, 'password', 'id', [password_hash($new_password, PASSWORD_DEFAULT), $user]);
-        return ['message' => $update ? MESSAGE_SAVED_WITH_SUCCESS : MESSAGE_ERROR];
+        return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR];
     }
     
     public function activateAccount($id_account) {
         $update = updateDB($this->con, DATABASE_USERS, 'activated = :activated', 'id = :id', [':activated' => 'yes', ':id' => $id_account]);
-        return ['message' => $update ? MESSAGE_SAVED_WITH_SUCCESS : MESSAGE_ERROR, 'echo_message' => 'Pronto. Conta ativada com sucesso!'];
+        return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Pronto. Conta ativada com sucesso!'];
     }
     
     public function accountIsActivated($column_activated) {
@@ -270,13 +281,13 @@ class TRIALAccount {
     
     public function getAllAccounts($user) {
         $accounts = (new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('clicker.id AS clicker_id, clicker.type AS clicker_type, clicker.register_date AS clicker_register_date, clicker.register_time AS clicker_register_time')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $user])[0];
-        $accounts['message'] = $accounts != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        $accounts['message'] = $accounts != null ? Message::EXIST : Message::NOT_EXIST;
         return $accounts;
     }
 
     public function getHowKnowRegisters() {
         $get = selectDB($this->con, 'how_know', 'id, how', null, null);
-        $get['message'] = $get != null ?  MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        $get['message'] = $get != null ?  Message::EXIST : Message::NOT_EXIST;
         return $get;
     }
     
@@ -285,14 +296,14 @@ class TRIALAccount {
         if ($user->getId() != null) {
             $response['id'] = $user->getId();
         }
-        $response['message'] = $user->getId() != null ?  MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        $response['message'] = $user->getId() != null ?  Message::EXIST : Message::NOT_EXIST;
         return $response;
     }
     
     public function createVerificationCode($user) {
         $raw_code = uniqid(rand(), true);
         $code = md5($raw_code);
-        return [insertDB($this->con, 'verification_codes', 'user, code, register_date, register_time', [$user, $code, date('Y-m-d'), date('H:i:s')]), 'message' => MESSAGE_SAVED_WITH_SUCCESS, 'code' => $raw_code];
+        return [insertDB($this->con, 'verification_codes', 'user, code, register_date, register_time', [$user, $code, date('Y-m-d'), date('H:i:s')]), 'message' => Message::SAVED_WITH_SUCCESS, 'code' => $raw_code];
     }
     
     public function checkVerificationCode($id, $code) {
@@ -301,7 +312,7 @@ class TRIALAccount {
             updateDB($this->con, 'verification_codes', 'verificated', 'id', [true, $id]);
         }
         $result = $check != null ? $check[0] : $check;
-        $result['message'] = $check != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
+        $result['message'] = $check != null ? Message::EXIST : Message::NOT_EXIST;
         return $result;
     }
     

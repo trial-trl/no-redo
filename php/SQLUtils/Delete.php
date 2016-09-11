@@ -2,7 +2,7 @@
 /**
  * Description of Delete
  * 
- * Created on 05/09/2016, ~18:23:18
+ * Created on 05/09/2016, 18:23:18
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
@@ -51,6 +51,10 @@ class Delete extends Query implements DeleteClauses {
      * @var string 
      */
     private $where;
+
+    public function columns($columns) {
+        return $this;
+    }
     
     public function prepare() {
 	$prepared = $this->prepareToBind($this->columns);
@@ -58,7 +62,7 @@ class Delete extends Query implements DeleteClauses {
         $this->statement = $this->conn->prepare('DELETE' . ($this->option != null ? ' ' . $this->option : null) . ' FROM ' . $this->table . ($this->where != null ? ' ' . $this->where : null) . ($this->order_by != null ? ' ' . $this->order_by : null) . ($this->limit != null ? ' ' . $this->limit : null));
     }
 
-    public function run() {
+    public function run() : QueryResponse {
         $this->prepare();
         return new QueryResponse($this->statement, $this->bind(), function () {
             return true;

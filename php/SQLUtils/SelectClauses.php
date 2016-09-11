@@ -37,6 +37,14 @@ interface SelectClauses {
     /**
      * 
      * 
+     * @param string $limit 
+     * @return \Select
+     */
+    public function limit($limit);
+    
+    /**
+     * 
+     * 
      * @param array|string $order_by 
      * @return \Select
      */
