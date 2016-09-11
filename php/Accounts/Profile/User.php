@@ -74,12 +74,13 @@ class User {
     
     public function setSex($sex) {
         switch ($sex) {
-            case self::MALE:
-            case self::FEMALE:
+            case Sex::MALE:
+            case Sex::FEMALE:
+            case Sex::UNDEFINED:
                 $this->sex = $sex;
                 return $this;
             default:
-                throw new InvalidArgumentException('Sex arg must be one of these values: Sex::MALE | Sex::FEMALE');
+                throw new InvalidArgumentException('Sex arg must be one of these values: Sex::MALE | Sex::FEMALE | Sex::UNDEFINED');
         }
     }
     
@@ -195,7 +196,7 @@ class User {
     }
     
     public function getCellphone() {
-        return $this->cellphone;
+        return $this->cell_phone;
     }
     
     public function getSchoolingLevel() {
@@ -228,6 +229,7 @@ class Sex {
     
     const MALE = 'M';
     const FEMALE = 'F';
+    const UNDEFINED = 'U';
     
 }
 
