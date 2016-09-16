@@ -8,7 +8,7 @@
  * 
  * @package Utils
  */
-class Error {
+class Errorr {
     
     private $code;
     private $message;

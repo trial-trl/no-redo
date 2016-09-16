@@ -9,14 +9,14 @@
  * @package SQLUtils
  */
 
-require_once '../utils/Error.php';
+require_once __DIR__ . '/../utils/Error.php';
 
 class QueryError extends Error implements JsonSerializable {
     
     private $sqlstate;
     
     public function __construct(array $error_info) {
-        parent::__construct($error_info[0], $error_info[2]);
+        parent::__construct($error_info[2], $error_info[0]);
         $this->sqlstate = $error_info[1];
     }
     
