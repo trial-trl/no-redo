@@ -14,7 +14,7 @@ class RequestResponse extends Response {
         parent::__construct($response !== false);
         if ($response === false) {
             if ($errno = curl_errno($ch)) {
-                $this->setError(new Error($errno, curl_strerror($errno)));
+                $this->setError(new Error(curl_strerror($errno), $errno));
             }
         } else {
             if ($response !== true) {
