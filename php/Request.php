@@ -26,7 +26,7 @@ class Request {
     
     public function data($data) : Request {
         $type_data = gettype($data);
-        if ($type_data === 'array' | 'string' | 'object') {
+        if ($type_data === 'array' || 'string' || 'object') {
             curl_setopt($this->curl, CURLOPT_POST, true);
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $type_data === 'string' ? $data : http_build_query($data));
             return $this;
@@ -36,6 +36,7 @@ class Request {
     }
     
     public function make() : RequestResponse {
+        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         return new RequestResponse(curl_exec($this->curl));
     }
     
