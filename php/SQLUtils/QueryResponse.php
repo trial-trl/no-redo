@@ -9,14 +9,17 @@
  * @package SQLUtils
  */
 
-require_once '../utils/Response.php';
+require_once __DIR__ . '/../utils/Response.php';
 require_once 'QueryError.php';
 
 class QueryResponse extends Response {
     
     private $statement;
     
-    public function __construct(&$statement, &$bind, $success) {
+    /* 15/09/2016, 20:56:10
+     * Removed pass-by-reference in $bind argument
+     */
+    public function __construct(&$statement, $bind, $success) {
         $this->statement = $statement;
         parent::__construct($this->statement->execute($bind));
         if ($this->success()) {
