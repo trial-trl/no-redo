@@ -138,7 +138,7 @@ class Select extends Query implements SelectClauses {
     }
     
     public function prepare() {
-        $this->statement = $this->conn->prepare("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->order_by $this->group_by $this->limit");
+        $this->statement = $this->conn->prepare("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->group_by $this->order_by $this->limit");
     }
 
     public function rightJoin($right_join) {
