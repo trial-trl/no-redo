@@ -69,12 +69,14 @@ abstract class Query {
     
     /**
      * @param string $columns
+     * 
+     * Added $keep_name_column on 20/09/2016, 20:53:58
      */
-    public function prepareToBind($columns) : array {
+    public function prepareToBind($columns, $keep_name_column = false) : array {
         $exploded_columns = explode(',', preg_replace('/\s+/', '', $columns));
         $prepared_columns = [];
         foreach ($exploded_columns as $i => $column) {
-            $prepared_columns[$i] = ':' . $column;
+            $prepared_columns[$i] = $keep_name_column ? $column . ' = :' . $column : ':' . $column;
         }
         return $prepared_columns;
     }
