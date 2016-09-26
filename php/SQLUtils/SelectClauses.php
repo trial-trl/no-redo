@@ -7,6 +7,8 @@
  * @copyright (c) 2016, TRIAL
  * 
  * @package SQLUtils
+ * 
+ * 25/09/2016, 00:52: added returnFoundRows()
  */
 interface SelectClauses {
     
@@ -49,6 +51,14 @@ interface SelectClauses {
      * @return \Select
      */
     public function orderBy($order_by);
+    
+    /**
+     * 
+     * 
+     * @param bool $return 
+     * @return \Select
+     */
+    public function returnFoundRows(bool $return);
     
     /**
      * 

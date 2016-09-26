@@ -7,6 +7,8 @@
  * @copyright (c) 2016, TRIAL
  * 
  * @package SQLUtils
+ * 
+ * 25/09/2016, >~ 00:52: implemented returnFoundRows() and adapted run() method to returnFoundRows() option.
  */
 
 require_once 'Query.php';
@@ -63,6 +65,12 @@ class Select extends Query implements SelectClauses {
      * @var string 
      */
     private $order_by;
+    /**
+     * Determine if the query will return the total founded rows.
+     * 
+     * @var bool 
+     */
+    private $return_found_rows;
     /**
      * RIGHT JOIN clause that'll be used in this query.
      * 
@@ -138,7 +146,12 @@ class Select extends Query implements SelectClauses {
     }
     
     public function prepare() {
-        $this->statement = $this->conn->prepare("SELECT $this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->group_by $this->order_by $this->limit");
+        $this->statement = $this->conn->prepare("SELECT " . ($this->return_found_rows ? "SQL_CALC_FOUND_ROWS " : null) . "$this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->group_by $this->order_by $this->limit");
+    }
+    
+    public function returnFoundRows(bool $return) {
+        $this->return_found_rows = $return;
+        return $this;
     }
 
     public function rightJoin($right_join) {
@@ -171,6 +184,10 @@ class Select extends Query implements SelectClauses {
             $count_rows = $this->statement->rowCount();
             if ($count_rows) {
                 $response = $this->statement->fetchAll();
+                if ($this->return_found_rows) {
+                    $get_found_rows = (new SQLExec($this->conn))->run("SELECT FOUND_ROWS()");
+                    $response['found_rows'] = $get_found_rows->success() && $get_found_rows->existRows() ? (int) $get_found_rows->getResult()[0]['FOUND_ROWS()'] : 0;
+                }
                 $response['total'] = $count_rows;
             }
             return $response;

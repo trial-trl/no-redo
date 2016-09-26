@@ -7,6 +7,8 @@
  * @copyright (c) 2016, TRIAL
  * 
  * @package SQLUtils
+ * 
+ * 26/09/2016, 00:00:00: columns() removed
  */
 
 require_once 'Query.php';
@@ -51,20 +53,18 @@ class Delete extends Query implements DeleteClauses {
      * @var string 
      */
     private $where;
-
+    
     public function columns($columns) {
         return $this;
     }
-    
+
     public function prepare() {
-	$prepared = $this->prepareToBind($this->columns);
-	$this->bind($this->prepareInputParameters($prepared, $this->values));
         $this->statement = $this->conn->prepare('DELETE' . ($this->option != null ? ' ' . $this->option : null) . ' FROM ' . $this->table . ($this->where != null ? ' ' . $this->where : null) . ($this->order_by != null ? ' ' . $this->order_by : null) . ($this->limit != null ? ' ' . $this->limit : null));
     }
 
     public function run() : QueryResponse {
         $this->prepare();
-        return new QueryResponse($this->statement, $this->bind(), function () {
+        return new QueryResponse($this->statement, $this->values, function () {
             return true;
         });
     }
