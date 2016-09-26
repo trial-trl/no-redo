@@ -53,6 +53,14 @@ interface SelectClauses {
     /**
      * 
      * 
+     * @param bool $return 
+     * @return \Select
+     */
+    public function returnFoundRows(bool $return);
+    
+    /**
+     * 
+     * 
      * @param array|string $right_join 
      * @return \Select
      */
