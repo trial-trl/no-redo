@@ -8,31 +8,12 @@
  * 
  * @package SQLUtils
  */
-abstract class Query {
+
+require_once 'CommonQuery.php';
+
+abstract class Query extends CommonQuery {
     
     private $bind;
-    
-    public $conn;
-    public $statement;
-    
-    /**
-     * 
-     * 
-     * @param PDO $conn
-     */
-    public function __construct(PDO $conn) {
-        $this->conn = $conn;
-    }
-    
-    /**
-     * 
-     * 
-     * @param PDO $conn
-     */
-    public function conn(PDO $conn) {
-        $this->conn = $conn;
-        return $this;
-    }
     
     /**
      * 
@@ -40,6 +21,8 @@ abstract class Query {
      * @param array|string $columns
      */
     abstract public function columns($columns);
+    
+    abstract public function prepare();
     
     abstract public function run() : QueryResponse;
     
@@ -56,8 +39,6 @@ abstract class Query {
      * @param array $values
      */
     abstract public function values(array $values);
-    
-    abstract public function prepare();
     
     public function bind($bind = null) {
         if ($bind == null) {
