@@ -13,6 +13,9 @@ include_once 'SQLUtils/Delete.php';
 include_once 'SQLUtils/Insert.php';
 include_once 'SQLUtils/Select.php';
 include_once 'SQLUtils/Update.php';
+
+include_once 'SQLUtils/SQLExec.php';
+
 include_once 'utils/Constant.php';
 include_once 'utils/Message.php';
 include_once 'utils/Utils.php';
