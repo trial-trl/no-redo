@@ -12,6 +12,7 @@
  */
 
 require_once 'Profile/User.php';
+require_once 'Profile/NewUser.php';
 require_once 'Profile/Institution.php';
 
 class TRIALAccount {
@@ -35,8 +36,8 @@ class TRIALAccount {
     }
     
     public function createTRIALAccount($name, $last_name, $birthday, $sex, $zip, $email, $pass) {
-        $user = (new NewUser())->setName(ucwords($name))->setLastName(ucwords($last_name))->setBirthday($birthday)->setSex($sex)->setPostalCode($zip)->setEmail($email)->setPassword(password_hash($pass, PASSWORD_DEFAULT))->save($this->con);
-        $result = $user->success() ? $user->getResult()[0] : ['error' => $user->getError()];
+        $user = (new NewUser($this->con))->setName(ucwords($name))->setLastName(ucwords($last_name))->setBirthday($birthday)->setSex($sex)->setPostalCode($zip)->setEmail($email)->setPassword(password_hash($pass, PASSWORD_DEFAULT))->save($this->con);
+        $result = $user->success() ? $user->getResult() : ['error' => $user->getError()];
         $result['message'] = $user->success() ? Message::SAVED_WITH_SUCCESS : Message::ERROR;
         return $result;
     }

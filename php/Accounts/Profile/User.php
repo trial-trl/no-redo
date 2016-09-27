@@ -211,7 +211,7 @@ class User {
         return $this->email;
     }
     
-    private function getPassword() {
+    public function getPassword() {
         return $this->password;
     }
     
