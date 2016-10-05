@@ -277,9 +277,12 @@ class TRIALAccount {
     }
     
     public function getAllAccounts($user) {
-        $accounts = (new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('clicker.id AS clicker_id, clicker.type AS clicker_type, clicker.register_date AS clicker_register_date, clicker.register_time AS clicker_register_time')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $user])[0];
-        $accounts['message'] = $accounts != null ? Message::EXIST : Message::NOT_EXIST;
-        return $accounts;
+        $accounts = (new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('clicker.id AS clicker_id, clicker.type AS clicker_type, clicker.register_date AS clicker_register_date, clicker.register_time AS clicker_register_time')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $user])->run();
+        if ($accounts->success()) {
+            $accounts = $accounts->getResult()[0];
+            $accounts['message'] = $accounts != null ? Message::EXIST : Message::NOT_EXIST;
+            return $accounts;
+        }
     }
 
     public function getHowKnowRegisters() {
