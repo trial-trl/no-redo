@@ -13,31 +13,20 @@ require_once 'RequestResponse.php';
 
 class Request {
     
-    private $curl;
-    
-    public function __construct() {
-        $this->curl = curl_init();
-    }
-    
-    public function url($url) : Request {
-        curl_setopt($this->curl, CURLOPT_URL, $url);
-        return $this;
-    }
-    
-    public function data($data) : Request {
-        $type_data = gettype($data);
-        if ($type_data === 'array' || 'string' || 'object') {
-            curl_setopt($this->curl, CURLOPT_POST, true);
-            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $type_data === 'string' ? $data : http_build_query($data));
-            return $this;
-        } else {
-            throw new InvalidArgumentException('$data argument isn\'t some of the expected types! The accepted ones are: string, array, or object value');
+    public static function make($url, $data = null) {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $url);
+        if ($data != null) {
+            $type_data = gettype($data);
+            if ($type_data === 'array' || $type_data === 'string' || $type_data === 'object') {
+                curl_setopt($ch, CURLOPT_POST, true);
+                curl_setopt($ch, CURLOPT_POSTFIELDS, $type_data === 'string' ? $data : http_build_query($data));
+            } else {
+                throw new InvalidArgumentException('$data argument isn\'t some of the expected types! The accepted ones are: string, array, or object value');
+            }
         }
-    }
-    
-    public function make() : RequestResponse {
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
-        return new RequestResponse(curl_exec($this->curl));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        return new RequestResponse($ch);
     }
     
 }

@@ -8,6 +8,9 @@
  * 
  * @package Profile
  */
+
+require_once __DIR__ . '/../../Request.php';
+
 class Institution implements JsonSerializable {
     
     private $id;
@@ -77,6 +80,12 @@ class Institution implements JsonSerializable {
     
     public function isActivated() {
         return !$this->activated;
+    }
+    
+    public function getPhotoUrl() {
+        $url = 'http://www.trialent.com/images/institution/profile/' . $this->id . '/' . $this->id . '.jpg';
+        $response = Request::make($url);
+        return  $response->success() && $response->getResult()['http_code'] === 200 ? $url : '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
     }
 
     public function jsonSerialize() {
