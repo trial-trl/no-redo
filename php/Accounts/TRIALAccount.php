@@ -84,13 +84,14 @@ class TRIALAccount {
 	return $result;
     }
     
+    // 18/10/2016, 01:35:11 => added returns of photo_url in userAuth()
     private function userAuth($email, $password, $permanent = 0) {
         $user = (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $email])->fetchMode(PDO::FETCH_CLASS, 'User')->run();
         if ($user->success()) {
             if ($user->existRows()) {
                 $user = $user->getResult()[0];
                 if ($user->checkPassword($password)) {
-                    $result = ['message' => $user->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
+                    $result = ['message' => $user->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'photo_url' => $user->getPhotoUrl(), 'permission' => $user->getPermission()];
                     $this->concludeAuthenticationWeb($user, TRIAL_ACCOUNT_TYPE_USER, $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
@@ -104,13 +105,14 @@ class TRIALAccount {
 	return $result;
     }
     
+    // 18/10/2016, 01:36:08 => added returns of photo_url in institutionAuth()
     private function institutionAuth($email, $password, $permanent = 0) {
         $account = (new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where('email = :email')->values([':email' => $email])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run();
         if ($account->success()) {
             if ($account->existRows()) {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName()];
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName(), 'photo_url' => $account->getPhotoUrl()];
                     $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION, $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;

@@ -8,6 +8,9 @@
  * 
  * @package Profile
  */
+
+require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/Request.php';
+
 class User {
     
     public $id;
@@ -221,6 +224,13 @@ class User {
     
     public function getPermission() {
         return $this->permission;
+    }
+    
+    // 18/10/2016, 01:13:45 - 01:32:40 => added getPhotoUrl()
+    public function getPhotoUrl() {
+        $url = 'http://www.trialent.com/images/user/profile/' . $this->id . '/' . $this->id . '.jpg';
+        $response = Request::make($url);
+        return  $response->success() && $response->getResult()['http_code'] === 200 ? $url : '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
     }
 
 }

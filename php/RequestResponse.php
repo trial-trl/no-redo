@@ -8,18 +8,23 @@
  * 
  * @package TRIAL
  */
+
+// 18/10/2016, 01:22:53 => now construct takes a cURL argument, and in addiction to response returns now techinical infos about the request
 class RequestResponse extends Response {
     
-    public function __construct($response) {
+    public function __construct($ch) {
+        $response = curl_exec($ch);
         parent::__construct($response !== false);
         if ($response === false) {
-            if ($errno = curl_errno($ch)) {
+            $errno = curl_errno($ch);
+            if ($errno) {
                 $this->setError(new Error(curl_strerror($errno), $errno));
             }
         } else {
-            if ($response !== true) {
-                $this->setResult($response);
-            }
+            $this->setResult([
+                'response' => $response,
+                'http_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE)
+            ]);
         }
     }
     
