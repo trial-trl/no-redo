@@ -8,18 +8,22 @@
  * 
  * @package TRIAL
  */
+
 class RequestResponse extends Response {
     
-    public function __construct($response) {
+    public function __construct($ch) {
+        $response = curl_exec($ch);
         parent::__construct($response !== false);
         if ($response === false) {
-            if ($errno = curl_errno($ch)) {
+            $errno = curl_errno($ch);
+            if ($errno) {
                 $this->setError(new Error(curl_strerror($errno), $errno));
             }
         } else {
-            if ($response !== true) {
-                $this->setResult($response);
-            }
+            $this->setResult([
+                'response' => $response,
+                'http_code' => curl_getinfo($ch, CURLINFO_HTTP_CODE)
+            ]);
         }
     }
     
