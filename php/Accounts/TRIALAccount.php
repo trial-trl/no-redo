@@ -31,8 +31,41 @@ class TRIALAccount {
     
     private $con;
     
-    public function __construct() {
+    /* 18/10/2016
+     *      01:35:11 => added return of photo_url in userAuth()
+     *      01:36:08 => added return of photo_url in institutionAuth()
+     * 
+     * 19/10/2016:
+     *      16:58:07
+     *          __construct: now have account argument that takes a Account instance of type User or Institution to manage it;
+     *          added $account variable 
+     *      19:25:25
+     *          getAllAccounts() now uses private $account instead of $user argument
+     * 
+     * 20/10/2016:
+     *      00:22:11 => getAllAccounts() clicker_ columns transformed to JSON
+     *      01:46:33 - 02:06:25
+     *          authenticateUser():
+     *              arguments now have defined types;
+     *              argument $email changed to $login, allowing the authentication by id or email;
+     *              userAuth(), institutionAuth(), institutionMemberAuth(), and governmentAuth() now references his arguments and they assign to private $account their authentication results.
+     *          renamed:
+     *              makePermanentLogin() => createCookies()
+     *      11:34:58 => removed getProfile()
+     * 
+     * 
+     */
+    
+    private $account;
+    
+    public function __construct($account = null) {
         $this->con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
+        if ($account != null) {
+            $this->account = $account;
+            if (!($account instanceof User) && !($account instanceof Institution)) {
+                throw new InvalidArgumentException("account argument isn't a instance of User or Institution class");
+            }
+        }
     }
     
     public function createTRIALAccount($name, $last_name, $birthday, $sex, $zip, $email, $pass) {
@@ -64,14 +97,15 @@ class TRIALAccount {
         return $result;
     }
     
-    public function authenticateUserById($id, $password) {
-        $user = (new Select($this->con))->table(TABLE_USERS)->columns('name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $id])->fetchMode(PDO::FETCH_CLASS, 'User')->run();
+    private function userAuth(&$login, string &$password, int &$permanent) {
+        $id_login = gettype($login) === 'integer';
+        $user = (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'User')->run();
         if ($user->success()) {
             if ($user->existRows()) {
-                $user = $user->getResult()[0];
-                if ($user->checkPassword($password)) {
-                    $result = ['message' => $user->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'permission' => $user->getPermission()];
-                    $this->concludeAuthenticationWeb($result['message'], $user, TRIAL_ACCOUNT_TYPE_USER);
+                $this->account = $user->getResult()[0];
+                if ($this->account->checkPassword($password)) {
+                    $result = ['message' => $this->account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $this->account->getId(), 'name' => $this->account->getName(), 'last_name' => $this->account->getLastName(), 'photo_url' => $this->account->getPhotoUrl(), 'permission' => $this->account->getPermission()];
+                    $this->concludeAuthenticationWeb($permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -84,36 +118,15 @@ class TRIALAccount {
 	return $result;
     }
     
-    // 18/10/2016, 01:35:11 => added returns of photo_url in userAuth()
-    private function userAuth($email, $password, $permanent = 0) {
-        $user = (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $email])->fetchMode(PDO::FETCH_CLASS, 'User')->run();
-        if ($user->success()) {
-            if ($user->existRows()) {
-                $user = $user->getResult()[0];
-                if ($user->checkPassword($password)) {
-                    $result = ['message' => $user->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $user->getId(), 'name' => $user->getName(), 'last_name' => $user->getLastName(), 'photo_url' => $user->getPhotoUrl(), 'permission' => $user->getPermission()];
-                    $this->concludeAuthenticationWeb($user, TRIAL_ACCOUNT_TYPE_USER, $permanent);
-                } else {
-                    $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
-                }
-            } else {
-            	$result['message'] = Message::NOT_EXIST;
-            }
-        } else {
-            $result = ['error' => json_encode($user->getError()), 'message' => Message::ERROR];
-        }
-	return $result;
-    }
-    
-    // 18/10/2016, 01:36:08 => added returns of photo_url in institutionAuth()
-    private function institutionAuth($email, $password, $permanent = 0) {
-        $account = (new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where('email = :email')->values([':email' => $email])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run();
+    private function institutionAuth(&$login, string &$password, int &$permanent) {
+        $id_login = gettype($login) === 'integer';
+        $account = (new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run();
         if ($account->success()) {
             if ($account->existRows()) {
-                $account = $account->getResult()[0];
-                if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName(), 'photo_url' => $account->getPhotoUrl()];
-                    $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION, $permanent);
+                $this->account = $account->getResult()[0];
+                if ($this->account->checkPassword($password)) {
+                    $result = ['message' => $this->account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $this->account->getId(), 'name' => $this->account->getName(), 'photo_url' => $this->account->getPhotoUrl()];
+                    $this->concludeAuthenticationWeb($permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -126,13 +139,13 @@ class TRIALAccount {
         return $result;
     }
     
-    private function institutionMemberAuth($email, $password, $permanent = 0) {
-        $account = selectDB($this->con, 'users AS u', 'u.id AS member_id, u.name AS member_name, u.password, u.permission AS member_permission, IF(COUNT(i.id) > 0, true, false) AS have_institution, COUNT(i.id) AS total_institutions, GROUP_CONCAT(i.id SEPARATOR \', \') AS id, GROUP_CONCAT(i.name SEPARATOR \', \') AS name, GROUP_CONCAT(i.email SEPARATOR \', \') AS email, GROUP_CONCAT(i.activated SEPARATOR \', \') AS activated', 'LEFT JOIN institutions_members AS im ON im.user = u.id LEFT JOIN institutions AS i ON i.id = im.institution WHERE u.email = :email', [':email' => $email]);
+    private function institutionMemberAuth(&$login, string &$password, int &$permanent) {
+        $account = selectDB($this->con, 'users AS u', 'u.id AS member_id, u.name AS member_name, u.password, u.permission AS member_permission, IF(COUNT(i.id) > 0, true, false) AS have_institution, COUNT(i.id) AS total_institutions, GROUP_CONCAT(i.id SEPARATOR \', \') AS id, GROUP_CONCAT(i.name SEPARATOR \', \') AS name, GROUP_CONCAT(i.email SEPARATOR \', \') AS email, GROUP_CONCAT(i.activated SEPARATOR \', \') AS activated', 'LEFT JOIN institutions_members AS im ON im.user = u.id LEFT JOIN institutions AS i ON i.id = im.institution WHERE u.email = :email', [':email' => $login]);
         if ($account != null) {
             $account = $account[0];
             if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
 	        $result = ['message' => $account['have_institution'] ? Message::EXIST : Message::MEMBER_WITHOUT_INSTITUTION, 'institutions' => ['have_institutions' => $account['have_institution']], 'member' => ['id' => $account['member_id'], 'name' => $account['member_name'], 'permission' => $account['member_permission']]];
-	        $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER, $permanent);
+	        $this->concludeAuthenticationWeb($permanent);
                 if ($account['have_institution']) {
                     $result['institutions']['total_institutions'] = $account['total_institutions'];
                     $account = ['id' => explode(', ', $account['id']), 'name' => explode(', ', $account['name']), 'email' => explode(', ', $account['email'])];
@@ -149,61 +162,61 @@ class TRIALAccount {
         return $result;
     }
     
-    private function governmentAuth($email, $password, $permanent = 0) {
-        $account = selectDB($this->con, TABLE_GOVERNMENTS, 'id, name, email, password, activated', 'WHERE email = :email', [':email' => $email]);
-        if ($account != null) {
-            $account = $account[0];
-            if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
-	        $result = ['message' => $this->accountIsActivated($account['activated']) ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account['id'], 'name' => $account['name'], 'permission' => isset($account['permission']) ? $account['permission'] : ''];
-	        $this->concludeAuthenticationWeb($account, TRIAL_ACCOUNT_TYPE_GOVERNMENT, $permanent);
-            } else {
-            	$result['message'] = Message::ERROR_PASSWORD_INCORRECT;
+    private function governmentAuth(&$login, string &$password, int &$permanent) {
+        $id_login = gettype($login) === 'integer';
+        $account = (new Select($this->con))->table(TABLE_GOVERNMENTS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run();
+        if ($account->success()) {
+            if ($account->existRows()) {
+                $this->account = $account->getResult()[0];
+                if ($this->account->checkPassword($password)) {
+                    $result = ['message' => $this->account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $this->account->getId(), 'name' => $this->account->getName(), 'permission' => $this->account->getPermission()];
+                    $this->concludeAuthenticationWeb($permanent);
+                } else {
+                    $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
+                }
+            }  else {
+                $result['message'] = Message::NOT_EXIST;
             }
         } else {
-            $result['message'] = Message::NOT_EXIST;
+            $result = ['error' => json_encode($account->getError()), 'message' => Message::ERROR];
         }
         return $result;
     }
     
-    public function authenticateUser($email, $password, $type_account = TRIAL_ACCOUNT_TYPE_USER, $permanent = 0) {
+    public function authenticateUser($login, string $password, $type_account = self::USER, int $permanent = 0) {
         switch ($type_account) {
-            case TRIAL_ACCOUNT_TYPE_USER:
-                $result = $this->userAuth($email, $password, $permanent);
+            case TRIALAccount::USER:
+                $result = $this->userAuth($login, $password, $permanent);
                 break;
-            case TRIAL_ACCOUNT_TYPE_INSTITUTION:
-                $result = $this->institutionAuth($email, $password, $permanent);
+            case TRIALAccount::INSTITUTION:
+                $result = $this->institutionAuth($login, $password, $permanent);
                 break;
-            case TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER:
-                $result = $this->institutionMemberAuth($email, $password, $permanent);
+            case TRIALAccount::INSTITUTION_MEMBER:
+                $result = $this->institutionMemberAuth($login, $password, $permanent);
                 break;
-            case TRIAL_ACCOUNT_TYPE_GOVERNMENT:
-                $result = $this->governmentAuth($email, $password, $permanent);
+            case TRIALAccount::GOVERNMENT:
+                $result = $this->governmentAuth($login, $password, $permanent);
                 break;
         }
 	return $result;
     }
     
-    private function concludeAuthenticationWeb($account, $type, $permanent) {
-        switch ($type) {
-            case TRIAL_ACCOUNT_TYPE_USER:
-                $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$account->getId(), $account->getName(), $account->getEmail(), $account->getPermission(), $type], $permanent == 1 ? DURATION_INDEFINED : 0);
-                break;
-            case TRIAL_ACCOUNT_TYPE_INSTITUTION:
-                $this->makePermanentLogin([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), $type], $permanent == 1 ? DURATION_INDEFINED : 0);
-                break;
-            case TRIAL_ACCOUNT_TYPE_GOVERNMENT:
-                $this->makePermanentLogin([COOKIE_TG_ID_TRIAL, COOKIE_TG_NAME, COOKIE_TG_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), $type], $permanent == 1 ? DURATION_INDEFINED : 0);
-                break;
-            case TRIAL_ACCOUNT_TYPE_INSTITUTION_MEMBER:
-                $this->makePermanentLogin([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_PERMISSION, COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['member_id'], $account['member_name'], $account['member_permission'], $account['id'], $account['name'], $account['email'], $type], $permanent == 1 ? DURATION_INDEFINED : 0);
-                break;
+    private function concludeAuthenticationWeb(int &$permanent) {
+        if ($this->account instanceof User) {
+            $this->createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$this->account->getId(), $this->account->getName(), $this->account->getEmail(), $this->account->getPermission(), self::USER], $permanent);
+        } else if ($this->account instanceof Institution) {
+            $this->createCookies([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$this->account->getId('id'), $this->account->getName(), $this->account->getEmail(), self::INSTITUTION], $permanent);
+        } else if ($this->account instanceof NewUser) {
+            $this->createCookies([COOKIE_TG_ID_TRIAL, COOKIE_TG_NAME, COOKIE_TG_EMAIL, COOKIE_TYPE], [$this->account->getId('id'), $this->account->getName(), $this->account->getEmail(), self::GOVERNMENT], $permanent);
+        } else if ($this->account instanceof NewUser) {
+            $this->createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_PERMISSION, COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['member_id'], $account['member_name'], $account['member_permission'], $account['id'], $account['name'], $account['email'], self::INSTITUTION_MEMBER], $permanent);
         }
     }
     
-    private function makePermanentLogin($name_cookies, $value_cookies, $duration) {
+    private function createCookies(array $name_cookies, array $value_cookies, int &$permanent) {
         foreach ($name_cookies as $i => $cookie) {
             $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
-            setcookie($cookie, $value_cookies[$i], $duration != DURATION_INDEFINED ? $duration : strtotime('+30 days'), '/', $domain);
+            setcookie($cookie, $value_cookies[$i], $permanent != 1 ? 0 : strtotime('+30 days'), '/', $domain);
         }
     }
     
@@ -230,12 +243,6 @@ class TRIALAccount {
             $result['message'] = Message::SAVED_WITH_SUCCESS;
         }
         return $result;
-    }
-    
-    public function getProfile($id) {
-        $get = selectDB($this->con, TABLE_USERS, 'id, name, last_name, birthday, city, state, zip, email, permission', 'WHERE id = :id', [':id' => $id]);
-        $get['message'] = $get != null ? Message::EXIST : Message::NOT_EXIST;
-        return $get;
     }
     
     public function getProfiles($ids) {
@@ -282,11 +289,15 @@ class TRIALAccount {
         return false;
     }
     
-    public function getAllAccounts($user) {
-        $accounts = (new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('clicker.id AS clicker_id, clicker.type AS clicker_type, clicker.register_date AS clicker_register_date, clicker.register_time AS clicker_register_time')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $user])->run();
+    public function getAllAccounts() {
+        $accounts = (new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('CONCAT(\'{"id": \', clicker.id, \', "type": "\', clicker.type, \'", "register_date_time": "\', clicker.register_date, \' \', clicker.register_time, \'"}\') AS clicker')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $this->account->getId()])->run();
         if ($accounts->success()) {
-            $accounts = $accounts->getResult()[0];
-            $accounts['message'] = $accounts != null ? Message::EXIST : Message::NOT_EXIST;
+            if ($accounts->existRows()) {
+                $accounts = $accounts->getResult()[0];
+                $accounts['message'] = Message::EXIST;
+            } else {
+                $accounts = ['message' => Message::NOT_EXIST];
+            }
             return $accounts;
         }
     }
