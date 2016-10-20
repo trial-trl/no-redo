@@ -9,38 +9,50 @@
  * @package Profile
  */
 
+// 18/10/2016, 22:38:18 => setted all vars to private, $con argument is created with no necessity of pass argument
+
+/* 19/10/2016, 19:29:15 - 19:52:57
+ * construct: added $search, removed func__args() use, reorganized and rewritten parts of the code
+ * array location: fixed errors about null values inside.
+ * 
+ */
+
 require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/Request.php';
 
 class User {
     
-    public $id;
-    public $name;
-    public $last_name;
-    public $rg;
-    public $cpf;
-    public $birthday;
-    public $sex;
-    public $nationality;
-    public $location = [];
-    public $phone;
-    public $cell_phone;
-    public $schooling_level;
-    public $main_occupation;
-    public $email;
-    public $password;
-    public $activated;
-    public $permission;
+    private $id;
+    private $name;
+    private $last_name;
+    private $rg;
+    private $cpf;
+    private $birthday;
+    private $sex;
+    private $nationality;
+    private $location = [];
+    private $phone;
+    private $cell_phone;
+    private $schooling_level;
+    private $main_occupation;
+    private $email;
+    private $password;
+    private $activated;
+    private $permission;
     
-    public function __construct() {
-        if (func_num_args() >= 2) {
-            $con = func_get_arg(0);
-            $search = func_get_arg(1);
-            if ($con && $search) {
-                if (gettype($search) === 'string') {
-                    (new Select($con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
-                } else if (gettype($search) === 'integer') {
-                    (new Select($con))->table(TABLE_USERS)->columns('name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->noResponse()->fetchMode(PDO::FETCH_INTO, $this)->run();
-                }
+    public function __construct($search = null) {
+        $con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
+        if ($search != null) {
+            switch (gettype($search)) {
+                case 'string':
+                    $data = (new Select($con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->run();
+                    break;
+                case 'integer':
+                    $data = (new Select($con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->run();
+                    break;
+            }
+            $data = $data->success() && $data->existRows() ? $data->getResult()[0] : [];
+            foreach ($data as $key => $value) {
+                $this->{$key} = $value;
             }
         }
     }
@@ -183,15 +195,15 @@ class User {
     }
     
     public function getCity() {
-        return $this->location['county'];
+        return isset($this->location['county']) ? $this->location['county'] : null;
     }
     
     public function getState() {
-        return $this->location['state'];
+        return isset($this->location['state']) ? $this->location['state'] : null;
     }
     
     public function getPostalCode() {
-        return $this->location['postal_code'];
+        return isset($this->location['postal_code']) ? $this->location['postal_code'] : null;
     }
     
     public function getPhone() {
