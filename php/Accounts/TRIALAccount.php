@@ -12,7 +12,6 @@
  */
 
 require_once __DIR__ . '/Profile/User.php';
-require_once __DIR__ . '/Profile/NewUser.php';
 require_once __DIR__ . '/Profile/Institution.php';
 
 class TRIALAccount {
@@ -39,39 +38,40 @@ class TRIALAccount {
         }
     }
     
-    public function createTRIALAccount($name, $last_name, $birthday, $sex, $zip, $email, $pass) {
-        $user = (new NewUser($this->con))->setName(ucwords($name))->setLastName(ucwords($last_name))->setBirthday($birthday)->setSex($sex)->setPostalCode($zip)->setEmail($email)->setPassword(password_hash($pass, PASSWORD_DEFAULT))->save($this->con);
-        $result = $user->success() ? $user->getResult() : ['error' => $user->getError()];
-        $result['message'] = $user->success() ? Message::SAVED_WITH_SUCCESS : Message::ERROR;
-        return $result;
-    }
-    
-    public function createInstitutionalTRIALAccount($cnpj, $name, $infos, $email, $password) {
-        $check = selectDB($this->con, TABLE_INSTITUTIONS, 'email, cnpj', 'WHERE cnpj = :cnpj AND email = :email', [':cnpj' => $cnpj, ':email' => $email]);
-        if ($check != null) { 
-            $result['message'] = Message::EXIST;
+    private function buildResponse($query, $callback) : array {
+        $query_response = $query instanceof QueryResponse ? $query : $query->run();
+        if ($query_response->success()) {
+            return $callback($query_response);
         } else {
-            $result = insertDB($this->con, TABLE_INSTITUTIONS, 'cnpj, name, infos, email, password, activated, register_date, register_time', [$cnpj, $name, $infos, $email, password_hash($password, PASSWORD_DEFAULT), 0, date('Y-m-d'), date('H:i:s')]);
-            $result['message'] = Message::SAVED_WITH_SUCCESS;
+            return ['error' => $query_response->getError(), 'message' => Message::ERROR];
         }
-        return $result;
     }
     
-    public function createGovernmentalTRIALAccount($cnpj, $name, $infos, $email, $password) {
-        $check = selectDB($this->con, TABLE_GOVERNMENTALS, 'email', 'WHERE email = :email', [':email' => $email]);
-        if ($check != null) { 
-            $result['message'] = Message::EXIST;
+    public function createTRIALAccount($account) : array {
+        $is_user = $account instanceof User;
+        $is_institution = $account instanceof Institution;
+        $is_government = $account instanceof TRIALAccount;
+        if (!$is_user && !$is_institution && !$is_government) {
+            throw new InvalidArgumentException("Account isn't a instance of User or Institution class");
         } else {
-            $result = insertDB($this->con, TABLE_GOVERNMENTALS, 'name, email, password, activated, register_date_time', [$name, $email, password_hash($password, PASSWORD_DEFAULT), 0, date('Y-m-d H:i:s')]);
-            $result['message'] = Message::SAVED_WITH_SUCCESS;
+            if ($is_user) {
+                $query = (new Insert($this->con))->table(TABLE_USERS)->columns('first_name, last_name, birthday, sex, email, zip, password, ip, register_date_time')->values([$account->getName(), $account->getLastName(), $account->getBirthday(), $account->getSex(), $account->getEmail(), $account->getPostalCode(), $account->getPassword(), null, date('Y-m-d H:i:s')]);
+            } else if ($is_institution) {
+                $query = (new Insert($this->con))->table(TABLE_INSTITUTIONS)->columns('cnpj, name, infos, email, password, register_date_time')->values([$account->getCNPJ(), $account->getName(), $account->getInfos(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
+            } else if ($is_government) {
+                $query = (new Insert($this->con))->table(TABLE_GOVERNMENTALS)->columns('name, email, password, register_date_time')->values([$account->getName(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
+            }
+            return $this->buildResponse($query->run(), function ($query) {
+                $result = $query->getResult();
+                $result['message'] = Message::SAVED_WITH_SUCCESS;
+                return $result;
+            });
         }
-        return $result;
     }
     
-    private function userAuth(&$login, string &$password, int &$permanent) {
+    private function userAuth(&$login, string &$password, int &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        $user = (new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'User')->run();
-        if ($user->success()) {
+        return $this->buildResponse((new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'User')->run(), function ($user) {
             if ($user->existRows()) {
                 $this->account = $user->getResult()[0];
                 if ($this->account->checkPassword($password)) {
@@ -83,16 +83,13 @@ class TRIALAccount {
             } else {
             	$result['message'] = Message::NOT_EXIST;
             }
-        } else {
-            $result = ['error' => json_encode($user->getError()), 'message' => Message::ERROR];
-        }
-	return $result;
+            return $result;
+        });
     }
     
-    private function institutionAuth(&$login, string &$password, int &$permanent) {
+    private function institutionAuth(&$login, string &$password, int &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        $account = (new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run();
-        if ($account->success()) {
+        return $this->buildResponse((new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) {
             if ($account->existRows()) {
                 $this->account = $account->getResult()[0];
                 if ($this->account->checkPassword($password)) {
@@ -104,13 +101,11 @@ class TRIALAccount {
             }  else {
                 $result['message'] = Message::NOT_EXIST;
             }
-        } else {
-            $result = ['error' => json_encode($account->getError()), 'message' => Message::ERROR];
-        }
-        return $result;
+            return $result;
+        });
     }
     
-    private function institutionMemberAuth(&$login, string &$password, int &$permanent) {
+    private function institutionMemberAuth(&$login, string &$password, int &$permanent) : array {
         $account = selectDB($this->con, 'users AS u', 'u.id AS member_id, u.name AS member_name, u.password, u.permission AS member_permission, IF(COUNT(i.id) > 0, true, false) AS have_institution, COUNT(i.id) AS total_institutions, GROUP_CONCAT(i.id SEPARATOR \', \') AS id, GROUP_CONCAT(i.name SEPARATOR \', \') AS name, GROUP_CONCAT(i.email SEPARATOR \', \') AS email, GROUP_CONCAT(i.activated SEPARATOR \', \') AS activated', 'LEFT JOIN institutions_members AS im ON im.user = u.id LEFT JOIN institutions AS i ON i.id = im.institution WHERE u.email = :email', [':email' => $login]);
         if ($account != null) {
             $account = $account[0];
@@ -133,10 +128,9 @@ class TRIALAccount {
         return $result;
     }
     
-    private function governmentAuth(&$login, string &$password, int &$permanent) {
+    private function governmentAuth(&$login, string &$password, int &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        $account = (new Select($this->con))->table(TABLE_GOVERNMENTS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run();
-        if ($account->success()) {
+        return $this->buildResponse((new Select($this->con))->table(TABLE_GOVERNMENTS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) {
             if ($account->existRows()) {
                 $this->account = $account->getResult()[0];
                 if ($this->account->checkPassword($password)) {
@@ -148,24 +142,22 @@ class TRIALAccount {
             }  else {
                 $result['message'] = Message::NOT_EXIST;
             }
-        } else {
-            $result = ['error' => json_encode($account->getError()), 'message' => Message::ERROR];
-        }
-        return $result;
+            return $result;
+        });
     }
     
-    public function authenticateUser($login, string $password, $type_account = self::USER, int $permanent = 0) {
+    public function authenticateUser($login, string $password, $type_account = self::USER, int $permanent = 0) : array {
         switch ($type_account) {
-            case TRIALAccount::USER:
+            case self::USER:
                 $result = $this->userAuth($login, $password, $permanent);
                 break;
-            case TRIALAccount::INSTITUTION:
+            case self::INSTITUTION:
                 $result = $this->institutionAuth($login, $password, $permanent);
                 break;
-            case TRIALAccount::INSTITUTION_MEMBER:
+            case self::INSTITUTION_MEMBER:
                 $result = $this->institutionMemberAuth($login, $password, $permanent);
                 break;
-            case TRIALAccount::GOVERNMENT:
+            case self::GOVERNMENT:
                 $result = $this->governmentAuth($login, $password, $permanent);
                 break;
         }
@@ -177,9 +169,9 @@ class TRIALAccount {
             $this->createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$this->account->getId(), $this->account->getName(), $this->account->getEmail(), $this->account->getPermission(), self::USER], $permanent);
         } else if ($this->account instanceof Institution) {
             $this->createCookies([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$this->account->getId('id'), $this->account->getName(), $this->account->getEmail(), self::INSTITUTION], $permanent);
-        } else if ($this->account instanceof NewUser) {
+        } else if ($this->account instanceof TRIALAccount) {
             $this->createCookies([COOKIE_TG_ID_TRIAL, COOKIE_TG_NAME, COOKIE_TG_EMAIL, COOKIE_TYPE], [$this->account->getId('id'), $this->account->getName(), $this->account->getEmail(), self::GOVERNMENT], $permanent);
-        } else if ($this->account instanceof NewUser) {
+        } else if ($this->account instanceof TRIALAccount) {
             $this->createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_PERMISSION, COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['member_id'], $account['member_name'], $account['member_permission'], $account['id'], $account['name'], $account['email'], self::INSTITUTION_MEMBER], $permanent);
         }
     }
@@ -191,7 +183,7 @@ class TRIALAccount {
         }
     }
     
-    public function logout() {
+    public function logout() : array {
         $result = [];
         $i = 0;
         $host = $_SERVER['HTTP_HOST'];
@@ -216,85 +208,85 @@ class TRIALAccount {
         return $result;
     }
     
-    public function getProfiles($ids) {
+    public function getProfiles($ids) : array {
         $get = selectDB($this->con, TABLE_USERS, 'id, name, last_name, birthday, city, state, zip, email, permission', 'WHERE id IN (' . $ids . ')', null);
         $get['message'] = $get != null ? Message::EXIST : Message::NOT_EXIST;
         return $get;
     }
     
-    public function getProfilesByPermission($permission) {
+    public function getProfilesByPermission($permission) : array {
         $get = selectDB($this->con, TABLE_USERS, 'id, name, last_name, email, permission', 'WHERE permission = :permission ORDER BY name ASC', [':permission' => $permission]);
         $get['message'] = $get != null ? Message::EXIST : Message::NOT_EXIST;
         return $get;
     }
     
-    public function changeProfileData($id, $name, $last_name, $email) {
+    public function editData($field, $new_value) : array {
+        return $this->buildResponse((new Update($this->con))->table(TABLE_USERS)->columns($field)->where('id = :id')->values([$new_value == '' ? null : $new_value])->valuesWhere([':id' => $this->account->getId()])->run(), function ($query) {
+            return ['message' => Message::SAVED_WITH_SUCCESS];
+        });
+    }
+    
+    public function changeProfileData($name, $last_name, $email) : array {
         $update = updateDB($this->con, TABLE_USERS, 'name = :name, last_name = :last_name, email = :email', 'WHERE id = :id', [':name' => $name, ':last_name' => $last_name, ':email' => $email, ':id' => $id]);
         return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Informações de perfil atualizadas!'];
     }
     
-    public function changeLocalizationData($id, $city, $state, $zip) {
+    public function changeLocalizationData($city, $state, $zip) : array {
         $update = updateDB($this->con, TABLE_USERS, 'city = :city, state = :state, zip = :zip', 'WHERE id = :id', [':city' => $city, ':state' => $state, ':zip' => $zip, ':id' => $id]);
         return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Informações de localização atualizadas!'];
     }
     
-    public function changePassword($id, $old_password, $new_password) {
+    public function changePassword($old_password, $new_password) : array {
         $update = updateDB($this->con, TABLE_USERS, 'password = :password', 'WHERE id = :id AND password = :old_password', [':password' => $new_password, ':id' => $id, ':old_password' => $old_password]);
         return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Senha alterada!'];
     }
     
-    public function recoverChangePassword($user, $new_password) {
+    public function recoverChangePassword($new_password) : array {
         $update = updateDB($this->con, TABLE_USERS, 'password', 'id', [password_hash($new_password, PASSWORD_DEFAULT), $user]);
         return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR];
     }
     
-    public function activateAccount($id_account) {
-        $update = updateDB($this->con, DATABASE_USERS, 'activated = :activated', 'id = :id', [':activated' => 'yes', ':id' => $id_account]);
-        return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Pronto. Conta ativada com sucesso!'];
+    public function activateAccount(bool $activate) : array {
+        return $this->buildResponse((new Update($GLOBALS['con']))->table(TABLE_USERS)->columns('activated')->where('id = :id')->values([$activate])->valuesWhere([':id' => $this->account->getId()])->run(), function ($query) {
+            return ['message' => Message::SAVED_WITH_SUCCESS];
+        });
     }
     
-    public function accountIsActivated($column_activated) {
-        if (!$column_activated || $column_activated === 'no') { 
-            return true;
-        }
-        return false;
-    }
-    
-    public function getAllAccounts() {
-        $accounts = (new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('CONCAT(\'{"id": \', clicker.id, \', "type": "\', clicker.type, \'", "register_date_time": "\', clicker.register_date, \' \', clicker.register_time, \'"}\') AS clicker')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $this->account->getId()])->run();
-        if ($accounts->success()) {
+    public function getAllAccounts() : array {
+        return $this->buildResponse((new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('CONCAT(\'{"id": \', clicker.id, \', "type": "\', clicker.type, \'", "register_date_time": "\', clicker.register_date, \' \', clicker.register_time, \'"}\') AS clicker')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $this->account->getId()])->run(), function ($accounts) {
             if ($accounts->existRows()) {
-                $accounts = $accounts->getResult()[0];
-                $accounts['message'] = Message::EXIST;
+                $result = $accounts->getResult()[0];
+                $result['message'] = Message::EXIST;
             } else {
-                $accounts = ['message' => Message::NOT_EXIST];
+                $result = ['message' => Message::NOT_EXIST];
             }
-            return $accounts;
-        }
+            return $result;
+        });
     }
 
-    public function getHowKnowRegisters() {
-        $get = selectDB($this->con, 'how_know', 'id, how', null, null);
-        $get['message'] = $get != null ?  Message::EXIST : Message::NOT_EXIST;
-        return $get;
+    public function getHowKnowRegisters() : array {
+        return $this->buildResponse((new Select($this->con))->table('how_know')->columns('id, how')->run(), function ($query) {
+            $result['message'] = $query->existRows() ?  Message::EXIST : Message::NOT_EXIST;
+            return $result;
+        });
     }
     
-    public function checkEmail($email) {
-        $user = new User($this->con, $email);
+    public function checkEmail(string $email) : array {
+        $user = new User($email);
         if ($user->getId() != null) {
-            $response['id'] = $user->getId();
+            $response['user'] = $user;
         }
         $response['message'] = $user->getId() != null ?  Message::EXIST : Message::NOT_EXIST;
         return $response;
     }
     
-    public function createVerificationCode($user) {
+    public function createVerificationCode($user) : array {
         $raw_code = uniqid(rand(), true);
         $code = md5($raw_code);
         return [insertDB($this->con, 'verification_codes', 'user, code, register_date, register_time', [$user, $code, date('Y-m-d'), date('H:i:s')]), 'message' => Message::SAVED_WITH_SUCCESS, 'code' => $raw_code];
     }
     
-    public function checkVerificationCode($id, $code) {
+    public function checkVerificationCode($id, $code) : array {
         $check = selectDB($this->con, 'verification_codes', 'user', 'WHERE id = :id AND code = :code', [':id' => $id, ':code' => md5($code)]);
         if ($check != null) {
             updateDB($this->con, 'verification_codes', 'verificated', 'id', [true, $id]);

@@ -44,6 +44,11 @@ class Institution implements JsonSerializable {
         return $this;
     }
     
+    public function setPassword($password) {
+        $this->password = $password;
+        return $this;
+    }
+    
     public function setInfos($infos) {
         $this->infos = $infos ? new DecodeInstitutionInfos(base64_decode($infos)) : null;
         return $this;
@@ -72,6 +77,10 @@ class Institution implements JsonSerializable {
     
     public function getEmail() {
         return $this->email;
+    }
+    
+    public function getPassword() {
+        return $this->password;
     }
     
     public function getInfos() {
