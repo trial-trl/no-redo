@@ -1,14 +1,18 @@
 <?php
 
 /* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Description of Map
+ *
+ * Created on ??/??/2016
+ * @author Matheus Leonardo dos Santos Martins
+ * @copyright (c) 2016, TRIAL
+ * 
+ * @package TRIAL
+ * 
+ * @version 1.1NC
  */
 
-include_once __DIR__ . '/ConnectDB.php';
-include_once __DIR__ . '/utils/Constant.php';
-include_once __DIR__ . '/utils/Utils.php';
+include_once __DIR__ . '/Files.php';
 
 date_default_timezone_set('America/Sao_Paulo');
 $request = json_decode(file_get_contents('php://input'));
@@ -18,20 +22,40 @@ class Map {
     private $con;
     
     public function __construct() {
-        $con = new ConnectDB(DB_DATABASE, DB_USER, DB_PASSWORD, DB_PREFIX . 'map');
-        $this->con = $con->connect();
+        $this->con = (new ConnectDB(DB_PREFIX . 'map'))->connect();
     }
     
-    public function getStates() {
-        $states = selectDB($this->con, 'states', 'id, abbr AS name', null, null);
-        $states['message'] = $states != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
-        return $states;
+    private function buildResponse($query, $callback) : array {
+        $query_response = $query instanceof QueryResponse ? $query : $query->run();
+        if ($query_response->success()) {
+            return $callback($query_response);
+        } else {
+            return ['error' => $query_response->getError(), 'message' => Message::ERROR];
+        }
     }
     
-    public function getCounties($state) {
-        $counties = selectDB($this->con, 'counties', 'id, county', 'WHERE state = :state', array(':state' => $state));
-        $counties['message'] = $counties != null ? MESSAGE_EXIST : MESSAGE_NOT_EXIST;
-        return $counties;
+    public function getStates() : array {
+        return $this->buildResponse((new Select($this->con))->table('states')->columns('id, abbr AS name')->run(), function ($query) {
+            if ($query->existRows()) {
+                $result = $query->getResult();
+                $result['message'] = Message::EXIST;
+            } else {
+            	$result['message'] = Message::NOT_EXIST;
+            }
+            return $result;
+        });
+    }
+    
+    public function getCounties($state) : array {
+        return $this->buildResponse((new Select($this->con))->table('counties')->columns('id, county')->where('state = :state')->values([':state' => $state])->run(), function ($query) {
+            if ($query->existRows()) {
+                $result = $query->getResult();
+                $result['message'] = Message::EXIST;
+            } else {
+            	$result['message'] = Message::NOT_EXIST;
+            }
+            return $result;
+        });
     }
     
 }
@@ -40,13 +64,13 @@ if ($request != null) {
     $r = $request->{'r'};
     $requestType = 'mobile';
 } else {
-    if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+    if (filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET') {
 	$r = filter_input(INPUT_GET, 'r');
     } else {
 	$r = filter_input(INPUT_POST, 'r');
     }
     $requestType = 'web';
-    $REQUEST = $_SERVER['REQUEST_METHOD'] == 'GET' ? INPUT_GET : INPUT_POST;
+$REQUEST = filter_input(INPUT_SERVER, 'REQUEST_METHOD') == 'GET' ? INPUT_GET : INPUT_POST;
 }
 
 $instance_class = new Map();
