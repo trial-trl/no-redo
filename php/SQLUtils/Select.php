@@ -168,11 +168,6 @@ class Select extends Query implements SelectClauses {
             $this->statement->setFetchMode(PDO::FETCH_ASSOC);
         }
     }
-    
-    public function noResponse() {
-        $this->no_response = true;
-        return $this;
-    }
 
     public function run() : QueryResponse {
         $this->prepare();

@@ -17,7 +17,7 @@ class ClickerAccount {
     public function authenticateUser($id_trial) {
         $profile = $this->getProfile($id_trial);
         if ($profile['message'] === MESSAGE_EXIST) {
-            $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
+            $domain = filter_input(INPUT_SERVER, 'HTTP_HOST') !== 'localhost' ? '.trialent.com' : 'localhost';
             setcookie(COOKIE_CLICKER_ID, $profile['id'], time() + (60 * 60 * 24 * 365), '/', $domain);
             setcookie(COOKIE_CLICKER_INSTITUTION, $profile['institution'], time() + (60 * 60 * 24 * 365), '/', $domain);
             setcookie(COOKIE_CLICKER_TYPE, $profile['type'], time() + (60 * 60 * 24 * 365), '/', $domain);
