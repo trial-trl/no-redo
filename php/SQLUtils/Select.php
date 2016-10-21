@@ -9,6 +9,8 @@
  * @package SQLUtils
  * 
  * 25/09/2016, >~ 00:52: implemented returnFoundRows() and adapted run() method to returnFoundRows() option.
+ * 
+ * 20/10/2016, 19:48:14 => removed noResponse() method
  */
 
 require_once 'Query.php';
@@ -169,11 +171,6 @@ class Select extends Query implements SelectClauses {
         } else {
             $this->statement->setFetchMode(PDO::FETCH_ASSOC);
         }
-    }
-    
-    public function noResponse() {
-        $this->no_response = true;
-        return $this;
     }
 
     public function run() : QueryResponse {

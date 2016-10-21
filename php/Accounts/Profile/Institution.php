@@ -9,7 +9,7 @@
  * @package Profile
  */
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/Request.php';
+require_once filter_input(INPUT_SERVER, 'DOCUMENT_ROOT') . '/no-redo/repository/php/Request.php';
 
 class Institution implements JsonSerializable {
     
@@ -44,6 +44,12 @@ class Institution implements JsonSerializable {
         return $this;
     }
     
+    // added on 20/10/2016, 14:41:57
+    public function setPassword($password) {
+        $this->password = $password;
+        return $this;
+    }
+    
     public function setInfos($infos) {
         $this->infos = $infos ? new DecodeInstitutionInfos(base64_decode($infos)) : null;
         return $this;
@@ -72,6 +78,11 @@ class Institution implements JsonSerializable {
     
     public function getEmail() {
         return $this->email;
+    }
+    
+    // added on 20/10/2016, 14:42:33
+    public function getPassword() {
+        return $this->password;
     }
     
     public function getInfos() {
