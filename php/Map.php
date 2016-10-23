@@ -47,7 +47,12 @@ class Map {
     }
     
     public function getCounties($state) : array {
-        return $this->buildResponse((new Select($this->con))->table('counties')->columns('id, county')->where('state = :state')->values([':state' => $state])->run(), function ($query) {
+        if (gettype($state) === 'string') {
+            $query = (new Select($this->con))->table('states AS s')->columns('c.id, c.county')->leftJoin(['counties AS c ON c.state = s.id'])->where('s.abbr = :abbr')->values([':abbr' => $state]);
+        } else {
+            $query = (new Select($this->con))->table('counties')->columns('id, county')->where('state = :state')->values([':state' => $state]);
+        }
+        return $this->buildResponse($query->run(), function ($query) {
             if ($query->existRows()) {
                 $result = $query->getResult();
                 $result['message'] = Message::EXIST;

@@ -40,15 +40,19 @@ class User {
         if ($search != null) {
             switch (gettype($search)) {
                 case 'string':
-                    $data = (new Select($con))->table(TABLE_USERS)->columns('id, first_name, last_name, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->run();
+                    $data = (new Select($con))->table(TABLE_USERS)->columns('id, first_name, middle_name, last_name, nickname, birthday, sex, rg, cpf, nationality, city, state, postal_code, landline, cell_phone, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->run();
                     break;
                 case 'integer':
-                    $data = (new Select($con))->table(TABLE_USERS)->columns('id, first_name, last_name, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->run();
+                    $data = (new Select($con))->table(TABLE_USERS)->columns('id, first_name, middle_name, last_name, nickname, birthday, sex, rg, cpf, nationality, city, state, postal_code, landline, cell_phone, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->run();
                     break;
             }
             $data = $data->success() && $data->existRows() ? $data->getResult()[0] : [];
             foreach ($data as $key => $value) {
-                $this->{$key} = $value;
+                if ($key == 'postal_code' || $key == 'city' || $key == 'state') {
+                    $this->location[$key == 'city' ? 'county' : $key] = $value;
+                } else {
+                    $this->{$key} = $value;
+                }
             }
         }
     }
@@ -215,6 +219,11 @@ class User {
     
     public function getBirthday() {
         return $this->birthday;
+    }
+    
+    // added on 21/10/2016, 19:57:06 - 20:00:11
+    public function getAge() {
+        return (new DateTime($this->birthday))->diff(new DateTime('today'))->y;
     }
     
     public function getSex() {
