@@ -117,7 +117,7 @@ class TRIALAccount {
     
     private function userAuth(&$login, string &$password, int &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        return $this->buildResponse((new Select($this->con))->table(TABLE_USERS)->columns('id, name, last_name, email, password, activated, permission')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'User')->run(), function ($user) {
+        return $this->buildResponse((new Select($this->con))->table(TABLE_USERS)->columns('id, first_name, last_name, email, password, activated, permission')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'User')->run(), function ($user) use ($login, $password, $permanent) {
             if ($user->existRows()) {
                 $this->account = $user->getResult()[0];
                 if ($this->account->checkPassword($password)) {
@@ -135,7 +135,7 @@ class TRIALAccount {
     
     private function institutionAuth(&$login, string &$password, int &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        return $this->buildResponse((new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) {
+        return $this->buildResponse((new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) use ($login, $password, $permanent) {
             if ($account->existRows()) {
                 $this->account = $account->getResult()[0];
                 if ($this->account->checkPassword($password)) {
@@ -176,7 +176,7 @@ class TRIALAccount {
     
     private function governmentAuth(&$login, string &$password, int &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        return $this->buildResponse((new Select($this->con))->table(TABLE_GOVERNMENTS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) {
+        return $this->buildResponse((new Select($this->con))->table(TABLE_GOVERNMENTS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) use ($login, $password, $permanent) {
             if ($account->existRows()) {
                 $this->account = $account->getResult()[0];
                 if ($this->account->checkPassword($password)) {
@@ -240,6 +240,8 @@ class TRIALAccount {
                         $domain = 'serginho.trialent.com';
                     } else if (strpos($key, 'CL') !== false) {
                         $domain = 'clicker.trialent.com';
+                    } else if (strpos($key, 'ON') !== false) {
+                        $domain = 'oportunidadeja.trialent.com';
                     } else {
                         $domain = '.trialent.com';
                     }

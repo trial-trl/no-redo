@@ -188,3 +188,11 @@ const COOKIE_FIX_IT_AVATAR = 'TRL_FI__avatar';
  */
 const COOKIE_STREET_RACE_ID = 'TRL_SR__id';
 const COOKIE_STREET_RACE_TYPE = 'TRL_SR__type';
+
+/*
+ * Opportunity Now! service
+ */
+const COOKIE_OPPORTUNITY_NOW_ID = 'TRL_ON__id';
+
+// added on 21/10/2016, 18:07:01 
+const COOKIE_OPPORTUNITY_NOW_FREELANCER = 'TRL_ON__freelancer';

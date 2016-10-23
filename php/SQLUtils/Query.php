@@ -75,4 +75,18 @@ abstract class Query extends CommonQuery {
         return $input_parameters;
     }
     
+    /* 21/10/2016
+     *      22:42:00 - 22:48:03
+     *          added static buildResponse(QueryResponse $query, callable $callback)
+     *      22:50:23
+     *          buildResponse(QueryResponse $query, callable $callback) renamed to helper(QueryResponse $query, callable $callback)
+     */
+    public static function helper(QueryResponse $response, callable $callback) : array {
+        if ($response->success()) {
+            return $callback($response);
+        } else {
+            return ['error' => $response->getError(), 'message' => Message::ERROR];
+        }
+    }
+    
 }
