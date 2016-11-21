@@ -100,12 +100,14 @@ nr-title-truncate, .title-truncate {
     background-color: rgba(248, 254, 247, 1);
 }
 
-#loading {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    z-index: 5;
-}
+/*
+    #loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 5;
+    }
+*/
 
 .hover-float-effect:not(.current):hover {
     cursor: pointer;
@@ -239,3 +241,24 @@ a.current {
 [container-slideshow-items] [slideshow-item]:not(.current) {
     display: none
 }
+
+/* added 31/10/2016, 20:33:32 */
+.center, .center-vertical, .center-horizontal {
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.center, .center-vertical {
+    -ms-align-items: center;
+    -webkit-align-items: center;
+    align-items: center;
+}
+
+.center, .center-horizontal {
+    -ms-justify-content: center;
+    -webkit-justify-content: center;
+    justify-content: center;
+}
+/* end added */
