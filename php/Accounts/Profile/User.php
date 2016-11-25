@@ -12,7 +12,9 @@
  */
 
 /* 
- * 18/10/2016, 22:38:18 => setted all vars to private, $con argument is created with no necessity of pass argument
+ * 18/10/2016
+ *      22:38:18 => setted all vars to private, $con argument is created with no necessity of pass argument
+ *      01:13:45 - 01:32:40 => added getPhotoUrl()
  * 
  * 19/10/2016, 19:29:15 - 19:52:57
  *      __construct: 
@@ -51,13 +53,17 @@
  *              getMiddleName() => gets the middle name inside $middle_name
  *              getNickname() => gets the nickname inside $nickname
  * 
+ * 24/11/2016
+ *      18:24:28
+ *          now this class extends Account. Id, Email, Password, checkPassword(), getPhotoUrl(), and Activate are now handle by Account class, not being need to implement these items here.
+ * 
  */
 
+require_once 'Account.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/Request.php';
 
-class User {
+class User extends Account {
     
-    private $id;
     private $first_name;
     private $middle_name;
     private $last_name;
@@ -72,9 +78,6 @@ class User {
     private $cell_phone;
     private $schooling_level;
     private $main_occupation;
-    private $email;
-    private $password;
-    private $activated;
     private $permission;
     
     public function __construct($search = null) {
@@ -97,11 +100,6 @@ class User {
                 }
             }
         }
-    }
-    
-    public function setId($id) {
-        $this->id = $id;
-        return $this;
     }
     
     /**
@@ -199,32 +197,9 @@ class User {
         return $this;
     }
     
-    public function setEmail($email) {
-        $this->email = $email;
-        return $this;
-    }
-    
-    public function setPassword($password) {
-        $this->password = $password;
-        return $this;
-    }
-    
-    public function setActivated($activated) {
-        $this->activated = $activated;
-        return $this;
-    }
-    
     public function setPermission($permission) {
         $this->permission = $permission;
         return $this;
-    }
-    
-    public function checkPassword($password) {
-        return password_verify($password, $this->password) || $this->password === $password;
-    }
-    
-    public function getId() {
-        return $this->id;
     }
     
     /**
@@ -304,27 +279,8 @@ class User {
         return $this->main_occupation;
     }
     
-    public function getEmail() {
-        return $this->email;
-    }
-    
-    public function getPassword() {
-        return $this->password;
-    }
-    
-    public function isActivated() {
-        return !$this->activated;
-    }
-    
     public function getPermission() {
         return $this->permission;
-    }
-    
-    // 18/10/2016, 01:13:45 - 01:32:40 => added getPhotoUrl()
-    public function getPhotoUrl() {
-        $url = 'http://www.trialent.com/images/user/profile/' . $this->id . '/' . $this->id . '.jpg';
-        $response = Request::make($url);
-        return  $response->success() && $response->getResult()['http_code'] === 200 ? $url : '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
     }
 
 }
