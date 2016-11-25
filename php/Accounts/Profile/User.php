@@ -11,11 +11,11 @@
  * @version 1.1
  */
 
+require_once 'Account.php';
 require_once __DIR__ . '/../../Request.php';
 
-class User {
+class User extends Account {
     
-    private $id;
     private $first_name;
     private $middle_name;
     private $last_name;
@@ -30,9 +30,6 @@ class User {
     private $cell_phone;
     private $schooling_level;
     private $main_occupation;
-    private $email;
-    private $password;
-    private $activated;
     private $permission;
     
     public function __construct($search = null) {
@@ -55,11 +52,6 @@ class User {
                 }
             }
         }
-    }
-    
-    public function setId($id) {
-        $this->id = $id;
-        return $this;
     }
     
     /**
@@ -157,32 +149,9 @@ class User {
         return $this;
     }
     
-    public function setEmail($email) {
-        $this->email = $email;
-        return $this;
-    }
-    
-    public function setPassword($password) {
-        $this->password = $password;
-        return $this;
-    }
-    
-    public function setActivated($activated) {
-        $this->activated = $activated;
-        return $this;
-    }
-    
     public function setPermission($permission) {
         $this->permission = $permission;
         return $this;
-    }
-    
-    public function checkPassword($password) {
-        return password_verify($password, $this->password) || $this->password === $password;
-    }
-    
-    public function getId() {
-        return $this->id;
     }
     
     /**
@@ -262,26 +231,8 @@ class User {
         return $this->main_occupation;
     }
     
-    public function getEmail() {
-        return $this->email;
-    }
-    
-    public function getPassword() {
-        return $this->password;
-    }
-    
-    public function isActivated() {
-        return !$this->activated;
-    }
-    
     public function getPermission() {
         return $this->permission;
-    }
-    
-    public function getPhotoUrl() {
-        $url = 'http://www.trialent.com/images/user/profile/' . $this->id . '/' . $this->id . '.jpg';
-        $response = Request::make($url);
-        return  $response->success() && $response->getResult()['http_code'] === 200 ? $url : '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
     }
 
 }

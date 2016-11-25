@@ -9,24 +9,16 @@
  * @package Profile
  */
 
+require_once 'Account.php';
 require_once __DIR__ . '/../../Request.php';
 
-class Institution implements JsonSerializable {
+class Institution extends Account implements JsonSerializable {
     
-    private $id;
     private $cnpj;
     private $name;
-    private $email;
-    private $password;
     private $infos;
-    private $activated;
     
     public function __construct($id = null) {
-    }
-    
-    public function setId($id) {
-        $this->id = $id;
-        return $this;
     }
     
     public function setCNPJ($cnpj) {
@@ -39,32 +31,9 @@ class Institution implements JsonSerializable {
         return $this;
     }
     
-    public function setEmail($email) {
-        $this->email = $email;
-        return $this;
-    }
-    
-    public function setPassword($password) {
-        $this->password = $password;
-        return $this;
-    }
-    
     public function setInfos($infos) {
         $this->infos = $infos ? new DecodeInstitutionInfos(base64_decode($infos)) : null;
         return $this;
-    }
-    
-    public function setActivated($activated) {
-        $this->activated = $activated;
-        return $this;
-    }
-    
-    public function checkPassword($password) {
-        return password_verify($password, $this->password) || $this->password === $password;
-    }
-    
-    public function getId() {
-        return $this->id;
     }
     
     public function getCNPJ() {
@@ -75,26 +44,8 @@ class Institution implements JsonSerializable {
         return $this->name;
     }
     
-    public function getEmail() {
-        return $this->email;
-    }
-    
-    public function getPassword() {
-        return $this->password;
-    }
-    
     public function getInfos() {
         return $this->infos;
-    }
-    
-    public function isActivated() {
-        return !$this->activated;
-    }
-    
-    public function getPhotoUrl() {
-        $url = 'http://www.trialent.com/images/institution/profile/' . $this->id . '/' . $this->id . '.jpg';
-        $response = Request::make($url);
-        return  $response->success() && $response->getResult()['http_code'] === 200 ? $url : '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
     }
 
     public function jsonSerialize() {
