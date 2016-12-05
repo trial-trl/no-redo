@@ -47,7 +47,7 @@ class TRIALAccount {
             throw new InvalidArgumentException("Account isn't a instance of User or Institution class");
         } else {
             if ($is_user) {
-                $query = (new Insert($this->con))->table(TABLE_USERS)->columns('first_name, last_name, birthday, sex, email, zip, password, ip, register_date_time')->values([$account->getName(), $account->getLastName(), $account->getBirthday(), $account->getSex(), $account->getEmail(), $account->getPostalCode(), $account->getPassword(), null, date('Y-m-d H:i:s')]);
+                $query = (new Insert($this->con))->table(TABLE_USERS)->columns('first_name, last_name, birthday, sex, email, postal_code, password, ip, register_date_time')->values([$account->getName(), $account->getLastName(), $account->getBirthday(), $account->getSex(), $account->getEmail(), $account->getPostalCode(), $account->getPassword(), null, date('Y-m-d H:i:s')]);
             } else if ($is_institution) {
                 $query = (new Insert($this->con))->table(TABLE_INSTITUTIONS)->columns('cnpj, name, infos, email, password, register_date_time')->values([$account->getCNPJ(), $account->getName(), $account->getInfos(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
             } else if ($is_government) {
@@ -61,7 +61,7 @@ class TRIALAccount {
         }
     }
     
-    private function userAuth(&$login, string &$password, int &$permanent) : array {
+    private function userAuth(&$login, string &$password, bool &$permanent) : array {
         $id_login = gettype($login) === 'integer';
         return Query::helper((new Select($this->con))->table(TABLE_USERS)->columns('id, first_name, last_name, email, password, activated, permission')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'User')->run(), function ($user) use ($login, $password, $permanent) {
             if ($user->existRows()) {
@@ -79,7 +79,7 @@ class TRIALAccount {
         });
     }
     
-    private function institutionAuth(&$login, string &$password, int &$permanent) : array {
+    private function institutionAuth(&$login, string &$password, bool &$permanent) : array {
         $id_login = gettype($login) === 'integer';
         return Query::helper((new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) use ($login, $password, $permanent) {
             if ($account->existRows()) {
@@ -97,7 +97,7 @@ class TRIALAccount {
         });
     }
     
-    private function institutionMemberAuth(&$login, string &$password, int &$permanent) : array {
+    private function institutionMemberAuth(&$login, string &$password, bool &$permanent) : array {
         $account = selectDB($this->con, 'users AS u', 'u.id AS member_id, u.name AS member_name, u.password, u.permission AS member_permission, IF(COUNT(i.id) > 0, true, false) AS have_institution, COUNT(i.id) AS total_institutions, GROUP_CONCAT(i.id SEPARATOR \', \') AS id, GROUP_CONCAT(i.name SEPARATOR \', \') AS name, GROUP_CONCAT(i.email SEPARATOR \', \') AS email, GROUP_CONCAT(i.activated SEPARATOR \', \') AS activated', 'LEFT JOIN institutions_members AS im ON im.user = u.id LEFT JOIN institutions AS i ON i.id = im.institution WHERE u.email = :email', [':email' => $login]);
         if ($account != null) {
             $account = $account[0];
@@ -120,7 +120,7 @@ class TRIALAccount {
         return $result;
     }
     
-    private function governmentAuth(&$login, string &$password, int &$permanent) : array {
+    private function governmentAuth(&$login, string &$password, bool &$permanent) : array {
         $id_login = gettype($login) === 'integer';
         return Query::helper((new Select($this->con))->table(TABLE_GOVERNMENTS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Government')->run(), function ($account) use ($login, $password, $permanent) {
             if ($account->existRows()) {
@@ -138,7 +138,7 @@ class TRIALAccount {
         });
     }
     
-    public function authenticateUser($login, string $password, $type_account = self::USER, int $permanent = 0) : array {
+    public function authenticateUser($login, string $password, $type_account = self::USER, bool $permanent = false) : array {
         switch ($type_account) {
             case self::USER:
                 $result = $this->userAuth($login, $password, $permanent);
@@ -156,7 +156,7 @@ class TRIALAccount {
 	return $result;
     }
     
-    private function concludeAuthenticationWeb(int &$permanent) {
+    private function concludeAuthenticationWeb(bool &$permanent) {
         if ($this->account instanceof User) {
             $this->createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$this->account->getId(), $this->account->getName(), $this->account->getEmail(), $this->account->getPermission(), self::USER], $permanent);
         } else if ($this->account instanceof Institution) {
@@ -168,10 +168,10 @@ class TRIALAccount {
         }
     }
     
-    private function createCookies(array $name_cookies, array $value_cookies, int &$permanent) {
+    private function createCookies(array $name_cookies, array $value_cookies, bool &$permanent) {
         foreach ($name_cookies as $i => $cookie) {
             $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
-            setcookie($cookie, $value_cookies[$i], $permanent != 1 ? 0 : strtotime('+30 days'), '/', $domain);
+            setcookie($cookie, $value_cookies[$i], !$permanent ? 0 : strtotime('+30 days'), '/', $domain);
         }
     }
     
