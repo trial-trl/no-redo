@@ -11,8 +11,12 @@
  * @version 1.0
  */
 
+namespace Profile;
+
+use Account\Base as Account;
+
 require_once 'Account.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/php/Request.php';
+require_once __DIR__ . '/../../Request.php';
 
 class Government extends Account {
     
@@ -20,6 +24,7 @@ class Government extends Account {
     private $permission;
     
     public function __construct($search = null) {
+        parent::__construct();
         $con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
         if ($search != null) {
             switch (gettype($search)) {

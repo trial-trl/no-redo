@@ -11,11 +11,19 @@
  * @package Accounts
  */
 
-require_once __DIR__ . '/Profile/User.php';
+namespace TRIAL;
+
+use \PDO;
+use ConnectDB, SQL\Query, SQL\Select, SQL\Insert, SQL\Update, SQL\Delete;
+use User, Institution, Government;
+use Message, InvalidArgumentException;
+
+require_once __DIR__ . '/Profile/User/User.php';
+require_once __DIR__ . '/Profile/User/Builder.php';
 require_once __DIR__ . '/Profile/Institution.php';
 require_once __DIR__ . '/Profile/Government.php';
 
-class TRIALAccount {
+class Account {
     
     const USER = 'user';
     
@@ -33,18 +41,18 @@ class TRIALAccount {
         $this->con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
         if ($account != null) {
             $this->account = $account;
-            if (!($account instanceof User) && !($account instanceof Institution)) {
-                throw new InvalidArgumentException("account argument isn't a instance of User or Institution class");
+            if (!($account instanceof User) && !($account instanceof Institution) && !($account instanceof Government)) {
+                throw new InvalidArgumentException("account argument isn't a instance of User, Institution, or Government class");
             }
         }
     }
     
-    public function createTRIALAccount($account) : array {
+    public static function createAccount($account) : array {
         $is_user = $account instanceof User;
         $is_institution = $account instanceof Institution;
-        $is_government = $account instanceof TRIALAccount;
+        $is_government = $account instanceof Government;
         if (!$is_user && !$is_institution && !$is_government) {
-            throw new InvalidArgumentException("Account isn't a instance of User or Institution class");
+            throw new InvalidArgumentException("Account isn't a instance of User, Institution, or Government class");
         } else {
             if ($is_user) {
                 $query = (new Insert($this->con))->table(TABLE_USERS)->columns('first_name, last_name, birthday, sex, email, postal_code, password, ip, register_date_time')->values([$account->getName(), $account->getLastName(), $account->getBirthday(), $account->getSex(), $account->getEmail(), $account->getPostalCode(), $account->getPassword(), null, date('Y-m-d H:i:s')]);
@@ -290,4 +298,13 @@ class TRIALAccount {
         return $result;
     }
     
+    public function changePhoto($photo) : array {
+        if (move_uploaded_file($photo['tmp_name'], '/TRIAL/images/' . get_class($this->account) . '/' . $this->account->getId() . '/' . $this->account->getId() . '.jpg')) {
+            return json_encode(['message' => Message::SAVED_WITH_SUCCESS]);
+        }
+        return json_encode(['message' => Message::ERROR, 'error' => ['message' => 'File can\'t be uploaded']]);
+    }
+    
 }
+
+class_alias('\TRIAL\Account', 'TRIALAccount');

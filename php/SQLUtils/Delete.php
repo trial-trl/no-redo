@@ -9,6 +9,10 @@
  * @package SQLUtils
  */
 
+namespace SQL;
+
+use DeleteClauses;
+
 require_once __DIR__ . '/Query.php';
 require_once __DIR__ . '/DeleteClauses.php';
 require_once __DIR__ . '/QueryResponse.php';

@@ -9,6 +9,10 @@
  * @package SQLUtils
  */
 
+namespace SQL;
+
+use InsertClauses;
+
 require_once __DIR__ . '/Query.php';
 require_once __DIR__ . '/InsertClauses.php';
 require_once __DIR__ . '/QueryResponse.php';

@@ -9,6 +9,10 @@
  * @package SQLUtils
  */
 
+namespace SQL;
+
+use PDO;
+
 require_once 'QueryResponse.php';
 
 abstract class CommonQuery {
