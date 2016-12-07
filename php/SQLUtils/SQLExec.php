@@ -9,6 +9,8 @@
  * @package SQLUtils
  */
 
+namespace SQL;
+
 require_once 'CommonQuery.php';
 
 class SQLExec extends CommonQuery {

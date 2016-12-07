@@ -262,3 +262,44 @@ a.current {
     justify-content: center;
 }
 /* end added */
+
+/* added 06/12/2016 19:31:04 */
+a[is="trl-button"] {
+    position: relative;
+    cursor: pointer;
+    text-align: center;
+    padding: 15px 30px;
+    border: none;
+    font: 20px "Share", arial, sans-serif;
+    font-weight: 800;
+}
+
+a[is="trl-button"]:not(.left):not(.right), a[is="trl-button"].left {
+    float: left;
+}
+
+a[is="trl-button"].right {
+    float: right;
+}
+
+a[is="trl-button"]:not(.button-no-style) {
+    background-color: #444;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+
+a[is="trl-button"]:not(.button-square) {
+    transform: skewX(-25deg);
+}
+
+a[is="trl-button"]:not(.button-no-style):hover {
+    background-color: #6a6a6a;
+}
+
+a[is="trl-button"] > div {
+    color: #fff;
+}
+
+a[is="trl-button"]:not(.button-square) > div {
+    transform: skewX(25deg)
+}
+/* end added */

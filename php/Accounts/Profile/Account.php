@@ -10,7 +10,12 @@
  * 
  * @version 1.0
  */
-class Account {
+
+namespace Account;
+
+use Request;
+
+class Base {
     
     private $type_account;
     
@@ -74,5 +79,13 @@ class Account {
         $response = Request::make($url);
         return  $response->success() && $response->getResult()['http_code'] === 200 ? $url : '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
     }
+    
+}
+
+class Permission {
+    
+    const ROOT = 'ROOT';
+    const ADMIN = 'ADMIN';
+    const NORMAL = 'NORMAL';
     
 }

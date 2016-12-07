@@ -11,6 +11,8 @@
  * Finished last editions on 20/09/2016 19:57:43
  */
 
+namespace SQL;
+
 require_once __DIR__ . '/Query.php';
 require_once __DIR__ . '/DeleteClauses.php';
 require_once __DIR__ . '/QueryResponse.php';
