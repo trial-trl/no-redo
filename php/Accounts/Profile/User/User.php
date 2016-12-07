@@ -8,7 +8,7 @@
  * 
  * @package Profile
  * 
- * @version 1.1
+ * @version 1.2
  */
 
 /* 
@@ -59,31 +59,36 @@
  * 
  */
 
-require_once 'Account.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/Request.php';
+use Account\Base as Account,
+        SQL\Select;
+
+require_once __DIR__ . '/../Account.php';
+require_once __DIR__ . '/../../../Request.php';
 
 class User extends Account {
     
-    private $first_name;
-    private $middle_name;
-    private $last_name;
-    private $nickname;
-    private $rg;
-    private $cpf;
-    private $birthday;
-    private $sex;
-    private $nationality;
-    private $location = [];
-    private $landline;
-    private $cell_phone;
-    private $schooling_level;
-    private $main_occupation;
-    private $permission;
+    protected $first_name;
+    protected $middle_name;
+    protected $last_name;
+    protected $nickname;
+    protected $rg;
+    protected $cpf;
+    protected $birthday;
+    protected $sex;
+    protected $nationality;
+    protected $location = [];
+    protected $landline;
+    protected $cell_phone;
+    protected $schooling_level;
+    protected $main_occupation;
+    protected $permission;
     
     public function __construct($search = null) {
+        parent::__construct();
+        $type = gettype($search);
         $con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
-        if ($search != null) {
-            switch (gettype($search)) {
+        if ($type === 'string' || $type === 'integer') {
+            switch ($type) {
                 case 'string':
                     $data = (new Select($con))->table(TABLE_USERS)->columns('id, first_name, middle_name, last_name, nickname, birthday, sex, rg, cpf, nationality, city, state, postal_code, landline, cell_phone, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->run();
                     break;
@@ -92,122 +97,16 @@ class User extends Account {
                     break;
             }
             $data = $data->success() && $data->existRows() ? $data->getResult()[0] : [];
-            foreach ($data as $key => $value) {
-                if ($key == 'postal_code' || $key == 'city' || $key == 'state') {
-                    $this->location[$key == 'city' ? 'county' : $key] = $value;
-                } else {
-                    $this->{$key} = $value;
-                }
+        } else {
+            $data = $search;
+        }
+        foreach ($data as $key => $value) {
+            if ($key == 'postal_code' || $key == 'city' || $key == 'state') {
+                $this->location[$key == 'city' ? 'county' : $key] = $value;
+            } else {
+                $this->{$key} = $value;
             }
         }
-    }
-    
-    /**
-     * 
-     * @deprecated since version 1.1
-     */
-    public function setName($name) {
-        $this->first_name = $name;
-        return $this;
-    }
-    
-    public function setFirstName($first_name) {
-        $this->first_name = $first_name;
-        return $this;
-    }
-    
-    public function setMiddleName($middle_name) {
-        $this->middle_name = $middle_name;
-        return $this;
-    }
-    
-    public function setLastName($last_name) {
-        $this->last_name = $last_name;
-        return $this;
-    }
-    
-    public function setNickname($nickname) {
-        $this->nickname = $nickname;
-        return $this;
-    }
-    
-    public function setRG($rg) {
-        $this->rg = $rg;
-        return $this;
-    }
-    
-    public function setCPF($cpf) {
-        $this->cpf = $cpf;
-        return $this;
-    }
-    
-    public function setBirthday($birthday) {
-        $this->birthday = date_format(new DateTime($birthday), 'Y-m-d');
-        return $this;
-    }
-    
-    public function setSex($sex) {
-        switch ($sex) {
-            case Sex::MALE:
-            case Sex::FEMALE:
-            case Sex::UNDEFINED:
-                $this->sex = $sex;
-                return $this;
-            default:
-                throw new InvalidArgumentException('Sex arg must be one of these values: Sex::MALE | Sex::FEMALE | Sex::UNDEFINED');
-        }
-    }
-    
-    public function setNationality($nationality) {
-        $this->nationality = $nationality;
-        return $this;
-    }
-    
-    public function setCity($city) {
-        $this->location['county'] = $city;
-        return $this;
-    }
-    public function setState($state) {
-        $this->location['state'] = $state;
-        return $this;
-    }
-    
-    public function setPostalCode($postal_code) {
-        $this->location['postal_code'] = $postal_code;
-        return $this;
-    }
-    
-    public function setLandline($landline) {
-        $this->landline = $landline;
-        return $this;
-    }
-    
-    public function setCellPhone($cell_phone) {
-        $this->cell_phone = $cell_phone;
-        return $this;
-    }
-    
-    public function setSchoolingLevel($schooling_level) {
-        $this->schooling_level = $schooling_level;
-        return $this;
-    }
-    
-    public function setMainOccupation($main_occupation) {
-        $this->main_occupation = $main_occupation;
-        return $this;
-    }
-    
-    public function setPermission($permission) {
-        $this->permission = $permission;
-        return $this;
-    }
-    
-    /**
-     * 
-     * @deprecated since version 1.1
-     */
-    public function getName() {
-        return $this->first_name;
     }
     
     public function getFirstName() {
@@ -303,13 +202,5 @@ class MainOccupation {
     
     const ENTREPRENEUR = 'ENTREPRENEUR';
     const BUSSINESSMAN = 'BUSSINESSMAN';
-    
-}
-
-class Permission {
-    
-    const ROOT = 'ROOT';
-    const ADMIN = 'ADMIN';
-    const NORMAL = 'NORMAL';
     
 }

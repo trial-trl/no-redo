@@ -19,6 +19,11 @@
  * 24/11/2016, 18:23:35 => now this class extends Account. Id, Email, Password, checkPassword(), getPhotoUrl(), and Activate are now handle by Account class, not being need to implement these items here.
  */
 
+namespace Profile;
+
+use Account\Base as Account;
+use JsonSerializable;
+
 require_once 'Account.php';
 require_once filter_input(INPUT_SERVER, 'DOCUMENT_ROOT') . '/no-redo/repository/php/Request.php';
 
@@ -29,6 +34,7 @@ class Institution extends Account implements JsonSerializable {
     private $infos;
     
     public function __construct($id = null) {
+        parent::__construct();
     }
     
     public function setCNPJ($cnpj) {

@@ -9,6 +9,10 @@
  * @package SQLUtils
  */
 
+namespace SQL;
+
+use Response;
+
 require_once __DIR__ . '/../utils/Response.php';
 require_once 'QueryError.php';
 

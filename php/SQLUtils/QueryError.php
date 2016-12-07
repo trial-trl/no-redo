@@ -9,6 +9,10 @@
  * @package SQLUtils
  */
 
+namespace SQL;
+
+use Error, JsonSerializable;
+
 require_once __DIR__ . '/../utils/Error.php';
 
 class QueryError extends Error implements JsonSerializable {
