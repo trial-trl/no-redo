@@ -9,6 +9,8 @@
  * @package SQLUtils
  */
 
+namespace SQL;
+
 require_once 'CommonQuery.php';
 
 abstract class Query extends CommonQuery {

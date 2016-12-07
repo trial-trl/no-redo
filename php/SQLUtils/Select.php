@@ -13,6 +13,10 @@
  * 20/10/2016, 19:48:14 => removed noResponse() method
  */
 
+namespace SQL;
+
+use SelectClauses, PDO;
+
 require_once 'Query.php';
 require_once 'SelectClauses.php';
 require_once 'QueryResponse.php';

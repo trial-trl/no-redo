@@ -11,6 +11,8 @@
  * Finished last editions on 20/09/2016 19:57:43
  */
 
+namespace SQL;
+
 require_once 'Query.php';
 require_once 'DeleteClauses.php';
 require_once 'QueryResponse.php';

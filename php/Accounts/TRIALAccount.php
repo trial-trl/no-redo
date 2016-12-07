@@ -11,11 +11,24 @@
  * @package Accounts
  */
 
-require_once 'Profile/User.php';
+/*
+ * 06/12/2016, 23:37:02:
+ *      added namespace TRIAL
+ *      renamed TRIALAccount to Account
+ */
+
+namespace TRIAL;
+
+use ConnectDB, SQL\Query, SQL\Select, SQL\Insert, SQL\Update, SQL\Delete;
+use User, Institution, Government;
+use Message, InvalidArgumentException;
+
+require_once 'Profile/User/User.php';
+require_once 'Profile/User/Builder.php';
 require_once 'Profile/Institution.php';
 require_once 'Profile/Government.php';
 
-class TRIALAccount {
+class Account {
     
     // Added on 10/09/2016, 15:32:01
     const USER = 'user';
@@ -75,6 +88,13 @@ class TRIALAccount {
      * 22/11/2016, 20:11:48 => removed buildResponse() and replaced for Query::helper()
      * 
      * 24/11/2016, 23:51:28 => now all authenticateUser() sub-methods returns account type. It's given by 'account' alias.
+     * 
+     * 06/12/2016
+     *      21:14:24 => added changePhoto($photo)
+     *      21:17:20 => added Government account instance verification in __construct($account = null) and createTRIALAccount($account)
+     *      22:29:28 => createTRIALAccount():
+     *          renamed to createAccount()
+     *          turned to static
      */
     
     private $account;
@@ -83,18 +103,18 @@ class TRIALAccount {
         $this->con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
         if ($account != null) {
             $this->account = $account;
-            if (!($account instanceof User) && !($account instanceof Institution)) {
-                throw new InvalidArgumentException("account argument isn't a instance of User or Institution class");
+            if (!($account instanceof User) && !($account instanceof Institution) && !($account instanceof Government)) {
+                throw new InvalidArgumentException("account argument isn't a instance of User, Institution, or Government class");
             }
         }
     }
     
-    public function createTRIALAccount($account) : array {
+    public static function createAccount($account) : array {
         $is_user = $account instanceof User;
         $is_institution = $account instanceof Institution;
-        $is_government = $account instanceof TRIALAccount;
+        $is_government = $account instanceof Government;
         if (!$is_user && !$is_institution && !$is_government) {
-            throw new InvalidArgumentException("Account isn't a instance of User or Institution class");
+            throw new InvalidArgumentException("Account isn't a instance of User, Institution, or Government class");
         } else {
             if ($is_user) {
                 $query = (new Insert($this->con))->table(TABLE_USERS)->columns('first_name, last_name, birthday, sex, email, postal_code, password, ip, register_date_time')->values([$account->getName(), $account->getLastName(), $account->getBirthday(), $account->getSex(), $account->getEmail(), $account->getPostalCode(), $account->getPassword(), null, date('Y-m-d H:i:s')]);
@@ -338,6 +358,13 @@ class TRIALAccount {
         $result = $check != null ? $check[0] : $check;
         $result['message'] = $check != null ? Message::EXIST : Message::NOT_EXIST;
         return $result;
+    }
+    
+    public function changePhoto($photo) : array {
+        if (move_uploaded_file($photo['tmp_name'], '/TRIAL/images/' . get_class($this->account) . '/' . $this->account->getId() . '/' . $this->account->getId() . '.jpg')) {
+            return json_encode(['message' => Message::SAVED_WITH_SUCCESS]);
+        }
+        return json_encode(['message' => Message::ERROR, 'error' => ['message' => 'File can\'t be uploaded']]);
     }
     
 }

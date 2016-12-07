@@ -11,6 +11,10 @@
  * 26/09/2016, 00:00:00: columns() removed
  */
 
+namespace SQL;
+
+use DeleteClauses;
+
 require_once 'Query.php';
 require_once 'DeleteClauses.php';
 require_once 'QueryResponse.php';
