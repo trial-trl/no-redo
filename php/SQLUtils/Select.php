@@ -9,6 +9,10 @@
  * @package SQLUtils
  */
 
+namespace SQL;
+
+use SelectClauses, PDO;
+
 require_once __DIR__ . '/Query.php';
 require_once __DIR__ . '/SelectClauses.php';
 require_once __DIR__ . '/QueryResponse.php';

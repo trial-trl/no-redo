@@ -9,6 +9,11 @@
  * @package Profile
  */
 
+namespace Profile;
+
+use Account\Base as Account;
+use JsonSerializable;
+
 require_once 'Account.php';
 require_once __DIR__ . '/../../Request.php';
 
@@ -19,6 +24,7 @@ class Institution extends Account implements JsonSerializable {
     private $infos;
     
     public function __construct($id = null) {
+        parent::__construct();
     }
     
     public function setCNPJ($cnpj) {
