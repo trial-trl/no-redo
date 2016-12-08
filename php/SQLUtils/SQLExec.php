@@ -11,6 +11,8 @@
 
 namespace SQL;
 
+use PDO;
+
 require_once 'CommonQuery.php';
 
 class SQLExec extends CommonQuery {
