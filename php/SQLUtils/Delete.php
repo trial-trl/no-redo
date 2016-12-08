@@ -13,7 +13,7 @@
 
 namespace SQL;
 
-use DeleteClauses;
+use DeleteClauses, PDO;
 
 require_once 'Query.php';
 require_once 'DeleteClauses.php';
