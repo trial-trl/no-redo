@@ -13,6 +13,8 @@
 
 namespace SQL;
 
+use PDO;
+
 require_once 'Query.php';
 require_once 'DeleteClauses.php';
 require_once 'QueryResponse.php';

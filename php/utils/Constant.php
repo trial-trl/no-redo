@@ -29,7 +29,7 @@ const DB_USER = 'root';
 const DB_PASSWORD = '';
 const DB_PREFIX = 'trial105_';
 
-// Database names
+/*// Database names
 const DATABASE_TRIAL = 'trial';
 const DATABASE_SERVICES = 'services';
 const DATABASE_CLICKER = 'clicker';
@@ -45,7 +45,25 @@ const DATABASE_STREET_RACE = 'street_race';
 const DATABASE_STORE = 'store';
 const DATABASE_DIGITAL_BOOKLET = 'digital_booklet';
 // Added on: 04/09/2016, 17:20:54
-const DATABASE_FIX_IT = 'fix_it';
+const DATABASE_FIX_IT = 'fix_it';*/
+
+// added on 07/12/2016, 18:12:33
+// Database names
+const DATABASE_TRIAL = DB_PREFIX . 'trial';
+const DATABASE_SERVICES = DB_PREFIX . 'services';
+const DATABASE_CLICKER = DB_PREFIX . 'clicker';
+const DATABASE_USERS = DB_PREFIX . 'users';
+const DATABASE_GAMES = DB_PREFIX . 'games';
+const DATABASE_DOWNLOADS = DB_PREFIX . 'downloads';
+const DATABASE_NO_REDO = DB_PREFIX . 'no_redo';
+const DATABASE_SOLIDARITY_MAP = DB_PREFIX . 'mapadasolidariedade';
+const DATABASE_JOBS_NOW = DB_PREFIX . 'jobs_now';
+const DATABASE_ANNOTATION = DB_PREFIX . 'annotation';
+const DATABASE_VIRTUAL_HERITAGE_CONTROL = DB_PREFIX . 'virtual_heritage_control';
+const DATABASE_STREET_RACE = DB_PREFIX . 'street_race';
+const DATABASE_STORE = DB_PREFIX . 'store';
+const DATABASE_DIGITAL_BOOKLET = DB_PREFIX . 'digital_booklet';
+const DATABASE_FIX_IT = DB_PREFIX . 'fix_it';
 
 // Table names
 const TABLE_USERS = 'users';
