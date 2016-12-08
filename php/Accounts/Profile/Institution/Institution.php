@@ -14,8 +14,8 @@ namespace Profile;
 use Account\Base as Account;
 use JsonSerializable;
 
-require_once 'Account.php';
-require_once __DIR__ . '/../../Request.php';
+require_once __DIR__ . '/../Account.php';
+require_once __DIR__ . '/../../../Request.php';
 
 class Institution extends Account implements JsonSerializable {
     
@@ -23,23 +23,21 @@ class Institution extends Account implements JsonSerializable {
     private $name;
     private $infos;
     
-    public function __construct($id = null) {
-        parent::__construct();
-    }
-    
-    public function setCNPJ($cnpj) {
-        $this->cnpj = $cnpj;
-        return $this;
-    }
-    
-    public function setName($name) {
-        $this->name = $name;
-        return $this;
-    }
-    
-    public function setInfos($infos) {
-        $this->infos = $infos ? new DecodeInstitutionInfos(base64_decode($infos)) : null;
-        return $this;
+    public function __construct($search = null, array $columns = null) {
+        parent::__construct(TRIALAccount::INSTITUTION);
+        $type = gettype($search);
+        switch ($type) {
+            case 'string':
+                break;
+            case 'integer':
+                break;
+            default:
+                $data = $search != null ? $search : [];
+        }
+        $data = $data != $search && $data->success() && $data->existRows() ? $data->getResult()[0] : [];
+        foreach ($data as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
     
     public function getCNPJ() {

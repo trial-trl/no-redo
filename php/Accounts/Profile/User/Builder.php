@@ -13,13 +13,14 @@
 
 namespace User;
 
-use User;
+use AccountBuilder;
+use User, Sex;
+use DateTime, InvalidArgumentException;
 
+require_once __DIR__ . '/../AccountBuilder.php';
 require_once __DIR__ . '/User.php';
 
-class Builder {
-    
-    private $values = [];
+class Builder extends AccountBuilder {
     
     public function setFirstName($first_name) {
         $this->values['first_name'] = $first_name;
@@ -112,7 +113,7 @@ class Builder {
         return $this;
     }
     
-    public function build() : User {
+    public function build() {
         return new User($this->values);
     }
     

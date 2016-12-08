@@ -9,36 +9,34 @@
  * @copyright (c) 2016, TRIAL
  * 
  * @package Accounts
+ * 
+ * @version 1.2NC
  */
 
-namespace TRIAL;
-
-use \PDO;
-use ConnectDB, SQL\Query, SQL\Select, SQL\Insert, SQL\Update, SQL\Delete;
-use User, Institution, Government;
-use Message, InvalidArgumentException;
+use SQL\Query, SQL\Select, SQL\Insert, SQL\Update, SQL\Delete;
 
 require_once __DIR__ . '/Profile/User/User.php';
 require_once __DIR__ . '/Profile/User/Builder.php';
-require_once __DIR__ . '/Profile/Institution.php';
+require_once __DIR__ . '/Profile/Institution/Institution.php';
+require_once __DIR__ . '/Profile/Institution/Builder.php';
 require_once __DIR__ . '/Profile/Government.php';
 
-class Account {
+TRIALAccount::$con = DB::connect(DATABASE_USERS);
+
+class TRIALAccount {
     
     const USER = 'user';
-    
     const INSTITUTION = 'institution';
-    
     const INSTITUTION_MEMBER = 'institution_member';
-    
     const GOVERNMENT = 'government';
     
-    private $con;
-    
+    public static $con;
     private $account;
     
     public function __construct($account = null) {
-        $this->con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
+        if (!self::$con) {
+            self::$con = DB::connect(DATABASE_USERS);
+        }
         if ($account != null) {
             $this->account = $account;
             if (!($account instanceof User) && !($account instanceof Institution) && !($account instanceof Government)) {
@@ -47,7 +45,25 @@ class Account {
         }
     }
     
-    public static function createAccount($account) : array {
+    public static function authenticate($login, string $password, $type_account = self::USER, bool $permanent = false) : array {
+        switch ($type_account) {
+            case self::USER:
+                $result = self::userAuth($login, $password, $permanent);
+                break;
+            case self::INSTITUTION:
+                $result = self::institutionAuth($login, $password, $permanent);
+                break;
+            case self::INSTITUTION_MEMBER:
+                $result = self::institutionMemberAuth($login, $password, $permanent);
+                break;
+            case self::GOVERNMENT:
+                $result = self::governmentAuth($login, $password, $permanent);
+                break;
+        }
+	return $result;
+    }
+    
+    public static function create($account) : array {
         $is_user = $account instanceof User;
         $is_institution = $account instanceof Institution;
         $is_government = $account instanceof Government;
@@ -55,11 +71,11 @@ class Account {
             throw new InvalidArgumentException("Account isn't a instance of User, Institution, or Government class");
         } else {
             if ($is_user) {
-                $query = (new Insert($this->con))->table(TABLE_USERS)->columns('first_name, last_name, birthday, sex, email, postal_code, password, ip, register_date_time')->values([$account->getName(), $account->getLastName(), $account->getBirthday(), $account->getSex(), $account->getEmail(), $account->getPostalCode(), $account->getPassword(), null, date('Y-m-d H:i:s')]);
+                $query = (new Insert(self::$con))->table(TABLE_USERS)->columns('first_name, last_name, birthday, sex, email, postal_code, password, ip, register_date_time')->values([$account->getName(), $account->getLastName(), $account->getBirthday(), $account->getSex(), $account->getEmail(), $account->getPostalCode(), $account->getPassword(), null, date('Y-m-d H:i:s')]);
             } else if ($is_institution) {
-                $query = (new Insert($this->con))->table(TABLE_INSTITUTIONS)->columns('cnpj, name, infos, email, password, register_date_time')->values([$account->getCNPJ(), $account->getName(), $account->getInfos(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
+                $query = (new Insert(self::$con))->table(TABLE_INSTITUTIONS)->columns('cnpj, name, infos, email, password, register_date_time')->values([$account->getCNPJ(), $account->getName(), $account->getInfos(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
             } else if ($is_government) {
-                $query = (new Insert($this->con))->table(TABLE_GOVERNMENTALS)->columns('name, email, password, register_date_time')->values([$account->getName(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
+                $query = (new Insert(self::$con))->table(TABLE_GOVERNMENTALS)->columns('name, email, password, register_date_time')->values([$account->getName(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
             }
             return Query::helper($query->run(), function ($query) {
                 $result = $query->getResult();
@@ -69,14 +85,14 @@ class Account {
         }
     }
     
-    private function userAuth(&$login, string &$password, bool &$permanent) : array {
+    private static function userAuth(&$login, string &$password, bool &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        return Query::helper((new Select($this->con))->table(TABLE_USERS)->columns('id, first_name, last_name, email, password, activated, permission')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'User')->run(), function ($user) use ($login, $password, $permanent) {
+        return Query::helper((new Select(self::$con))->table(TABLE_USERS)->columns('id, first_name, last_name, email, password, activated, permission')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'User')->run(), function ($user) use ($login, $password, $permanent) {
             if ($user->existRows()) {
-                $this->account = $user->getResult()[0];
-                if ($this->account->checkPassword($password)) {
-                    $result = ['message' => $this->account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $this->account->getId(), 'name' => $this->account->getName(), 'last_name' => $this->account->getLastName(), 'photo_url' => $this->account->getPhotoUrl(), 'permission' => $this->account->getPermission(), 'account' => TRIALAccount::USER];
-                    $this->concludeAuthenticationWeb($permanent);
+                $account = $user->getResult()[0];
+                if ($account->checkPassword($password)) {
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getFirstName(), 'last_name' => $account->getLastName(), 'photo_url' => $account->getPhotoUrl(), 'permission' => $account->getPermission(), 'account' => TRIALAccount::USER];
+                    self::concludeAuthenticationWeb($account, $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -87,14 +103,14 @@ class Account {
         });
     }
     
-    private function institutionAuth(&$login, string &$password, bool &$permanent) : array {
+    private static function institutionAuth(&$login, string &$password, bool &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        return Query::helper((new Select($this->con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) use ($login, $password, $permanent) {
+        return Query::helper((new Select(self::$con))->table(TABLE_INSTITUTIONS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Institution')->run(), function ($account) use ($login, $password, $permanent) {
             if ($account->existRows()) {
-                $this->account = $account->getResult()[0];
-                if ($this->account->checkPassword($password)) {
-                    $result = ['message' => $this->account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $this->account->getId(), 'name' => $this->account->getName(), 'photo_url' => $this->account->getPhotoUrl(), 'account' => TRIALAccount::INSTITUTION];
-                    $this->concludeAuthenticationWeb($permanent);
+                $account = $account->getResult()[0];
+                if ($account->checkPassword($password)) {
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName(), 'photo_url' => $account->getPhotoUrl(), 'account' => TRIALAccount::INSTITUTION];
+                    self::concludeAuthenticationWeb($account, $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -105,13 +121,13 @@ class Account {
         });
     }
     
-    private function institutionMemberAuth(&$login, string &$password, bool &$permanent) : array {
-        $account = selectDB($this->con, 'users AS u', 'u.id AS member_id, u.name AS member_name, u.password, u.permission AS member_permission, IF(COUNT(i.id) > 0, true, false) AS have_institution, COUNT(i.id) AS total_institutions, GROUP_CONCAT(i.id SEPARATOR \', \') AS id, GROUP_CONCAT(i.name SEPARATOR \', \') AS name, GROUP_CONCAT(i.email SEPARATOR \', \') AS email, GROUP_CONCAT(i.activated SEPARATOR \', \') AS activated', 'LEFT JOIN institutions_members AS im ON im.user = u.id LEFT JOIN institutions AS i ON i.id = im.institution WHERE u.email = :email', [':email' => $login]);
+    private static function institutionMemberAuth(&$login, string &$password, bool &$permanent) : array {
+        $account = selectDB(self::$con, 'users AS u', 'u.id AS member_id, u.name AS member_name, u.password, u.permission AS member_permission, IF(COUNT(i.id) > 0, true, false) AS have_institution, COUNT(i.id) AS total_institutions, GROUP_CONCAT(i.id SEPARATOR \', \') AS id, GROUP_CONCAT(i.name SEPARATOR \', \') AS name, GROUP_CONCAT(i.email SEPARATOR \', \') AS email, GROUP_CONCAT(i.activated SEPARATOR \', \') AS activated', 'LEFT JOIN institutions_members AS im ON im.user = u.id LEFT JOIN institutions AS i ON i.id = im.institution WHERE u.email = :email', [':email' => $login]);
         if ($account != null) {
             $account = $account[0];
             if (password_verify($password, $account['password']) ? true : $password === $account['password']) {
 	        $result = ['message' => $account['have_institution'] ? Message::EXIST : Message::MEMBER_WITHOUT_INSTITUTION, 'institutions' => ['have_institutions' => $account['have_institution']], 'member' => ['id' => $account['member_id'], 'name' => $account['member_name'], 'permission' => $account['member_permission']]];
-	        $this->concludeAuthenticationWeb($permanent);
+	        self::$concludeAuthenticationWeb($account, $permanent);
                 if ($account['have_institution']) {
                     $result['institutions']['total_institutions'] = $account['total_institutions'];
                     $account = ['id' => explode(', ', $account['id']), 'name' => explode(', ', $account['name']), 'email' => explode(', ', $account['email'])];
@@ -128,14 +144,14 @@ class Account {
         return $result;
     }
     
-    private function governmentAuth(&$login, string &$password, bool &$permanent) : array {
+    private static function governmentAuth(&$login, string &$password, bool &$permanent) : array {
         $id_login = gettype($login) === 'integer';
-        return Query::helper((new Select($this->con))->table(TABLE_GOVERNMENTS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Government')->run(), function ($account) use ($login, $password, $permanent) {
+        return Query::helper((new Select(self::$con))->table(TABLE_GOVERNMENTS)->columns('id, name, email, password, activated')->where($id_login ? 'id = :id' : 'email = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, 'Government')->run(), function ($account) use ($login, $password, $permanent) {
             if ($account->existRows()) {
-                $this->account = $account->getResult()[0];
-                if ($this->account->checkPassword($password)) {
-                    $result = ['message' => $this->account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $this->account->getId(), 'name' => $this->account->getName(), 'permission' => $this->account->getPermission(), 'photo_url' => $this->account->getPhotoUrl(), 'account' => TRIALAccount::GOVERNMENT];
-                    $this->concludeAuthenticationWeb($permanent);
+                $account = $account->getResult()[0];
+                if ($account->checkPassword($password)) {
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName(), 'permission' => $account->getPermission(), 'photo_url' => $account->getPhotoUrl(), 'account' => TRIALAccount::GOVERNMENT];
+                    self::concludeAuthenticationWeb($account, $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -146,44 +162,26 @@ class Account {
         });
     }
     
-    public function authenticateUser($login, string $password, $type_account = self::USER, bool $permanent = false) : array {
-        switch ($type_account) {
-            case self::USER:
-                $result = $this->userAuth($login, $password, $permanent);
-                break;
-            case self::INSTITUTION:
-                $result = $this->institutionAuth($login, $password, $permanent);
-                break;
-            case self::INSTITUTION_MEMBER:
-                $result = $this->institutionMemberAuth($login, $password, $permanent);
-                break;
-            case self::GOVERNMENT:
-                $result = $this->governmentAuth($login, $password, $permanent);
-                break;
-        }
-	return $result;
-    }
-    
-    private function concludeAuthenticationWeb(bool &$permanent) {
-        if ($this->account instanceof User) {
-            $this->createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$this->account->getId(), $this->account->getName(), $this->account->getEmail(), $this->account->getPermission(), self::USER], $permanent);
-        } else if ($this->account instanceof Institution) {
-            $this->createCookies([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$this->account->getId('id'), $this->account->getName(), $this->account->getEmail(), self::INSTITUTION], $permanent);
-        } else if ($this->account instanceof Government) {
-            $this->createCookies([COOKIE_TG_ID_TRIAL, COOKIE_TG_NAME, COOKIE_TG_EMAIL, COOKIE_TYPE], [$this->account->getId('id'), $this->account->getName(), $this->account->getEmail(), self::GOVERNMENT], $permanent);
-        } else if ($this->account instanceof TRIALAccount) {
-            $this->createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_PERMISSION, COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['member_id'], $account['member_name'], $account['member_permission'], $account['id'], $account['name'], $account['email'], self::INSTITUTION_MEMBER], $permanent);
+    private static function concludeAuthenticationWeb(&$account, bool &$permanent) {
+        if ($account instanceof User) {
+            self::createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$account->getId(), $account->getFirstName(), $account->getEmail(), $account->getPermission(), self::USER], $permanent);
+        } else if ($account instanceof Institution) {
+            self::createCookies([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $this->account->getEmail(), self::INSTITUTION], $permanent);
+        } else if ($account instanceof Government) {
+            self::createCookies([COOKIE_TG_ID_TRIAL, COOKIE_TG_NAME, COOKIE_TG_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), self::GOVERNMENT], $permanent);
+        } else if ($account instanceof TRIALAccount) {
+            self::createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_PERMISSION, COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['member_id'], $account['member_name'], $account['member_permission'], $account['id'], $account['name'], $account['email'], self::INSTITUTION_MEMBER], $permanent);
         }
     }
     
-    private function createCookies(array $name_cookies, array $value_cookies, bool &$permanent) {
+    private static function createCookies(array $name_cookies, array $value_cookies, bool &$permanent) {
         foreach ($name_cookies as $i => $cookie) {
             $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
             setcookie($cookie, $value_cookies[$i], !$permanent ? 0 : strtotime('+30 days'), '/', $domain);
         }
     }
     
-    public function logout() : array {
+    public static function logout() : array {
         $result = [];
         $i = 0;
         $host = $_SERVER['HTTP_HOST'];
@@ -211,40 +209,40 @@ class Account {
     }
     
     public function getProfiles($ids) : array {
-        $get = selectDB($this->con, TABLE_USERS, 'id, name, last_name, birthday, city, state, zip, email, permission', 'WHERE id IN (' . $ids . ')', null);
+        $get = selectDB(self::$con, TABLE_USERS, 'id, name, last_name, birthday, city, state, zip, email, permission', 'WHERE id IN (' . $ids . ')', null);
         $get['message'] = $get != null ? Message::EXIST : Message::NOT_EXIST;
         return $get;
     }
     
     public function getProfilesByPermission($permission) : array {
-        $get = selectDB($this->con, TABLE_USERS, 'id, name, last_name, email, permission', 'WHERE permission = :permission ORDER BY name ASC', [':permission' => $permission]);
+        $get = selectDB(self::$con, TABLE_USERS, 'id, name, last_name, email, permission', 'WHERE permission = :permission ORDER BY name ASC', [':permission' => $permission]);
         $get['message'] = $get != null ? Message::EXIST : Message::NOT_EXIST;
         return $get;
     }
     
     public function editData($field, $new_value) : array {
-        return Query::helper((new Update($this->con))->table(TABLE_USERS)->columns($field)->where('id = :id')->values([$new_value == '' ? null : $new_value])->valuesWhere([':id' => $this->account->getId()])->run(), function ($query) {
+        return Query::helper((new Update(self::$con))->table(TABLE_USERS)->columns($field)->where('id = :id')->values([$new_value == '' ? null : $new_value])->valuesWhere([':id' => $this->account->getId()])->run(), function ($query) {
             return ['message' => Message::SAVED_WITH_SUCCESS];
         });
     }
     
     public function changeProfileData($name, $last_name, $email) : array {
-        $update = updateDB($this->con, TABLE_USERS, 'name = :name, last_name = :last_name, email = :email', 'WHERE id = :id', [':name' => $name, ':last_name' => $last_name, ':email' => $email, ':id' => $id]);
+        $update = updateDB(self::$con, TABLE_USERS, 'name = :name, last_name = :last_name, email = :email', 'WHERE id = :id', [':name' => $name, ':last_name' => $last_name, ':email' => $email, ':id' => $id]);
         return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Informações de perfil atualizadas!'];
     }
     
     public function changeLocalizationData($city, $state, $zip) : array {
-        $update = updateDB($this->con, TABLE_USERS, 'city = :city, state = :state, zip = :zip', 'WHERE id = :id', [':city' => $city, ':state' => $state, ':zip' => $zip, ':id' => $id]);
+        $update = updateDB(self::$con, TABLE_USERS, 'city = :city, state = :state, zip = :zip', 'WHERE id = :id', [':city' => $city, ':state' => $state, ':zip' => $zip, ':id' => $id]);
         return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Informações de localização atualizadas!'];
     }
     
     public function changePassword($old_password, $new_password) : array {
-        $update = updateDB($this->con, TABLE_USERS, 'password = :password', 'WHERE id = :id AND password = :old_password', [':password' => $new_password, ':id' => $id, ':old_password' => $old_password]);
+        $update = updateDB(self::$con, TABLE_USERS, 'password = :password', 'WHERE id = :id AND password = :old_password', [':password' => $new_password, ':id' => $id, ':old_password' => $old_password]);
         return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR, 'echo_message' => 'Senha alterada!'];
     }
     
     public function recoverChangePassword($new_password) : array {
-        $update = updateDB($this->con, TABLE_USERS, 'password', 'id', [password_hash($new_password, PASSWORD_DEFAULT), $user]);
+        $update = updateDB(self::$con, TABLE_USERS, 'password', 'id', [password_hash($new_password, PASSWORD_DEFAULT), $user]);
         return ['message' => $update ? Message::SAVED_WITH_SUCCESS : Message::ERROR];
     }
     
@@ -255,7 +253,7 @@ class Account {
     }
     
     public function getAllAccounts() : array {
-        return Query::helper((new Select($this->con))->table(DB_PREFIX . DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('CONCAT(\'{"id": \', clicker.id, \', "type": "\', clicker.type, \'", "register_date_time": "\', clicker.register_date, \' \', clicker.register_time, \'"}\') AS clicker')->leftJoin(DB_PREFIX . DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $this->account->getId()])->run(), function ($accounts) {
+        return Query::helper((new Select(self::$con))->table(DATABASE_USERS . '.' . TABLE_USERS . ' AS trial')->columns('CONCAT(\'{"id": \', clicker.id, \', "type": "\', clicker.type, \'", "register_date_time": "\', clicker.register_date, \' \', clicker.register_time, \'"}\') AS clicker')->leftJoin(DATABASE_CLICKER . '.' . TABLE_USERS . ' AS clicker ON clicker.user = trial.id')->where('trial.id = :user')->values([':user' => $this->account->getId()])->run(), function ($accounts) {
             if ($accounts->existRows()) {
                 $result = $accounts->getResult()[0];
                 $result['message'] = Message::EXIST;
@@ -267,13 +265,13 @@ class Account {
     }
 
     public function getHowKnowRegisters() : array {
-        return Query::helper((new Select($this->con))->table('how_know')->columns('id, how')->run(), function ($query) {
+        return Query::helper((new Select(self::$con))->table('how_know')->columns('id, how')->run(), function ($query) {
             $result['message'] = $query->existRows() ?  Message::EXIST : Message::NOT_EXIST;
             return $result;
         });
     }
     
-    public function checkEmail(string $email) : array {
+    public static function checkEmail(string $email) : array {
         $user = new User($email);
         if ($user->getId() != null) {
             $response['user'] = $user;
@@ -282,29 +280,31 @@ class Account {
         return $response;
     }
     
-    public function createVerificationCode($user) : array {
+    public static function createVerificationCode($user) : array {
         $raw_code = uniqid(rand(), true);
         $code = md5($raw_code);
-        return [insertDB($this->con, 'verification_codes', 'user, code, register_date, register_time', [$user, $code, date('Y-m-d'), date('H:i:s')]), 'message' => Message::SAVED_WITH_SUCCESS, 'code' => $raw_code];
+        return Query::helper((new Insert(self::$con))->table('verification_codes')->columns('user, code, register_date_time')->values([$user, $code, date('Y-m-d H:i:s')])->run(), function ($query) use ($raw_code) {
+            return ['id' => $query->getResult()['id'], 'code' => $raw_code, 'message' => Message::SAVED_WITH_SUCCESS];
+        });
     }
     
-    public function checkVerificationCode($id, $code) : array {
-        $check = selectDB($this->con, 'verification_codes', 'user', 'WHERE id = :id AND code = :code', [':id' => $id, ':code' => md5($code)]);
-        if ($check != null) {
-            updateDB($this->con, 'verification_codes', 'verificated', 'id', [true, $id]);
-        }
-        $result = $check != null ? $check[0] : $check;
-        $result['message'] = $check != null ? Message::EXIST : Message::NOT_EXIST;
-        return $result;
+    public static function checkVerificationCode($user, $code) : array {
+        return Query::helper((new Select(self::$con))->table('verification_codes')->columns('id')->where('user = :user AND code = :code')->values([':user' => $user, ':code' => md5($code)])->run(), function ($query) {
+            if ($query->existRows()) {
+                $result = $query->getResult()[0];
+                $delete = (new Delete(self::$con))->table('verification_codes')->where('id = :id')->values([$result['id']])->run();
+            }
+            $result['message'] = $query->existRows() ? Message::EXIST : Message::NOT_EXIST;
+            return $result;
+        });
     }
     
     public function changePhoto($photo) : array {
-        if (move_uploaded_file($photo['tmp_name'], '/TRIAL/images/' . get_class($this->account) . '/' . $this->account->getId() . '/' . $this->account->getId() . '.jpg')) {
-            return json_encode(['message' => Message::SAVED_WITH_SUCCESS]);
+        $url = '/TRIAL/images/' . strtolower(get_class($this->account)) . '/profile/' . $this->account->getId() . '/' . $this->account->getId() . '.jpg';
+        if (move_uploaded_file($photo['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $url)) {
+            return ['message' => Message::SAVED_WITH_SUCCESS, 'url' => $url];
         }
-        return json_encode(['message' => Message::ERROR, 'error' => ['message' => 'File can\'t be uploaded']]);
+        return ['message' => Message::ERROR, 'error' => ['message' => 'File can\'t be uploaded']];
     }
     
 }
-
-class_alias('\TRIAL\Account', 'TRIALAccount');

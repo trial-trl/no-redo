@@ -11,7 +11,7 @@
 
 namespace SQL;
 
-use DeleteClauses;
+use DeleteClauses, PDO;
 
 require_once __DIR__ . '/Query.php';
 require_once __DIR__ . '/DeleteClauses.php';
