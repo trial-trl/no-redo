@@ -11,7 +11,7 @@
 
 namespace SQL;
 
-use InsertClauses;
+use InsertClauses, PDO;
 
 require_once __DIR__ . '/Query.php';
 require_once __DIR__ . '/InsertClauses.php';

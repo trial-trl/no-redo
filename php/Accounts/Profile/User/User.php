@@ -19,45 +19,48 @@ require_once __DIR__ . '/../../../Request.php';
 
 class User extends Account {
     
-    protected $first_name;
-    protected $middle_name;
-    protected $last_name;
-    protected $nickname;
-    protected $rg;
-    protected $cpf;
-    protected $birthday;
-    protected $sex;
-    protected $nationality;
-    protected $location = [];
-    protected $landline;
-    protected $cell_phone;
-    protected $schooling_level;
-    protected $main_occupation;
-    protected $permission;
+    private $first_name;
+    private $middle_name;
+    private $last_name;
+    private $nickname;
+    private $rg;
+    private $cpf;
+    private $birthday;
+    private $sex;
+    private $nationality;
+    private $location = [];
+    private $landline;
+    private $cell_phone;
+    private $schooling_level;
+    private $main_occupation;
+    private $permission;
     
-    public function __construct($search = null) {
-        parent::__construct();
-        $type = gettype($search);
-        $con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
-        if ($type === 'string' || $type === 'integer') {
-            switch ($type) {
-                case 'string':
-                    $data = (new Select($con))->table(TABLE_USERS)->columns('id, first_name, middle_name, last_name, nickname, birthday, sex, rg, cpf, nationality, city, state, postal_code, landline, cell_phone, email, password, activated, permission')->where('email = :email')->values([':email' => $search])->run();
-                    break;
-                case 'integer':
-                    $data = (new Select($con))->table(TABLE_USERS)->columns('id, first_name, middle_name, last_name, nickname, birthday, sex, rg, cpf, nationality, city, state, postal_code, landline, cell_phone, email, password, activated, permission')->where('id = :id')->values([':id' => $search])->run();
-                    break;
-            }
-            $data = $data->success() && $data->existRows() ? $data->getResult()[0] : [];
+    public function __construct($search = null, array $columns = null) {
+        parent::__construct(TRIALAccount::USER);
+        if ($columns == null) {
+            $columns = 'id, first_name, middle_name, last_name, nickname, birthday, sex, rg, cpf, nationality, city, state, postal_code, landline, cell_phone, email, password, activated, permission';
         } else {
-            $data = $search;
+            $columns = implode(', ', $columns);
+        }
+        $type = gettype($search);
+        $con = DB::connect(DATABASE_USERS);
+        switch ($type) {
+            case 'string':
+                $data = (new Select($con))->table(TABLE_USERS)->columns($columns)->where('email = :email')->values([':email' => $search])->run();
+                break;
+            case 'integer':
+                $data = (new Select($con))->table(TABLE_USERS)->columns($columns)->where('id = :id')->values([':id' => $search])->run();
+                break;
+            default:
+                $data = $search != null ? $search : [];
+        }
+        if (gettype($data) === 'object') {
+            if ($data->success() && $data->existRows()) {
+                $data = $data->getResult()[0];
+            }
         }
         foreach ($data as $key => $value) {
-            if ($key == 'postal_code' || $key == 'city' || $key == 'state') {
-                $this->location[$key == 'city' ? 'county' : $key] = $value;
-            } else {
-                $this->{$key} = $value;
-            }
+            $this->{$key} = $value;
         }
     }
     

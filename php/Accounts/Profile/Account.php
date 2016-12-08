@@ -24,34 +24,8 @@ class Base {
     protected $password;
     protected $activated;
     
-    public function __construct() {
-        if ($this instanceof User) {
-            $this->type_account = 'user';
-        } else if ($this instanceof Institution) {
-            $this->type_account = 'institution';
-        } else {
-            $this->type_account = 'government';
-        }
-    }
-    
-    public function setId($id) {
-        $this->id = $id;
-        return $this;
-    }
-    
-    public function setEmail($email) {
-        $this->email = $email;
-        return $this;
-    }
-    
-    public function setPassword($password) {
-        $this->password = $password;
-        return $this;
-    }
-    
-    public function setActivated($activated) {
-        $this->activated = $activated;
-        return $this;
+    public function __construct($type) {
+        $this->type_account = strtolower($type);
     }
     
     public function getId() {
