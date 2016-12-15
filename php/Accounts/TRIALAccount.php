@@ -238,7 +238,7 @@ class TRIALAccount {
         if ($account instanceof User) {
             self::createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_EMAIL, COOKIE_PERMISSION, COOKIE_TYPE], [$account->getId(), $account->getFirstName(), $account->getEmail(), $account->getPermission(), self::USER], $permanent);
         } else if ($account instanceof Institution) {
-            self::createCookies([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $this->account->getEmail(), self::INSTITUTION], $permanent);
+            self::createCookies([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), self::INSTITUTION], $permanent);
         } else if ($account instanceof Government) {
             self::createCookies([COOKIE_TG_ID_TRIAL, COOKIE_TG_NAME, COOKIE_TG_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), self::GOVERNMENT], $permanent);
         } else if ($account instanceof TRIALAccount) {
