@@ -21,10 +21,7 @@
  * 07/12/2016, 23:56:08 => added __construct() array $columns arg, allowing to select what data should be retrieved
  */
 
-namespace Profile;
-
 use Account\Base as Account;
-use JsonSerializable;
 
 require_once __DIR__ . '/../Account.php';
 require_once __DIR__ . '/../../../Request.php';
