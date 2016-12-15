@@ -9,10 +9,7 @@
  * @package Profile
  */
 
-namespace Profile;
-
 use Account\Base as Account;
-use JsonSerializable;
 
 require_once __DIR__ . '/../Account.php';
 require_once __DIR__ . '/../../../Request.php';
