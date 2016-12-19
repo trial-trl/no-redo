@@ -171,6 +171,7 @@ a.current {
 }
 
 #copyright, [copyright] {
+    width: 100%;
     color: rgba(255, 255, 255, 0.6);
 }
 
@@ -201,8 +202,10 @@ a.current {
     transition: 0.1s all ease-in;
 }
 
-#footer-developer > #logo-developer, [owner] > [logo] {
+/* changed [logo] to trl-logo on 17/12/2016, 16:13:42 */
+#footer-developer > #logo-developer, [owner] > trl-logo {
     position: relative;
+    float: left;
     clear: both;
     top: 5px;
     opacity: 0.6;
