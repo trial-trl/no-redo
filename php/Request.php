@@ -14,7 +14,8 @@ require_once 'RequestResponse.php';
 // 18/10/2016, 01:19:02 - 01:28:38 => class Request changed: now have only the static function make(), and returns now techinical infos about the request
 class Request {
     
-    public static function make($url, $data = null) {
+    // 19/12/2016, 17:52:30 => added cURL $options
+    public static function make($url, $data = null, $options = []) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         if ($data != null) {
@@ -24,6 +25,12 @@ class Request {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $type_data === 'string' ? $data : http_build_query($data));
             } else {
                 throw new InvalidArgumentException('$data argument isn\'t some of the expected types! The accepted ones are: string, array, or object value');
+            }
+        }
+        if (count($options) > 0) {
+            foreach ($options as $option) {
+                curl_setopt($ch, $option[0], $option[1]);
+                
             }
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

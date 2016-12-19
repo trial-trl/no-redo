@@ -25,6 +25,9 @@ class Base {
     protected $password;
     protected $activated;
     
+    // added on 16/12/2016, 16:22:14
+    protected $permission;
+    
     public function __construct($type) {
         $this->type_account = strtolower($type);
     }
@@ -53,6 +56,11 @@ class Base {
         $url = 'http://www.trialent.com/images/' . $this->type_account . '/profile/' . $this->id . '/' . $this->id . '.jpg';
         $response = Request::make($url);
         return  $response->success() && $response->getResult()['http_code'] === 200 ? $url : '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
+    }
+    
+    // added on 16:22:39
+    public function getPermission() {
+        return $this->permission;
     }
     
 }
