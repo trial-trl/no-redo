@@ -33,7 +33,6 @@ class User extends Account {
     private $cell_phone;
     private $schooling_level;
     private $main_occupation;
-    private $permission;
     
     public function __construct($search = null, array $columns = null) {
         parent::__construct(TRIALAccount::USER);
@@ -130,10 +129,6 @@ class User extends Account {
     
     public function getMainOccupation() {
         return $this->main_occupation;
-    }
-    
-    public function getPermission() {
-        return $this->permission;
     }
 
 }

@@ -13,7 +13,7 @@ require_once 'RequestResponse.php';
 
 class Request {
     
-    public static function make($url, $data = null) {
+    public static function make($url, $data = null, $options = []) {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         if ($data != null) {
@@ -23,6 +23,12 @@ class Request {
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $type_data === 'string' ? $data : http_build_query($data));
             } else {
                 throw new InvalidArgumentException('$data argument isn\'t some of the expected types! The accepted ones are: string, array, or object value');
+            }
+        }
+        if (count($options) > 0) {
+            foreach ($options as $option) {
+                curl_setopt($ch, $option[0], $option[1]);
+                
             }
         }
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);

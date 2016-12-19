@@ -10,6 +10,7 @@
  */
 
 use Account\Base as Account;
+use SQL\Select;
 
 require_once __DIR__ . '/../Account.php';
 require_once __DIR__ . '/../../../Request.php';
@@ -22,16 +23,24 @@ class Institution extends Account implements JsonSerializable {
     
     public function __construct($search = null, array $columns = null) {
         parent::__construct(TRIALAccount::INSTITUTION);
+        if ($columns == null) {
+            $columns = 'id, cnpj, name, email, activated';
+        } else {
+            $columns = implode(', ', $columns);
+        }
         $type = gettype($search);
+        $con = DB::connect(DATABASE_USERS);
         switch ($type) {
             case 'string':
+                $data = (new Select($con))->table(TABLE_INSTITUTIONS)->columns($columns)->where('email = :email')->values([':email' => $search])->run();
                 break;
             case 'integer':
+                $data = (new Select($con))->table(TABLE_INSTITUTIONS)->columns($columns)->where('id = :id')->values([':id' => $search])->run();
                 break;
             default:
                 $data = $search != null ? $search : [];
         }
-        $data = $data != $search && $data->success() && $data->existRows() ? $data->getResult()[0] : [];
+        $data = gettype($data) === 'object' && $data->success() && $data->existRows() ? $data->getResult()[0] : [];
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
