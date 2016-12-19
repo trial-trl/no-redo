@@ -59,6 +59,8 @@
  * 
  * 07/12/2016, 23:52:23 => added __construct() array $columns arg, allowing to select what data should be retrieved
  * 
+ * 16/12/2016, 16:21:10 => removed getPermission()
+ * 
  */
 
 use Account\Base as Account,
@@ -83,7 +85,6 @@ class User extends Account {
     private $cell_phone;
     private $schooling_level;
     private $main_occupation;
-    private $permission;
     
     public function __construct($search = null, array $columns = null) {
         parent::__construct(TRIALAccount::USER);
@@ -181,10 +182,6 @@ class User extends Account {
     
     public function getMainOccupation() {
         return $this->main_occupation;
-    }
-    
-    public function getPermission() {
-        return $this->permission;
     }
 
 }

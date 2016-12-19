@@ -19,9 +19,12 @@
  * 24/11/2016, 18:23:35 => now this class extends Account. Id, Email, Password, checkPassword(), getPhotoUrl(), and Activate are now handle by Account class, not being need to implement these items here.
  * 
  * 07/12/2016, 23:56:08 => added __construct() array $columns arg, allowing to select what data should be retrieved
+ * 
+ * 16/12/2016, 16:31:07 => now construct() can get existent Institutions by $search arg; finished switch $type from $search arg, supporting gets by email or id, added $columns arg (this allows to choose what columns should return)
  */
 
 use Account\Base as Account;
+use SQL\Select;
 
 require_once __DIR__ . '/../Account.php';
 require_once __DIR__ . '/../../../Request.php';
@@ -34,16 +37,24 @@ class Institution extends Account implements JsonSerializable {
     
     public function __construct($search = null, array $columns = null) {
         parent::__construct(TRIALAccount::INSTITUTION);
+        if ($columns == null) {
+            $columns = 'id, cnpj, name, email, activated';
+        } else {
+            $columns = implode(', ', $columns);
+        }
         $type = gettype($search);
+        $con = DB::connect(DATABASE_USERS);
         switch ($type) {
             case 'string':
+                $data = (new Select($con))->table(TABLE_INSTITUTIONS)->columns($columns)->where('email = :email')->values([':email' => $search])->run();
                 break;
             case 'integer':
+                $data = (new Select($con))->table(TABLE_INSTITUTIONS)->columns($columns)->where('id = :id')->values([':id' => $search])->run();
                 break;
             default:
                 $data = $search != null ? $search : [];
         }
-        $data = $data != $search && $data->success() && $data->existRows() ? $data->getResult()[0] : [];
+        $data = gettype($data) === 'object' && $data->success() && $data->existRows() ? $data->getResult()[0] : [];
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }

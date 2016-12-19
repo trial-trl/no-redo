@@ -11,9 +11,15 @@
  * @version 1.0
  */
 
-namespace Profile;
+/*
+ * 16/12/2016
+ *      16:26:36 => remove $permission and getPermission()
+ *      19:40:15 => added parent::__construct(TRIALAccount::GOVENRMENT); removed namespace, update Connection code
+ */
 
 use Account\Base as Account;
+
+use SQL\Select;
 
 require_once 'Account.php';
 require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/Request.php';
@@ -21,11 +27,10 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/Request.php';
 class Government extends Account {
     
     private $name;
-    private $permission;
     
     public function __construct($search = null) {
-        parent::__construct();
-        $con = (new ConnectDB(DB_PREFIX . DATABASE_USERS))->connect();
+        parent::__construct(TRIALAccount::GOVERNMENT);
+        $con = DB::connect(DATABASE_USERS);
         if ($search != null) {
             switch (gettype($search)) {
                 case 'string':
@@ -52,10 +57,6 @@ class Government extends Account {
     
     public function getName() {
         return $this->name;
-    }
-    
-    public function getPermission() {
-        return $this->permission;
     }
     
 }
