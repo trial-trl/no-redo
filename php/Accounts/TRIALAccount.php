@@ -338,6 +338,7 @@ class TRIALAccount {
 
     public function getHowKnowRegisters() : array {
         return Query::helper((new Select(self::$con))->table('how_know')->columns('id, how')->run(), function ($query) {
+            $result = $query->getResult();
             $result['message'] = $query->existRows() ?  Message::EXIST : Message::NOT_EXIST;
             return $result;
         });
