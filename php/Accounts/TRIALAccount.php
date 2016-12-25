@@ -83,6 +83,13 @@
  *      18:43:08 => logout() turned to static
  *      19:44:30 => checkEmail() turned to static
  *      20:00:09 => createVerificationCode() turned to static
+ * 
+ * 24/12/2016
+ *      16:52:55 => const GOVERNMENTAL_DEPARTMENT added
+ *      17:34:12 => added Department account instance verification in __construct($account = null) and create($account)
+ *      17:34:43 => added Department login support in authenticate($account)
+ *      17:38:26 => added Department account creation support in create($account)
+ *      19:26:03 => added Department cookie support in concludeAuthenticationWeb()
  */
 
 use SQL\Query, SQL\Select, SQL\Insert, SQL\Update, SQL\Delete;
@@ -91,6 +98,7 @@ require_once 'Profile/User/User.php';
 require_once 'Profile/User/Builder.php';
 require_once 'Profile/Institution/Institution.php';
 require_once 'Profile/Institution/Builder.php';
+require_once 'Profile/Department/Department.php';
 require_once 'Profile/Government.php';
 
 TRIALAccount::$con = DB::connect(DATABASE_USERS);
@@ -101,6 +109,7 @@ class TRIALAccount {
     const INSTITUTION = 'institution';
     const INSTITUTION_MEMBER = 'institution_member';
     const GOVERNMENT = 'government';
+    const GOVERNMENTAL_DEPARTMENT = 'governmental_department';
     
     public static $con;
     private $account;
@@ -111,8 +120,8 @@ class TRIALAccount {
         }
         if ($account != null) {
             $this->account = $account;
-            if (!($account instanceof User) && !($account instanceof Institution) && !($account instanceof Government)) {
-                throw new InvalidArgumentException("account argument isn't a instance of User, Institution, or Government class");
+            if (!($account instanceof User) && !($account instanceof Institution) && !($account instanceof Government) && !($account instanceof Department)) {
+                throw new InvalidArgumentException("account argument isn't a instance of User, Institution, Government, or Department class");
             }
         }
     }
@@ -131,6 +140,9 @@ class TRIALAccount {
             case self::GOVERNMENT:
                 $result = self::governmentAuth($login, $password, $permanent);
                 break;
+            case self::GOVERNMENTAL_DEPARTMENT:
+                $result = self::governmentalDepartmentAuth($login, $password, $permanent);
+                break;
         }
 	return $result;
     }
@@ -139,8 +151,9 @@ class TRIALAccount {
         $is_user = $account instanceof User;
         $is_institution = $account instanceof Institution;
         $is_government = $account instanceof Government;
-        if (!$is_user && !$is_institution && !$is_government) {
-            throw new InvalidArgumentException("Account isn't a instance of User, Institution, or Government class");
+        $is_governmental_department = $account instanceof Department;
+        if (!$is_user && !$is_institution && !$is_government && !$is_governmental_department) {
+            throw new InvalidArgumentException("Account isn't a instance of User, Institution, Government, or Department class");
         } else {
             if ($is_user) {
                 $query = (new Insert(self::$con))->table(TABLE_USERS)->columns('first_name, last_name, birthday, sex, email, postal_code, password, ip, register_date_time')->values([$account->getName(), $account->getLastName(), $account->getBirthday(), $account->getSex(), $account->getEmail(), $account->getPostalCode(), $account->getPassword(), null, date('Y-m-d H:i:s')]);
@@ -148,6 +161,8 @@ class TRIALAccount {
                 $query = (new Insert(self::$con))->table(TABLE_INSTITUTIONS)->columns('cnpj, name, infos, email, password, register_date_time')->values([$account->getCNPJ(), $account->getName(), $account->getInfos(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
             } else if ($is_government) {
                 $query = (new Insert(self::$con))->table(TABLE_GOVERNMENTALS)->columns('name, email, password, register_date_time')->values([$account->getName(), $account->getEmail(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
+            } else if ($is_governmental_department) {
+                $query = (new Insert(self::$con))->table('governamental_departments')->columns('name, login, password, register_date_time')->values([$account->getName(), $account->getLogin(), password_hash($account->getPassword(), PASSWORD_DEFAULT), date('Y-m-d H:i:s')]);
             }
             return Query::helper($query->run(), function ($query) {
                 $result = $query->getResult();
@@ -163,7 +178,7 @@ class TRIALAccount {
             if ($user->existRows()) {
                 $account = $user->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getFirstName(), 'last_name' => $account->getLastName(), 'photo_url' => $account->getPhotoUrl(), 'permission' => $account->getPermission(), 'account' => TRIALAccount::USER];
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getFirstName(), 'last_name' => $account->getLastName(), 'photo_url' => $account->getPhotoUrl(), 'permission' => $account->getPermission(), 'account' => self::USER];
                     self::concludeAuthenticationWeb($account, $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
@@ -181,7 +196,7 @@ class TRIALAccount {
             if ($account->existRows()) {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName(), 'photo_url' => $account->getPhotoUrl(), 'account' => TRIALAccount::INSTITUTION];
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName(), 'photo_url' => $account->getPhotoUrl(), 'account' => self::INSTITUTION];
                     self::concludeAuthenticationWeb($account, $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
@@ -222,7 +237,25 @@ class TRIALAccount {
             if ($account->existRows()) {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName(), 'permission' => $account->getPermission(), 'photo_url' => $account->getPhotoUrl(), 'account' => TRIALAccount::GOVERNMENT];
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getId(), 'name' => $account->getName(), 'permission' => $account->getPermission(), 'photo_url' => $account->getPhotoUrl(), 'account' => self::GOVERNMENT];
+                    self::concludeAuthenticationWeb($account, $permanent);
+                } else {
+                    $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
+                }
+            }  else {
+                $result['message'] = Message::NOT_EXIST;
+            }
+            return $result;
+        });
+    }
+    
+    private static function governmentalDepartmentAuth(&$login, string &$password, bool &$permanent) : array {
+        $id_login = gettype($login) === 'integer';
+        return Query::helper((new Select(self::$con))->table('governmental_departments')->columns('id, government, name, login, password, activated')->where($id_login ? 'id = :id' : 'login = :login')->values($id_login ? [':id' => $login] : [':login' => $login])->fetchMode(PDO::FETCH_CLASS, 'Department')->run(), function ($account) use ($login, $password, $permanent) {
+            if ($account->existRows()) {
+                $account = $account->getResult()[0];
+                if ($account->checkPassword($password)) {
+                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getGovernmentId(), 'department_id' => $account->getId(), 'name' => $account->getName(), 'permission' => $account->getPermission(), 'photo_url' => $account->getPhotoUrl(), 'account' => self::GOVERNMENTAL_DEPARTMENT];
                     self::concludeAuthenticationWeb($account, $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
@@ -241,6 +274,8 @@ class TRIALAccount {
             self::createCookies([COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), self::INSTITUTION], $permanent);
         } else if ($account instanceof Government) {
             self::createCookies([COOKIE_TG_ID_TRIAL, COOKIE_TG_NAME, COOKIE_TG_EMAIL, COOKIE_TYPE], [$account->getId('id'), $account->getName(), $account->getEmail(), self::GOVERNMENT], $permanent);
+        } else if ($account instanceof Department) {
+            self::createCookies([COOKIE_TGD_ID_TRIAL, COOKIE_TGD_NAME, COOKIE_PERMISSION, COOKIE_TG_ID_TRIAL, COOKIE_TYPE], [$account->getId(), $account->getName(), $account->getPermission(), $account->getGovernmentId(), self::GOVERNMENTAL_DEPARTMENT], $permanent);
         } else if ($account instanceof TRIALAccount) {
             self::createCookies([COOKIE_ID_TRIAL, COOKIE_NAME, COOKIE_PERMISSION, COOKIE_TI_ID_TRIAL, COOKIE_TI_NAME, COOKIE_TI_EMAIL, COOKIE_TYPE], [$account['member_id'], $account['member_name'], $account['member_permission'], $account['id'], $account['name'], $account['email'], self::INSTITUTION_MEMBER], $permanent);
         }

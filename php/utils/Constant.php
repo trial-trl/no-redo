@@ -156,6 +156,11 @@ const COOKIE_TG_ID_TRIAL = 'TRL_TG_idTRIAL';
 const COOKIE_TG_NAME = 'TRL_TG_name';
 const COOKIE_TG_EMAIL = 'TRL_TG_email';
 
+// Department cookies added on 24/12/2016, 19:23:18
+const COOKIE_TGD_ID_TRIAL = 'TRL_TGD_idTRIAL';
+const COOKIE_TGD_NAME = 'TRL_TGD_name';
+const COOKIE_TGD_EMAIL = 'TRL_TGD_email';
+
 // Common cookie's
 const COOKIE_TYPE = 'TRL_type';
 

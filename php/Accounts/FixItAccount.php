@@ -8,7 +8,7 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @version 1.01NC
+ * @version 1.02NC
  * @package Account
  */
 
@@ -16,13 +16,18 @@
  * Implementation of RG, CPF, Escolaridade, Ocupação principal started on 05/09/2016, ~16:32:00
  * 
  * 22/11/2016, 18:28:20 - 18:44:53 => updated all codes to new codes, fixed authenticateUser() not making login right
+ * 
+ * 24/12/2016, 14:51:52 => update ConnectDB code to DB code; added use Query, Select statement
  */
+
+use SQL\Query, SQL\Select;
+
 class FixItAccount {
     
     private $con;
     
     public function __construct() {
-        $this->con = (new ConnectDB(DB_PREFIX . DATABASE_FIX_IT))->connect();
+        $this->con = DB::connect(DATABASE_FIX_IT);
     }
     
     public function authenticateUser($id_trial, string $type = TRIALAccount::USER) {
