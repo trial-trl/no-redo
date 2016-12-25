@@ -8,16 +8,18 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @version 1.01NC
+ * @version 1.02NC
  * @package Account
  */
+
+use SQL\Query, SQL\Select;
 
 class FixItAccount {
     
     private $con;
     
     public function __construct() {
-        $this->con = (new ConnectDB(DB_PREFIX . DATABASE_FIX_IT))->connect();
+        $this->con = DB::connect(DATABASE_FIX_IT);
     }
     
     public function authenticateUser($id_trial, string $type = TRIALAccount::USER) {
