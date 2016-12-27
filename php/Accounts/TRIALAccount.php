@@ -249,7 +249,16 @@ class TRIALAccount {
     }
     
     public function editData($field, $new_value) : array {
-        return Query::helper((new Update(self::$con))->table(TABLE_USERS)->columns($field)->where('id = :id')->values([$new_value == '' ? null : $new_value])->valuesWhere([':id' => $this->account->getId()])->run(), function ($query) {
+        if ($this->account instanceof User) {
+            $table = TABLE_USERS;
+        } else if ($this->account instanceof Institution) {
+            $table = TABLE_INSTITUTIONS;
+        } else if ($this->account instanceof Government) {
+            $table = TABLE_GOVERNMENTS;
+        } else if ($this->account instanceof Department) {
+            $table = 'governmental_departments';
+        } else 
+        return Query::helper((new Update(self::$con))->table($table)->columns($field)->where('id = :id')->values([$new_value == '' ? null : $new_value])->valuesWhere([':id' => $this->account->getId()])->run(), function ($query) {
             return ['message' => Message::SAVED_WITH_SUCCESS];
         });
     }
