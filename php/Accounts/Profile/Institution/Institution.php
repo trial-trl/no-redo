@@ -40,6 +40,13 @@ class Institution extends Account implements JsonSerializable {
             default:
                 $data = $search != null ? $search : [];
         }
+        
+        if (gettype($data) === 'object') {
+            if ($data->success() && $data->existRows()) {
+                $data = $data->getResult()[0];
+            }
+        }
+        
         $data = gettype($data) === 'object' && $data->success() && $data->existRows() ? $data->getResult()[0] : [];
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
