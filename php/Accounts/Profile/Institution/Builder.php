@@ -32,7 +32,7 @@ class Builder extends AccountBuilder {
     }
     
     public function setInfos($infos) {
-        $this->values['infos'] = $infos ? new DecodeInstitutionInfos(base64_decode($infos)) : null;
+        $this->values['infos'] = $infos;// removed on 04/01/2017, 18h34min: ? new DecodeInstitutionInfos(base64_decode($infos)) : null;
         return $this;
     }
     
