@@ -19,5 +19,5 @@ include_once 'SQLUtils/SQLExec.php';
 include_once 'utils/Constant.php';
 include_once 'utils/Message.php';
 include_once 'utils/Utils.php';
-include_once 'DB.php';
+include_once 'Database.php';
 include_once 'ConnectDB.php';

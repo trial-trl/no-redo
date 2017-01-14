@@ -83,11 +83,16 @@ abstract class Query extends CommonQuery {
      *      22:50:23
      *          buildResponse(QueryResponse $query, callable $callback) renamed to helper(QueryResponse $query, callable $callback)
      */
-    public static function helper(QueryResponse $response, callable $callback) : array {
+    public static function helper(QueryResponse $response, callable $success, callable $error = null) {
         if ($response->success()) {
-            return $callback($response);
+            return $success($response);
         } else {
-            return ['error' => $response->getError(), 'message' => Message::ERROR];
+            $data_error = ['error' => $response->getError(), 'message' => Message::ERROR];
+            if ($error != null) {
+                return $error($data_error);
+            } else {
+                return $data_error;
+            }
         }
     }
     
