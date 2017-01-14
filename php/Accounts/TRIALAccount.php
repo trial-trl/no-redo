@@ -22,7 +22,7 @@ require_once __DIR__ . '/Profile/Institution/Builder.php';
 require_once __DIR__ . '/Profile/Department/Department.php';
 require_once __DIR__ . '/Profile/Government.php';
 
-TRIALAccount::$con = DB::connect(DATABASE_USERS);
+TRIALAccount::$con = Database::connect(DATABASE_USERS);
 
 class TRIALAccount {
     
@@ -37,7 +37,7 @@ class TRIALAccount {
     
     public function __construct($account = null) {
         if (!self::$con) {
-            self::$con = DB::connect(DATABASE_USERS);
+            self::$con = Database::connect(DATABASE_USERS);
         }
         if ($account != null) {
             $this->account = $account;
