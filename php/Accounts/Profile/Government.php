@@ -30,7 +30,7 @@ class Government extends Account {
     
     public function __construct($search = null) {
         parent::__construct(TRIALAccount::GOVERNMENT);
-        $con = DB::connect(DATABASE_USERS);
+        $con = Database::connect(DATABASE_USERS);
         if ($search != null) {
             switch (gettype($search)) {
                 case 'string':
