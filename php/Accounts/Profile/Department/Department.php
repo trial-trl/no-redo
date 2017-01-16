@@ -31,7 +31,7 @@ class Department extends Account {
             $columns = implode(', ', $columns);
         }
         $type = gettype($search);
-        $con = DB::connect(DATABASE_USERS);
+        $con = Database::connect(DATABASE_USERS);
         switch ($type) {
             case 'string':
                 $data = (new Select($con))->table('governmental_departments')->columns($columns)->where('login = :login')->values([':login' => $search])->run();
