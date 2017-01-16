@@ -43,7 +43,7 @@ class Institution extends Account implements JsonSerializable {
             $columns = implode(', ', $columns);
         }
         $type = gettype($search);
-        $con = DB::connect(DATABASE_USERS);
+        $con = Database::connect(DATABASE_USERS);
         switch ($type) {
             case 'string':
                 $data = (new Select($con))->table(TABLE_INSTITUTIONS)->columns($columns)->where('email = :email')->values([':email' => $search])->run();
