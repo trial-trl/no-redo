@@ -1,11 +1,14 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * Description of ClickerAccount
+ *
+ * @copyright (c) 2016, TRIAL
+ * @author Matheus Leonardo dos Santos Martins
+ * 
+ * @version 1.0
+ * @package Account
  */
-
 class ClickerAccount {
     
     private $con;

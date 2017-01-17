@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-require_once 'Message.php';
+require_once 'Message.class.php';
 
 /*
  * Commons

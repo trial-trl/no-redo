@@ -5,8 +5,8 @@
  * ConnectDB adapted to new version on 08/09/2016, ~20:47:28
  * 
  * Created on 05/09/2016, ~16:11:40
- * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
+ * @author Matheus Leonardo dos Santos Martins
  * 
  * @version 1.02NC
  * @package Account
