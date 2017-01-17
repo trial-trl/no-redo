@@ -5,15 +5,15 @@
  * ConnectDB adapted to new version on 08/09/2016, ~20:47:28
  * 
  * Created on 05/09/2016, ~16:11:40
- * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
+ * @author Matheus Leonardo dos Santos Martins
  * 
  * @version 1.02NC
  * @package Account
  */
 
 /*
- * Implementation of RG, CPF, Escolaridade, Ocupação principal started on 05/09/2016, ~16:32:00
+ * Implementation of RG, CPF, Escolaridade, Ocupaï¿½ï¿½o principal started on 05/09/2016, ~16:32:00
  * 
  * 22/11/2016, 18:28:20 - 18:44:53 => updated all codes to new codes, fixed authenticateUser() not making login right
  * 

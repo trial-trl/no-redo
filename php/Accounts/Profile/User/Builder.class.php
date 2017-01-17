@@ -17,8 +17,8 @@ use AccountBuilder;
 use User, Sex;
 use DateTime, InvalidArgumentException;
 
-require_once __DIR__ . '/../AccountBuilder.php';
-require_once __DIR__ . '/User.php';
+require_once __DIR__ . '/../AccountBuilder.class.php';
+require_once __DIR__ . '/User.class.php';
 
 class Builder extends AccountBuilder {
     

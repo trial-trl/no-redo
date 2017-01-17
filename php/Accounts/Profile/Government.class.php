@@ -21,8 +21,8 @@ use Account\Base as Account;
 
 use SQL\Select;
 
-require_once 'Account.php';
-require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/Request.php';
+require_once 'Account.class.php';
+require_once __DIR__ . '/../../Request.class.php';
 
 class Government extends Account {
     

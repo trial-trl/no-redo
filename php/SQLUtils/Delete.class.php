@@ -15,9 +15,9 @@ namespace SQL;
 
 use DeleteClauses, PDO;
 
-require_once 'Query.php';
-require_once 'DeleteClauses.php';
-require_once 'QueryResponse.php';
+require_once 'Query.class.php';
+require_once 'DeleteClauses.class.php';
+require_once 'QueryResponse.class.php';
 
 class Delete extends Query implements DeleteClauses {
     

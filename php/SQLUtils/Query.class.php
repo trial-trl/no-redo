@@ -11,7 +11,7 @@
 
 namespace SQL;
 
-require_once 'CommonQuery.php';
+require_once 'CommonQuery.class.php';
 
 abstract class Query extends CommonQuery {
     

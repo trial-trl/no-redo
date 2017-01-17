@@ -9,16 +9,16 @@
  * @package TRIAL
  */
 
-include_once 'SQLUtils/Delete.php';
-include_once 'SQLUtils/Insert.php';
-include_once 'SQLUtils/Select.php';
-include_once 'SQLUtils/Update.php';
+include_once 'SQLUtils/Delete.class.php';
+include_once 'SQLUtils/Insert.class.php';
+include_once 'SQLUtils/Select.class.php';
+include_once 'SQLUtils/Update.class.php';
 
 // Added on 25/09/2016, 00:08:40
-include_once 'SQLUtils/SQLExec.php';
+include_once 'SQLUtils/SQLExec.class.php';
 
 include_once 'utils/Constant.php';
-include_once 'utils/Message.php';
+include_once 'utils/Message.class.php';
 include_once 'utils/Utils.php';
-include_once 'Database.php';
+include_once 'Database.class.php';
 include_once 'ConnectDB.php';

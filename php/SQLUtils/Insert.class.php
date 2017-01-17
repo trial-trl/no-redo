@@ -13,9 +13,9 @@ namespace SQL;
 
 use InsertClauses, PDO;
 
-require_once 'Query.php';
-require_once 'InsertClauses.php';
-require_once 'QueryResponse.php';
+require_once 'Query.class.php';
+require_once 'InsertClauses.class.php';
+require_once 'QueryResponse.class.php';
 
 class Insert extends Query implements InsertClauses {
     
