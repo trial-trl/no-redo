@@ -8,9 +8,8 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @package Account
- * 
  * @version 1.0NC
+ * @package Account
  */
 
 class OpportunityNowAccount {

@@ -1,14 +1,13 @@
 <?php
 /**
- * Description of TRIALAccount
+ * Description of StreetRaceAccount
  *
  * Created on 27/06/2016, 19:23:38
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @package Accounts
- * 
  * @version 1.0NC
+ * @package Account
  */
 
 use SQL\Query, SQL\Select, SQL\Insert;

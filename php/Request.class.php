@@ -9,7 +9,7 @@
  * @package TRIAL
  */
 
-require_once 'RequestResponse.php';
+require_once 'RequestResponse.class.php';
 
 class Request {
     
