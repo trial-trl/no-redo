@@ -15,12 +15,12 @@
 
 use SQL\Query, SQL\Select, SQL\Insert, SQL\Update, SQL\Delete;
 
-require_once __DIR__ . '/Profile/User/User.php';
-require_once __DIR__ . '/Profile/User/Builder.php';
-require_once __DIR__ . '/Profile/Institution/Institution.php';
-require_once __DIR__ . '/Profile/Institution/Builder.php';
-require_once __DIR__ . '/Profile/Department/Department.php';
-require_once __DIR__ . '/Profile/Government.php';
+require_once __DIR__ . '/Profile/User/User.class.php';
+require_once __DIR__ . '/Profile/User/Builder.class.php';
+require_once __DIR__ . '/Profile/Institution/Institution.class.php';
+require_once __DIR__ . '/Profile/Institution/Builder.class.php';
+require_once __DIR__ . '/Profile/Department/Department.class.php';
+require_once __DIR__ . '/Profile/Government.class.php';
 
 TRIALAccount::$con = Database::connect(DATABASE_USERS);
 

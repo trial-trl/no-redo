@@ -215,7 +215,7 @@ a.current {
     background-size: 100%;
 }
 
-[container-slideshow-items] {
+trl-slideshow, [container-slideshow-items] {
     position: relative;
     float: left;
     width: 100%;
@@ -231,7 +231,7 @@ a.current {
 }
 
 /* removed display: none on 30/10/2016, 18:32:23 */
-[container-slideshow-items] [slideshow-item] {
+trl-slideshow > *:not(.controller), [container-slideshow-items] [slideshow-item] {
     position: relative;
     left: 0;
     float: left;
@@ -241,7 +241,7 @@ a.current {
 }
 
 /* removed display: none on 30/10/2016, 18:33:16 */
-[container-slideshow-items] [slideshow-item]:not(.current) {
+trl-slideshow > *:not(.controller):not(.current), [container-slideshow-items] [slideshow-item]:not(.current) {
     display: none
 }
 

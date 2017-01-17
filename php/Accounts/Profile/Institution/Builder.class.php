@@ -16,8 +16,8 @@ namespace Institution;
 use AccountBuilder;
 use Institution;
 
-require_once __DIR__ . '/../AccountBuilder.php';
-require_once __DIR__ . '/Institution.php';
+require_once __DIR__ . '/../AccountBuilder.class.php';
+require_once __DIR__ . '/Institution.class.php';
 
 class Builder extends AccountBuilder {
     
