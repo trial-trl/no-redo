@@ -13,7 +13,7 @@ namespace SQL;
 
 use PDO;
 
-require_once 'QueryResponse.php';
+require_once 'QueryResponse.class.php';
 
 abstract class CommonQuery {
     

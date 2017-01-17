@@ -9,7 +9,7 @@
  * @package TRIAL
  */
 
-require_once 'RequestResponse.php';
+require_once 'RequestResponse.class.php';
 
 // 18/10/2016, 01:19:02 - 01:28:38 => class Request changed: now have only the static function make(), and returns now techinical infos about the request
 class Request {

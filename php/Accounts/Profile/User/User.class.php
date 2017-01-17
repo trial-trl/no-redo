@@ -8,7 +8,7 @@
  * 
  * @package Profile
  * 
- * @version 1.2
+ * @version 1.21
  */
 
 /* 
@@ -61,13 +61,16 @@
  * 
  * 16/12/2016, 16:21:10 => removed getPermission()
  * 
+ * 17/01/2017, 15:53 => removed getCity(), getState(), getPostalCode()
+ * 
  */
 
 use Account\Base as Account,
         SQL\Select;
 
-require_once __DIR__ . '/../Account.php';
-require_once __DIR__ . '/../../../Request.php';
+require_once __DIR__ . '/../Account.class.php';
+require_once __DIR__ . '/../../../Request.class.php';
+require_once __DIR__ . '/../../../Address.class.php';
 
 class User extends Account {
     
@@ -89,7 +92,7 @@ class User extends Account {
     public function __construct($search = null, array $columns = null) {
         parent::__construct(TRIALAccount::USER);
         if ($columns == null) {
-            $columns = 'id, first_name, middle_name, last_name, nickname, birthday, sex, rg, cpf, nationality, city, state, postal_code, landline, cell_phone, email, password, activated, permission';
+            $columns = 'id, first_name, middle_name, last_name, nickname, birthday, sex, rg, cpf, nationality, CONCAT(\'{"city": "\', city, \'", "state": "\', state, \'", "postal_code": \', postal_code, \', "landline": \', landline, \', "cell_phone": \', cell_phone, \', "email": "\', email, \'", "password": "\', password, \'", "activated": "\', activated, \'", "permission": "\', permission, \'"}\') AS location';
         } else {
             $columns = implode(', ', $columns);
         }
@@ -111,76 +114,132 @@ class User extends Account {
             }
         }
         foreach ($data as $key => $value) {
-            $this->{$key} = $value;
+            if ($key === 'location') {
+                $this->location = new Address(json_decode($value));
+            } else {
+                $this->{$key} = $value;
+            }
         }
     }
     
-    public function getFirstName() {
+    /**
+     * @return string User first name
+     * @since 1.1
+     */
+    public function getFirstName() : string {
         return $this->first_name;
     }
     
-    public function getMiddleName() {
+    /**
+     * @return string User middle name
+     * @since 1.1
+     */
+    public function getMiddleName() : string {
         return $this->middle_name;
     }
     
-    public function getLastName() {
+    /**
+     * @return string User last name
+     * @since 1.0
+     */
+    public function getLastName() : string {
         return $this->last_name;
     }
     
-    public function getNickname() {
+    /**
+     * @return string User nickname
+     * @since 1.1
+     */
+    public function getNickname() : string {
         return $this->nickname;
     }
     
-    public function getRG() {
+    /**
+     * @return int User RG
+     * @since 1.1
+     */
+    public function getRG() : int {
         return $this->rg;
     }
     
-    public function getCPF() {
+    /**
+     * @return int User CPF
+     * @since 1.1
+     */
+    public function getCPF() : int {
         return $this->cpf;
     }
     
-    public function getBirthday() {
-        return $this->birthday;
+    /**
+     * @return DateTime User birthday
+     * @since 1.0
+     */
+    public function getBirthday() : DateTime {
+        return new DateTime($this->birthday);
     }
     
+    /**
+     * @return int User birthday
+     * @since 1.2
+     */
     // added on 21/10/2016, 19:57:06 - 20:00:11
-    public function getAge() {
-        return (new DateTime($this->birthday))->diff(new DateTime('today'))->y;
+    public function getAge() : int {
+        return $this->getBirthday()->diff(new DateTime('today'))->y;
     }
     
-    public function getSex() {
+    /**
+     * @return string User sex
+     * @since 1.0
+     */
+    public function getSex() : string {
         return $this->sex;
     }
     
-    public function getNationality() {
+    /**
+     * @return string User nationality
+     * @since 1.2
+     */
+    public function getNationality() : string {
         return $this->nationality;
     }
     
-    public function getCity() {
-        return isset($this->location['county']) ? $this->location['county'] : null;
+    /**
+     * @return Address User address
+     * @since 1.2
+     */
+    public function getAddress() : Address {
+        return $this->location;
     }
     
-    public function getState() {
-        return isset($this->location['state']) ? $this->location['state'] : null;
-    }
-    
-    public function getPostalCode() {
-        return isset($this->location['postal_code']) ? $this->location['postal_code'] : null;
-    }
-    
-    public function getLandline() {
+    /**
+     * @return int User landline
+     * @since 1.1
+     */
+    public function getLandline() : int {
         return $this->landline;
     }
     
-    public function getCellPhone() {
+    /**
+     * @return int User cell phone
+     * @since 1.1
+     */
+    public function getCellPhone() : int {
         return $this->cell_phone;
     }
     
-    public function getSchoolingLevel() {
+    /**
+     * @return string User schooling level
+     * @since 1.2
+     */
+    public function getSchoolingLevel() : string {
         return $this->schooling_level;
     }
     
-    public function getMainOccupation() {
+    /**
+     * @return string User schooling level
+     * @since 1.2
+     */
+    public function getMainOccupation() : string {
         return $this->main_occupation;
     }
 

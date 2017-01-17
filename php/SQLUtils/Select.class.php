@@ -17,9 +17,9 @@ namespace SQL;
 
 use SelectClauses, PDO;
 
-require_once 'Query.php';
-require_once 'SelectClauses.php';
-require_once 'QueryResponse.php';
+require_once 'Query.class.php';
+require_once 'SelectClauses.class.php';
+require_once 'QueryResponse.class.php';
 
 class Select extends Query implements SelectClauses {
     

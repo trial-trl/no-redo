@@ -26,8 +26,8 @@
 use Account\Base as Account;
 use SQL\Select;
 
-require_once __DIR__ . '/../Account.php';
-require_once __DIR__ . '/../../../Request.php';
+require_once __DIR__ . '/../Account.class.php';
+require_once __DIR__ . '/../../../Request.class.php';
 
 class Institution extends Account implements JsonSerializable {
     
