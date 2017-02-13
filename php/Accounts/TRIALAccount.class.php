@@ -318,7 +318,7 @@ class TRIALAccount {
         return $response;
     }
     
-    public static function createVerificationCode($user) : array {
+    public static function createResetPasswordToken($user) : array {
         $raw_code = uniqid(rand(), true);
         $code = md5($raw_code);
         return Query::helper((new Insert(self::$con))->table('verification_codes')->columns('user, code, register_date_time')->values([$user, $code, date('Y-m-d H:i:s')])->run(), function ($query) use ($raw_code) {
@@ -326,7 +326,7 @@ class TRIALAccount {
         });
     }
     
-    public static function checkVerificationCode($user, $code) : array {
+    public static function checkResetPasswordToken($user, $code) : array {
         return Query::helper((new Select(self::$con))->table('verification_codes')->columns('id')->where('user = :user AND code = :code')->values([':user' => $user, ':code' => md5($code)])->run(), function ($query) {
             if ($query->existRows()) {
                 $result = $query->getResult()[0];
