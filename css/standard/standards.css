@@ -222,7 +222,11 @@ trl-slideshow, [container-slideshow-items] {
     z-index: 3;
 }
 
-[container-slideshow-items] .control {
+trl-slideshow .controller {
+    z-index: 2;
+}
+
+trl-slideshow .controller.fill, [container-slideshow-items] .control {
     position: absolute;
     top: 0;
     left: 0;
@@ -231,7 +235,7 @@ trl-slideshow, [container-slideshow-items] {
 }
 
 /* removed display: none on 30/10/2016, 18:32:23 */
-trl-slideshow > *:not(.controller), [container-slideshow-items] [slideshow-item] {
+trl-slideshow > *:not(header):not(.controller), [container-slideshow-items] [slideshow-item] {
     position: relative;
     left: 0;
     float: left;
@@ -241,7 +245,7 @@ trl-slideshow > *:not(.controller), [container-slideshow-items] [slideshow-item]
 }
 
 /* removed display: none on 30/10/2016, 18:33:16 */
-trl-slideshow > *:not(.controller):not(.current), [container-slideshow-items] [slideshow-item]:not(.current) {
+trl-slideshow > *:not(header):not(.controller):not(.current), [container-slideshow-items] [slideshow-item]:not(.current) {
     display: none
 }
 
