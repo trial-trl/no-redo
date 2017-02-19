@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-require_once 'Message.class.php';
-
 /*
  * Commons
  */
@@ -196,6 +194,8 @@ const CLICKER_TYPE_STUDENT = 'STUDENT';
 const COOKIE_CLICKER_ID = 'TRL_CL__id';
 const COOKIE_CLICKER_INSTITUTION = 'TRL_CL__institution';
 const COOKIE_CLICKER_TYPE = 'TRL_CL__type';
+// 18/02/2017, 18:37:27
+const COOKIE_CLICKER_CREATE = 'TRL_CL__create';
  
 /*
  * Fix It service
