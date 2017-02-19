@@ -6,8 +6,18 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @package Utils
+ * @version 1.0
+ * @package SQL
  */
+
+/*
+ * 21/01/2017
+ *      03:19:19 => added namespace Utils
+ *      19:56:36 => renamed namespace from Utils to NoRedo\Utils
+ */
+
+namespace NoRedo\Utils;
+
 class Response {
     
     private $success;
@@ -34,7 +44,7 @@ class Response {
         $this->result = $result;
     }
     
-    protected function setError(Error $error) {
+    protected function setError(\Error $error) {
         $this->error = $error;
     }
     

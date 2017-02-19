@@ -163,7 +163,7 @@ function urlExists($url) {
 
 function getBrowserInfo() {
     $ch = curl_init();
-    $url = 'http://www.useragentstring.com/?uas=' . curl_escape($ch, $_SERVER['HTTP_USER_AGENT']) . '&getJSON=all';
+    $url = 'https://helloacm.com/api/parse-user-agent';
     curl_setopt($ch, CURLOPT_URL, $url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     $agent = json_decode(curl_exec($ch));
