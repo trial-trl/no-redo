@@ -39,10 +39,9 @@ class Clicker {
     public static function authenticate($id_trial) {
         $profile = self::getProfile($id_trial);
         if ($profile['message'] === Message::EXIST) {
-            $i = json_decode($profile['institution']);
             $domain = filter_input(INPUT_SERVER, 'HTTP_HOST') !== 'localhost' ? '.trialent.com' : 'localhost';
             setcookie(COOKIE_CLICKER_ID, $profile['id'], time() + (60 * 60 * 24 * 365), '/', $domain);
-            setcookie(COOKIE_CLICKER_INSTITUTION, $i[0]->{'id'}, time() + (60 * 60 * 24 * 365), '/', $domain);
+            setcookie(COOKIE_CLICKER_INSTITUTION, $profile['institution'], time() + (60 * 60 * 24 * 365), '/', $domain);
             setcookie(COOKIE_CLICKER_TYPE, $profile['type'], time() + (60 * 60 * 24 * 365), '/', $domain);
         }
         return $profile;
@@ -57,7 +56,7 @@ class Clicker {
     }
     
     public static function getProfile($user) {
-        return Query::helper((new Select(self::con()))->table('users AS u')->columns('u.id, u.user, u.type, CONCAT(\'[{"id": \', u.institution, \', "name": "\', i.name, \'", "address": \', CONCAT(\'{"address": "\', i.address, \'", "city": "\', i.city, \'", "state": "\', i.state, \'"}\'), \'}]\') AS institution')->leftJoin('institutions AS i ON i.id = u.institution')->where('u.user = :user')->values([':user' => $user])->run(), function ($query) {
+        return Query::helper((new Select(self::con()))->table('users')->columns('id, user, institution, type')->where('user = :user')->values([':user' => $user])->run(), function ($query) {
             if ($query->existRows()) {
                 $result = $query->getResult()[0];
                 $result['message'] = Message::EXIST;  
