@@ -12,9 +12,9 @@
 
 namespace NoRedo\TRIAL\Account;
 
-use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\SQL\Select;
+use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Select;
 
-class Institution extends TRIALAccount implements JsonSerializable {
+class Institution extends TRIALAccount implements \JsonSerializable {
     
     const TABLE = 'institutions';
     
@@ -40,14 +40,11 @@ class Institution extends TRIALAccount implements JsonSerializable {
             default:
                 $data = $search != null ? $search : [];
         }
-        
         if (gettype($data) === 'object') {
             if ($data->success() && $data->existRows()) {
                 $data = $data->getResult()[0];
             }
         }
-        
-        $data = gettype($data) === 'object' && $data->success() && $data->existRows() ? $data->getResult()[0] : [];
         foreach ($data as $key => $value) {
             $this->{$key} = $value;
         }
@@ -66,7 +63,7 @@ class Institution extends TRIALAccount implements JsonSerializable {
     }
 
     public function jsonSerialize() {
-        return ['id' => $this->id, 'cnpj' => $this->cnpj, 'name' => $this->name, 'email' => $this->email, 'infos' => $this->infos != null ? $this->infos->encoded : null, 'activated' => $this->activated];
+        return [self::ID => $this->id, self::CNPJ => $this->cnpj, self::NAME => $this->name, self::EMAIL => $this->email, 'infos' => $this->infos != null ? $this->infos->encoded : null, self::ACTIVATED => $this->activated];
     }
 
 }
@@ -121,7 +118,7 @@ class DecodeInstitutionInfos {
     
 }
 
-class InstitutionActivity implements JsonSerializable {
+class InstitutionActivity implements \JsonSerializable {
     
     private $code;
     private $text;
