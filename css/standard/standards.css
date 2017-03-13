@@ -310,3 +310,139 @@ a[is="trl-button"]:not(.button-square) > div {
     transform: skewX(25deg)
 }
 /* end added */
+
+/* added on 13/03/2017, 13:45:36 */
+trl-rating > span::before, trl-rating > .subtitle::after {
+    transition: .2s all ease-in-out;
+}
+
+trl-rating > span, trl-rating > .subtitle {
+    text-shadow: 0 1px 1px rgba(0, 0, 0, .2);
+}
+
+trl-rating > .subtitle {
+    font-weight: 100;
+    font-size: 13px;
+}
+
+trl-rating > .subtitle::after {
+    position: relative;
+    float: none;
+    text-align: center;
+}
+
+trl-rating > span {
+    position: relative;
+    float: right;
+    font-size: inherit;
+    color: #eee;
+}
+
+trl-rating[trl-interactive="true"] > span {
+    cursor: pointer;
+}
+
+trl-rating[trl-interactive="true"]:hover > span::before {
+    color: #eee !important;
+}
+
+trl-rating[trl-rate="5"] > .star-5::before, trl-rating[trl-rate="5"] > .star-5 ~ span::before, 
+trl-rating[trl-rate="5"] > .star-5 ~ .subtitle::after {
+    color: #1c9b7f; 
+}
+
+trl-rating[trl-rate="4"] > .star-4::before, trl-rating[trl-rate="4"] > .star-4 ~ span::before, 
+trl-rating[trl-rate="4"] > .star-4 ~ .subtitle::after {
+    color: #84b325;
+}
+
+trl-rating[trl-rate="3"] > .star-3::before, trl-rating[trl-rate="3"] > .star-3 ~ span::before, 
+trl-rating[trl-rate="3"] > .star-3 ~ .subtitle::after {
+    color: #ffcf6f;
+}
+
+trl-rating[trl-rate="2"] > .star-2::before, trl-rating[trl-rate="2"] > .star-2 ~ span::before, 
+trl-rating[trl-rate="2"] > .star-2 ~ .subtitle::after {
+    color: #ffad70;
+}
+
+trl-rating[trl-rate="1"] > .star-1::before, trl-rating[trl-rate="1"] > .star-1 ~ span::before, 
+trl-rating[trl-rate="1"] > .star-1 ~ .subtitle::after {
+    color: #ef6b5d;
+}
+
+trl-rating[trl-interactive="true"] > .star-5:hover::before, trl-rating[trl-interactive="true"] > .star-5:hover ~ span::before, 
+trl-rating[trl-interactive="true"] > .star-5:hover ~ .subtitle::after {
+    color: #1c9b7f !important;
+}
+
+trl-rating[trl-interactive="true"] > .star-4:hover::before, trl-rating[trl-interactive="true"] > .star-4:hover ~ span::before, 
+trl-rating[trl-interactive="true"] > .star-4:hover ~ .subtitle::after {
+    color: #84b325 !important;
+}
+
+trl-rating[trl-interactive="true"] > .star-3:hover::before, trl-rating[trl-interactive="true"] > .star-3:hover ~ span::before, 
+trl-rating[trl-interactive="true"] > .star-3:hover ~ .subtitle::after {
+    color: #ffcf6f !important;
+}
+
+trl-rating[trl-interactive="true"] > .star-2:hover::before, trl-rating[trl-interactive="true"] > .star-2:hover ~ span::before, 
+trl-rating[trl-interactive="true"] > .star-2:hover ~ .subtitle::after {
+    color: #ffad70 !important;
+}
+
+trl-rating[trl-interactive="true"] > .star-1:hover::before, trl-rating[trl-interactive="true"] > .star-1:hover ~ span::before,
+trl-rating[trl-interactive="true"] > .star-1:hover ~ .subtitle::after {
+    color: #ef6b5d !important;
+}
+
+trl-rating[trl-rate="5"] .subtitle::after {
+    content: "Avaliado como Muito bom";
+}
+
+trl-rating[trl-rate="4"] .subtitle::after {
+    content: "Avaliado como Bom";
+}
+
+trl-rating[trl-rate="3"] .subtitle::after {
+    content: "Avaliado como Mais ou menos";
+}
+
+trl-rating[trl-rate="2"] .subtitle::after {
+    content: "Avaliado como Ruim";
+}
+
+trl-rating[trl-rate="1"] .subtitle::after {
+    content: "Avaliado como Muito ruim";
+}
+
+trl-rating[trl-interactive="true"] > .star-5:hover ~ .subtitle::after,
+trl-rating[trl-rate="5"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="5"]:not([trl-interactive]) .subtitle::after {
+    content: "Muito bom" !important;
+}
+
+trl-rating[trl-interactive="true"] > .star-4:hover ~ .subtitle::after,
+trl-rating[trl-rate="4"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="4"]:not([trl-interactive]) .subtitle::after {
+    content: "Bom" !important;
+}
+
+trl-rating[trl-interactive="true"] > .star-3:hover ~ .subtitle::after,
+trl-rating[trl-rate="3"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="3"]:not([trl-interactive]) .subtitle::after {
+    content: "Mais ou menos" !important;
+}
+
+trl-rating[trl-interactive="true"] > .star-2:hover ~ .subtitle::after,
+trl-rating[trl-rate="2"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="2"]:not([trl-interactive]) .subtitle::after {
+    content: "Ruim" !important;
+}
+
+trl-rating[trl-interactive="true"] > .star-1:hover ~ .subtitle::after,
+trl-rating[trl-rate="1"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="1"]:not([trl-interactive]) .subtitle::after {
+    content: "Muito ruim" !important;
+}
+/* end added */
