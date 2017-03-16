@@ -23,7 +23,7 @@
 
 namespace NoRedo\TRIAL\Account;
 
-use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\SQL\Select;
+use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Select;
 
 final class Government extends TRIALAccount {
     
