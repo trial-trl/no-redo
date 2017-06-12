@@ -115,7 +115,7 @@ class Builder extends AccountBuilder {
     }
     
     public function build() {
-        return new User($this->values);
+        return User::copy($this->values);
     }
     
 }
