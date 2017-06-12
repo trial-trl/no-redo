@@ -6,139 +6,91 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @version 1.01
+ * @version 1.02
  * @package Account
  */
 
 namespace NoRedo\TRIAL\Account;
 
-use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Select;
+use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Address, NoRedo\TRIAL\Account\Register;
 
 class Institution extends TRIALAccount implements \JsonSerializable {
     
     const TABLE = 'institutions';
     
     const CNPJ = 'cnpj';
+    const REGISTER = 'infos';
     const NAME = 'name';
     
-    private $cnpj;
-    private $name;
-    private $infos;
+    protected $cnpj;
+    protected $infos;
+    protected $register;
+    protected $name;
     
-    public function __construct($search = null, array $columns = null) {
+    protected function __construct($custom = []) {
         parent::__construct(TRIALAccount::INSTITUTION);
-        $columns = $columns == null ? self::ID . ', ' . self::CNPJ . ', ' . self::NAME . ', ' . self::EMAIL . ', ' . self::ACTIVATED : implode(', ', $columns);
-        $type = gettype($search);
-        $con = Database::connect(DATABASE_USERS);
-        switch ($type) {
-            case 'string':
-                $data = (new Select($con))->table(self::TABLE)->columns($columns)->where(self::EMAIL . ' = :email')->values([':email' => $search])->run();
-                break;
-            case 'integer':
-                $data = (new Select($con))->table(self::TABLE)->columns($columns)->where(self::ID . ' = :id')->values([':id' => $search])->run();
-                break;
-            default:
-                $data = $search != null ? $search : [];
-        }
-        // added 04/01/2017, 18h17min
-        if (gettype($data) === 'object') {
-            if ($data->success() && $data->existRows()) {
-                $data = $data->getResult()[0];
+        $loop = empty($custom) ? [self::ID => $this->id, self::CNPJ => $this->cnpj, self::REGISTER => $this->infos, self::NAME => $this->name, self::EMAIL => $this->email, self::ACTIVATED => $this->activated] : $custom;
+        foreach ($loop as $k => $v) {
+            if ($k === 'cnpj' && !empty($v) && empty($loop['infos'])) {
+                $this->register = (new Register\Builder())->setCNPJ($v)->build();
+            } else if ($k === 'infos' && !empty($v)) {
+                $i = json_decode(utf8_encode(base64_decode($v)));
+                $this->register = (new Register\Builder())->setCNPJ($i->{'cnpj'})->setType($i->{'tipo'})->setOpening($i->{'abertura'})->setCompanyName($i->{'nome'})->setTradingName($i->{'fantasia'})->setMainActivity($i->{'atividade_principal'}[0])->setSecondaryActivities($i->{'atividades_secundarias'})->setAddress(new Address([Address::NUMBER => $i->{'numero'}, Address::POSTAL_CODE => $i->{'cep'}, Address::DISTRICT => $i->{'logradouro'}, Address::CITY => $i->{'municipio'}, Address::STATE => $i->{'uf'}, Address::COUNTRY => 'BR']))->setLegalNature($i->{'natureza_juridica'})->setEmail($i->{'email'})->setPhone($i->{'telefone'})->setERF($i->{'efr'})->setSituation($i->{'situacao'})->setSituationDate($i->{'data_situacao'})->setSituationReason($i->{'motivo_situacao'})->setSpecialSituation($i->{'situacao_especial'})->setSpecialSituationDate($i->{'data_situacao_especial'})->setLastUpdate($i->{'ultima_atualizacao'})->build();
+            } else {
+                $this->{$k} = $v;
             }
         }
-        foreach ($data as $key => $value) {
-            $this->{$key} = $value;
-        }
+        unset($this->infos);
+        unset($this->cnpj);
     }
     
-    public function getCNPJ() {
-        return $this->cnpj;
+    /**
+     * Added on 01/05/2017, 12:08:53
+     * 
+     * @param type $search
+     * @param array $columns
+     * @return type
+     * @throws \InvalidArgumentException
+     * 
+     * @version 1.0
+     * @since 1.02
+     */
+    public static function get($search, array $columns = [self::ID, self::CNPJ, self::REGISTER, self::NAME, self::EMAIL, self::ACTIVATED]) {
+        if (!is_int($search) && !is_string($search)) {
+            throw new \InvalidArgumentException('Institution::get(): search must be an integer or string');
+        }
+        $q = (new Select(Database::connect(DATABASE_USERS)))->table(self::TABLE)->columns($columns);
+        if (is_string($search)) {
+            $q->where(self::EMAIL . ' = :email')->values([':email' => $search]);
+        } else if (is_int($search)) {
+            $q->where(self::ID . ' = :id')->values([':id' => $search]);
+        }
+        return Query::helper($q->fetchMode(\PDO::FETCH_CLASS, self::class)->run(), function ($query) {
+            return $query->getResult()[0] ?? null;
+        });
+    }
+    
+    /**
+     * @param array $copy
+     * @return \NoRedo\TRIAL\Account\Institution
+     * 
+     * @version 1.0
+     * @since 1.02
+     */
+    public static function copy(array $copy) {
+        return new self($copy);
+    }
+    
+    public function getRegister() : Register {
+        return $this->register ?? Register::copy([]);
     }
     
     public function getName() {
         return $this->name;
     }
-    
-    public function getInfos() {
-        return $this->infos;
-    }
 
     public function jsonSerialize() {
-        return [self::ID => $this->id, self::CNPJ => $this->cnpj, self::NAME => $this->name, self::EMAIL => $this->email, 'infos' => $this->infos != null ? $this->infos->encoded : null, self::ACTIVATED => $this->activated];
+        return array_filter(array_merge([self::NAME => $this->name, self::REGISTER => $this->register], parent::jsonSerialize()));
     }
 
-}
- 
-class DecodeInstitutionInfos {
-    
-    public $encoded;
-    private $infos;
-    
-    private $main_activity;
-    
-    public function __construct($infos) {
-        $this->encoded = $this->infos = json_decode(utf8_encode($infos));
-        $this->setMainActivity();
-        $this->situation_date = $this->infos->{'data_situacao'};
-        $this->type = $this->infos->{'tipo'};
-        $this->company_name = $this->infos->{'nome'};
-        $this->phone = $this->infos->{'telefone'};
-        $this->situation_date = $this->infos->{'data_situacao'};
-        $this->setSecondaryActivities();
-        $this->situation = $this->infos->{'situacao'};
-        $this->sublocality = $this->infos->{'situacao'};
-        $this->route = $this->infos->{'logradouro'};
-        $this->street_number = $this->infos->{'numero'};
-        $this->postal_code = $this->infos->{'cep'};
-        $this->county = $this->infos->{'municipio'};
-        $this->state = $this->infos->{'uf'};
-        $this->opening = $this->infos->{'abertura'};
-        $this->legal_nature = $this->infos->{'natureza_juridica'};
-        $this->trading_name = $this->infos->{'natureza_juridica'};
-        $this->last_update = $this->infos->{'ultima_atualizacao'};
-        $this->status = $this->infos->{'status'};
-        $this->additional = $this->infos->{'complemento'};
-        $this->email = $this->infos->{'email'};
-        $this->efr = $this->infos->{'efr'};
-        $this->situation_reason = $this->infos->{'motivo_situacao'};
-        $this->special_situation = $this->infos->{'situacao_especial'};
-        $this->special_situation_date = $this->infos->{'data_situacao_especial'};
-    }
-    
-    private function setMainActivity() {
-        $activity = $this->infos->{'atividade_principal'}[0];
-        $this->main_activity = new InstitutionActivity($activity->{'code'}, $activity->{'text'});
-    }
-    
-    private function setSecondaryActivities() {
-        $activities = $this->infos->{'atividades_secundarias'};
-        foreach ($activities as $i => $activity) {
-            $this->secondary_activity[$i] = new InstitutionActivity($activity->{'code'}, $activity->{'text'});
-        }
-    }
-    
-}
-
-class InstitutionActivity implements \JsonSerializable {
-    
-    private $code;
-    private $text;
-    
-    public function __construct($code, $text) {
-        $this->code = $code;
-        $this->text = $text;
-    }
-    
-    public function getCode() {
-        return $this->code;
-    }
-    
-    public function getText() {
-        return $this->text;
-    }
-    
-    public function jsonSerialize() {
-        return ['code' => $this->code, 'text' => $this->text];
-    }
-    
 }
