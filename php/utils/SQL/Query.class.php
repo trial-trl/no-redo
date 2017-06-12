@@ -60,11 +60,20 @@ abstract class Query extends CommonQuery {
      * 
      * Added $keep_name_column on 20/09/2016, 20:53:58
      */
-    public function prepareToBind($columns, $keep_name_column = false) : array {
+    public function prepareToBind($columns, $count = false, $keep_name_column = false) : array {
         $exploded_columns = explode(',', preg_replace('/\s+/', '', $columns));
         $prepared_columns = [];
-        foreach ($exploded_columns as $i => $column) {
-            $prepared_columns[$i] = $keep_name_column ? $column . ' = :' . $column : ':' . $column;
+        if (is_int($count)) {
+            for ($c = 0; $c < $count; $c++) {
+                $prepared_columns[$c] = [];
+                foreach ($exploded_columns as $column) {
+                    $prepared_columns[$c][] = ':' . $column . $c;
+                }
+            }
+        } else {
+            foreach ($exploded_columns as $i => $column) {
+                $prepared_columns[$i] = $keep_name_column ? $column . ' = :' . $column : ':' . $column;
+            }
         }
         return $prepared_columns;
     }
@@ -73,11 +82,20 @@ abstract class Query extends CommonQuery {
      * @param array $prepared_columns Columns prepared to bind
      * @param array $values Values to be binded
      * @return array
+     * 
+     * 14/04/2017, 19:44:18 - 20:18:56 => added support to prepare given $values with array values inside a different treatment
      */
     public function prepareInputParameters(array $prepared_columns, array $values) : array {
         $input_parameters = [];
+        $contain_array_values = is_array($values[0]);
         foreach ($values as $i => $value) {
-            $input_parameters[$prepared_columns[$i]] = $value;
+            if ($contain_array_values) {
+                foreach ($value as $c => $v) {
+                    $input_parameters[$prepared_columns[$i][$c]] = $v;
+                }
+            } else {
+                $input_parameters[$prepared_columns[$i]] = $value;
+            }
         }
         return $input_parameters;
     }

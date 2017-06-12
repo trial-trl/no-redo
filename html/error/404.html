@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<!--
+(c) 2017 TRIAL.
+Created on 08/06/2017, 17:15:05.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<html>
+    <head>
+        <meta name="theme-color" content="#24c742" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta charset="UTF-8" />
+        <link rel="icon" sizes="64x64" href="/no-redo/images/TRIAL/logo/icon/favicon/T_favicon.png" />
+        <title>Algo aconteceu... | TRIAL</title>
+        <style>
+            body, h1, h2, h3, h4, h5, h6 {
+                margin: 0;
+            }
+            body {
+                font-family: Segoe UI, arial, sans-serif;
+                font-size: 100%;
+                color: #999;
+                text-align: center;
+            }
+            h1 {
+                font-weight: 400;
+            }
+            ul {
+                padding: 0;
+            }
+            ul > li {
+                list-style: none;
+            }
+            a {
+                text-decoration: none;
+                color: #24c7aa;
+            }
+            #presentation {
+                position: relative;
+                float: left;
+                margin: 30px 0;
+                width: 100%;
+            }
+            #table {
+                margin: 0 auto;
+            }
+            #table td {
+                padding: 0 30px;
+            }
+            #table td:last-child {
+                border-left: 2px solid #d6d6d6;
+            }
+            #logo {
+                display: block;
+                width: 100px;
+                margin: 0 auto;
+            }
+            #error_code {
+                font-size: 5em;
+            }
+            #message {
+                margin: 20px 0;
+                font-size: 2em;
+                font-weight: 100;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="presentation">
+            <table id="table">
+                <tr>
+                    <td><img id="logo" src="/no-redo/images/TRIAL/logo/min/T_logo.png" alt="TRIAL" /></td>
+                    <td><h1 id="error_code"><!--#echo var="REDIRECT_STATUS" --></h1></td>
+                </tr>
+            </table>
+            <h2 id="message">Aqui n&atilde;o tem nada... Ainda</h2>
+        </div>
+        <div>
+            <h1>Tente</h1>
+            <ul>
+                <!--#if expr="${HTTP_REFERER}" -->
+                <li><a href='<!--#echo var="HTTP_REFERER" -->'>Voltar para <!--#echo var="HTTP_REFERER" --></a></li>
+                <!--#else -->
+                <li><a href='//<!--#echo var="HTTP_HOST" -->'>Voltar para <!--#echo var="HTTP_HOST" --></a></li>
+                <!--#endif -->
+                <li><a href="//trialent.com" target="blank">Conhecer a <b>TRIAL</b></a></li>
+            </ul>
+        </div>
+    </body>
+</html>

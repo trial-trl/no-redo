@@ -65,11 +65,11 @@ class Select extends Query implements SelectClauses {
      */
     private $order_by;
     /**
-     * Determine if the query will return the total founded rows.
+     * Determine if the query will return the total found rows.
      * 
      * @var bool 
      */
-    private $return_found_rows;
+    private $count_found_rows;
     /**
      * RIGHT JOIN clause that'll be used in this query.
      * 
@@ -145,11 +145,11 @@ class Select extends Query implements SelectClauses {
     }
     
     public function prepare() {
-        $this->statement = $this->conn->prepare("SELECT " . ($this->return_found_rows ? "SQL_CALC_FOUND_ROWS " : null) . "$this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->group_by $this->order_by $this->limit");
+        $this->statement = $this->conn->prepare("SELECT " . ($this->count_found_rows ? "SQL_CALC_FOUND_ROWS " : null) . "$this->columns FROM $this->table $this->inner_join $this->right_join $this->left_join $this->where $this->group_by $this->order_by $this->limit");
     }
     
-    public function returnFoundRows(bool $return) {
-        $this->return_found_rows = $return;
+    public function countFoundRows(bool $count = true) {
+        $this->count_found_rows = $count;
         return $this;
     }
 
@@ -178,9 +178,9 @@ class Select extends Query implements SelectClauses {
             $count_rows = $this->statement->rowCount();
             if ($count_rows) {
                 $response = $this->statement->fetchAll();
-                if ($this->return_found_rows) {
-                    $get_found_rows = (new SQLExec($this->conn))->run("SELECT FOUND_ROWS()");
-                    $response['found_rows'] = $get_found_rows->success() && $get_found_rows->existRows() ? (int) $get_found_rows->getResult()[0]['FOUND_ROWS()'] : 0;
+                if ($this->count_found_rows) {
+                    $get_found_rows = (new SQLExec($this->conn))->run("SELECT FOUND_ROWS() AS found_rows");
+                    $response['found_rows'] = $get_found_rows->success() && $get_found_rows->existRows() ? (int) $get_found_rows->getResult()[0]['found_rows'] : 0;
                 }
                 $response['total'] = $count_rows;
             }
