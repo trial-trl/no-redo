@@ -73,12 +73,16 @@ class Update extends Query {
     private $where;
     
     public function columns($columns) {
+        // added aceptation of $columns as an array on 14/04/2017, 20:48:37
+        if (gettype($columns) === 'array') {
+            $columns = implode(',', $columns);
+        }
         $this->columns = $columns;
         return $this;
     }
     
     public function prepare() {
-	$set = $this->prepareToBind($this->columns, true);
+	$set = $this->prepareToBind($this->columns, false, true);
 	$prepared = $this->prepareToBind($this->columns);
         $input_parameters = $this->prepareInputParameters($prepared, $this->set);
         foreach ($this->bind_where as $key => $bind) {

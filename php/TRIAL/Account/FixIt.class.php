@@ -20,7 +20,7 @@ use \PDO, \DateTime,
 Database::setHost('localhost');
 Database::setAuth('root', '');
 
-class FixIt {
+class FixIt implements \JsonSerializable {
     
     const TABLE_CITIZENS = 'users';
     const TABLE_GOVERNMENTS = 'governments';
@@ -46,8 +46,8 @@ class FixIt {
         foreach ($loop as $key => $value) {
             if ($key === self::ACCOUNT_TYPE)
                 continue;
-            if ($key === self::USER && (gettype($value) === 'integer' || gettype($value) === 'string'))
-                $value = $this->type === TRIALAccount::USER ? new User((int) $value) : new Government((int) $value);
+            if ($key === self::USER && (is_int($value) || is_string($value)))
+                $value = $this->type === TRIALAccount::USER ? new User((int) $value) : Government::get((int) $value);
             $this->{$key} = $value;
         }
         unset($this->type);
@@ -156,5 +156,9 @@ class FixIt {
     public function getSignedOn() : DateTime {
         return new DateTime($this->register_date_time);
     }
-    
+
+    public function jsonSerialize() {
+        return [self::ID => $this->id, self::XP => $this->experience, self::LEVEL => $this->level];
+    }
+
 }

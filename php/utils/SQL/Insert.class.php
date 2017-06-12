@@ -50,16 +50,26 @@ class Insert extends Query {
         return $this;
     }
     
+    // 14/04/2017, 19:44:18 - 20:13:10 => added support to insert multiple rows in a single query
     public function prepare() {
-	$prepared = $this->prepareToBind($this->columns);
+	$prepared = $this->prepareToBind($this->columns, ($contain_array_values = is_array($this->values[0])) ? count($this->values) : false);
 	$this->bind($this->prepareInputParameters($prepared, $this->values));
-        $this->statement = $this->conn->prepare('INSERT INTO ' . $this->table . ' ' . ($this->columns != null ? '(' . $this->columns . ') ' : null) . 'VALUES(' . implode(', ', $prepared) . ')');
+        if ($contain_array_values) {
+            foreach ($prepared as $k => $v) {
+                $binded[$k] = '(' . implode(', ', $v) . ')';
+            }
+            $binded = implode(', ', $binded);
+        } else {
+            $binded = '(' . implode(', ', $prepared) . ')';
+        }
+        $this->statement = $this->conn->prepare('INSERT INTO ' . $this->table . ' ' . ($this->columns != null ? '(' . $this->columns . ') ' : null) . 'VALUES ' . $binded);
     }
 
+    // added ROW_COUNT() on 14/04/2017, 19:12:45
     public function run() : QueryResponse {
         $this->prepare();
         return new QueryResponse($this->statement, $this->bind(), function () {
-            return ['id' => $this->conn->lastInsertId()];
+            return ['id' => $this->conn->lastInsertId(), 'n' => (new SQLExec($this->conn))->run("SELECT ROW_COUNT() AS n")->getResult()[0]['n']];
         });
     }
 
