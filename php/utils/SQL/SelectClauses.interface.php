@@ -63,10 +63,10 @@ interface SelectClauses {
     /**
      * 
      * 
-     * @param bool $return 
+     * @param bool $count 
      * @return \Select
      */
-    public function returnFoundRows(bool $return);
+    public function countFoundRows(bool $count);
     
     /**
      * 

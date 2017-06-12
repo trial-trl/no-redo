@@ -37,7 +37,7 @@
 
 namespace NoRedo;
 
-class Address {
+class Address implements \JsonSerializable {
     
     const NUMBER = 'number';
     const COMPLEMENT = 'complement';
@@ -47,10 +47,19 @@ class Address {
     const COUNTRY = 'country';
     const POSTAL_CODE = 'postal_code';
     
-    private $location;
+    private $number;
+    private $complement;
+    private $district;
+    private $city;
+    private $state;
+    private $country;
+    private $postal_code;
     
     public function __construct($location) {
-        $this->location = $location;
+        $loop = empty($location) ? [] : $location;
+        foreach ($loop as $k => $v) {
+            $this->{$k} = $v;
+        }
     }
     
     /**
@@ -58,7 +67,7 @@ class Address {
      * @since 1.0
      */
     public function getNumber() {
-        return isset($this->location->{'number'}) ? $this->location->{'number'} : null;
+        return $this->number;
     }
     
     /**
@@ -66,7 +75,7 @@ class Address {
      * @since 1.0
      */
     public function getComplement() {
-        return isset($this->location->{'complement'}) ? $this->location->{'complement'} : null;
+        return $this->complement;
     }
     
     /**
@@ -74,7 +83,7 @@ class Address {
      * @since 1.0
      */
     public function getDistrict() {
-        return isset($this->location->{'district'}) ? $this->location->{'district'} : null;
+        return $this->district;
     }
     
     /**
@@ -82,7 +91,7 @@ class Address {
      * @since 1.0
      */
     public function getCity() {
-        return isset($this->location->{'county'}) ? $this->location->{'county'} : null;
+        return $this->city;
     }
     
     /**
@@ -90,7 +99,7 @@ class Address {
      * @since 1.0
      */
     public function getState() {
-        return isset($this->location->{'state'}) ? $this->location->{'state'} : null;
+        return $this->state;
     }
     
     /**
@@ -98,7 +107,7 @@ class Address {
      * @since 1.0
      */
     public function getCountry() : string {
-        return isset($this->location->{'country'}) ? $this->location->{'country'} : 'BR';
+        return $this->country ?? 'BR';
     }
     
     /**
@@ -106,7 +115,11 @@ class Address {
      * @since 1.0
      */
     public function getPostalCode() {
-        return isset($this->location->{'postal_code'}) ? $this->location->{'postal_code'} : null;
+        return $this->postal_code;
     }
-    
+
+    public function jsonSerialize() {
+        return [self::POSTAL_CODE => $this->postal_code, self::NUMBER => $this->number, self::COMPLEMENT => $this->complement, self::DISTRICT => $this->district, self::CITY => $this->city, self::STATE => $this->state, self::COUNTRY => $this->country];
+    }
+
 }

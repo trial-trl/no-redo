@@ -6,7 +6,7 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @version 1.212
+ * @version 1.22
  * @package Account
  */
 
@@ -78,9 +78,9 @@
 
 namespace NoRedo\TRIAL\Account;
 
-use \DateTime, NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Select, NoRedo\Address;
+use \DateTime, NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Address;
 
-final class User extends TRIALAccount {
+final class User extends TRIALAccount implements \JsonSerializable {
     
     const TABLE = 'users';
     
@@ -111,37 +111,44 @@ final class User extends TRIALAccount {
     private $schooling_level;
     private $main_occupation;
     
-    public function __construct($search = null, array $columns = null) {
+    protected function __construct($custom = []) {
         parent::__construct(TRIALAccount::USER);
-        if ($columns == null) {
-            $columns = self::ID . ', ' . self::FIRST_NAME . ', ' . self::MIDDLE_NAME . ', ' . self::LAST_NAME . ', ' . self::NICKNAME . ', ' . self::BIRTHDATE . ', ' . self::SEX . ', ' . self::RG . ', ' . self::CPF . ', ' . self::NATIONALITY . ', CONCAT(\'{"' . Address::CITY . '": "\', ' . Address::CITY . ', \'", "' . Address::STATE . '": "\', ' . Address::STATE . ', \'", "' . Address::POSTAL_CODE . '": \', ' . Address::POSTAL_CODE . ', \'}\') AS location, ' . self::LANDLINE . ', ' . self::CELL_PHONE . ', ' . self::EMAIL . ', ' . self::PASSWORD . ', ' . self::ACTIVATED . ', ' . self::PERMISSION;
-        } else {
-            $columns = implode(', ', $columns);
+        $loop = empty($custom) ? ['location' => $this->location] : $custom;
+        foreach ($loop as $k => $v) {
+            $this->{$k} = $k === 'location' ? (new Address(is_array($v) ? $v : json_decode($v, true))) : $v;
         }
-        $type = gettype($search);
+    }
+    
+    /**
+     * @param mixed $search
+     * @param array $columns
+     * @return type
+     * 
+     * @version 1.0
+     * @since 1.22
+     */
+    public static function get($search, array $columns = [self::ID, self::FIRST_NAME, self::MIDDLE_NAME, self::LAST_NAME, self::NICKNAME, self::BIRTHDATE, self::SEX, self::RG, self::CPF, self::NATIONALITY, 'CONCAT(\'{"' . Address::CITY . '": "\', ' . Address::CITY . ', \'", "' . Address::STATE . '": "\', ' . Address::STATE . ', \'", "' . Address::POSTAL_CODE . '": \', ' . Address::POSTAL_CODE . ', \'}\') AS location', self::LANDLINE, self::CELL_PHONE, self::EMAIL, self::PASSWORD, self::ACTIVATED, self::PERMISSION]) {
         $con = Database::connect(DATABASE_USERS);
-        switch ($type) {
-            case 'string':
-                $data = (new Select($con))->table(self::TABLE)->columns($columns)->where(self::EMAIL . ' = :email')->values([':email' => $search])->run();
-                break;
-            case 'integer':
-                $data = (new Select($con))->table(self::TABLE)->columns($columns)->where(self::ID . ' = :id')->values([':id' => $search])->run();
-                break;
-            default:
-                $data = $search != null ? $search : [];
+        $q = (new Select($con))->table(self::TABLE)->columns($columns)->fetchMode(\PDO::FETCH_CLASS, self::class);
+        if (is_string($search)) {
+            $q->where(self::EMAIL . ' = :email')->values([':email' => $search]);
+        } else if (is_int($search)) {
+            $q->where(self::ID . ' = :id')->values([':id' => $search]);
         }
-        if (gettype($data) === 'object') {
-            if ($data->success() && $data->existRows()) {
-                $data = $data->getResult()[0];
-            }
-        }
-        foreach ($data as $key => $value) {
-            if ($key === 'location') {
-                $this->location = new Address(json_decode(json_encode($value)));
-            } else {
-                $this->{$key} = $value;
-            }
-        }
+        return Query::helper($q->run(), function ($query) {
+            return $query->getResult()[0] ?? null;
+        });
+    }
+    
+    /**
+     * @param array $copy
+     * @return \NoRedo\TRIAL\Account\User
+     * 
+     * @version 1.0
+     * @since 1.22
+     */
+    public static function copy(array $copy) : User {
+        return new self($copy);
     }
     
     /**
@@ -149,7 +156,7 @@ final class User extends TRIALAccount {
      * @since 1.1
      */
     public function getFirstName() : string {
-        return $this->first_name;
+        return $this->first_name ?? '';
     }
     
     /**
@@ -157,7 +164,7 @@ final class User extends TRIALAccount {
      * @since 1.1
      */
     public function getMiddleName() {
-        return $this->middle_name;
+        return $this->middle_name ?? '';
     }
     
     /**
@@ -165,7 +172,7 @@ final class User extends TRIALAccount {
      * @since 1.0
      */
     public function getLastName() : string {
-        return $this->last_name;
+        return $this->last_name ?? '';
     }
     
     /**
@@ -173,7 +180,7 @@ final class User extends TRIALAccount {
      * @since 1.212
      */
     public function getFullName() : string {
-        return $this->getFirstName() . ($this->getMiddleName() ? ' ' . $this->getMiddleName() : null) . ' ' . $this->getLastName();
+        return $this->getFirstName() . ($this->getMiddleName() ? ' ' . $this->getMiddleName() : null) . ($this->getLastName() ? ' ' . $this->getLastName() : null);
     }
     
     /**
@@ -181,7 +188,7 @@ final class User extends TRIALAccount {
      * @since 1.1
      */
     public function getNickname() {
-        return $this->nickname;
+        return $this->nickname ?? '';
     }
     
     /**
@@ -222,7 +229,7 @@ final class User extends TRIALAccount {
      * @since 1.0
      */
     public function getSex() : string {
-        return $this->sex;
+        return $this->sex ?? Sex::UNDEFINED;
     }
     
     /**
@@ -271,6 +278,15 @@ final class User extends TRIALAccount {
      */
     public function getMainOccupation() : string {
         return $this->main_occupation;
+    }
+
+    /**
+     * 
+     * @version 1.01
+     * @since 1.2
+     */
+    public function jsonSerialize() {
+    	return array_filter(array_merge([self::FIRST_NAME => $this->getFirstName(), self::MIDDLE_NAME => $this->getMiddleName(), self::LAST_NAME => $this->getLastName(), self::NICKNAME => $this->getNickname()], parent::jsonSerialize()));
     }
 
 }
