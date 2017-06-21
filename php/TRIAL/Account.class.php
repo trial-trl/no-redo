@@ -210,6 +210,11 @@ class Account implements \JsonSerializable {
         }
     }
     
+    private static function setAccountLogged($account, bool $permanent = false) {
+        $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
+        setcookie('trl_logged', base64_encode($account->getTypeAccount() . ':' . $account->getId()), !$permanent ? 0 : strtotime('+30 days'), '/', $domain);
+    }
+    
     public static function logout() : array {
         $host = $_SERVER['HTTP_HOST'];
         foreach ($_COOKIE as $key) {
