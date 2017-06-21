@@ -115,7 +115,7 @@ class Account implements \JsonSerializable {
                 $account = $user->getResult()[0];
                 if ($account->checkPassword($password)) {
                     $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, self::ID => $account->getId(), 'name' => $account->getFirstName(), User::LAST_NAME => $account->getLastName(), self::PHOTO_URL => $account->getPhotoUrl(), self::PERMISSION => $account->getPermission(), 'account' => self::USER];
-                    self::createCookies([COOKIE_ID_TRIAL => $account->getId(), COOKIE_NAME => $account->getFirstName(), COOKIE_EMAIL => $account->getEmail(), COOKIE_PERMISSION => $account->getPermission(), COOKIE_TYPE => self::USER], $permanent);
+                    self::storeAccount([COOKIE_ID_TRIAL => $account->getId(), COOKIE_NAME => $account->getFirstName(), COOKIE_EMAIL => $account->getEmail(), COOKIE_PERMISSION => $account->getPermission(), COOKIE_TYPE => self::USER], $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -133,7 +133,7 @@ class Account implements \JsonSerializable {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
                     $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, Institution::ID => $account->getId(), Institution::REGISTER => $account->getRegister(), 'name' => $account->getName(), Institution::PHOTO_URL => $account->getPhotoUrl(), 'account' => self::INSTITUTION];
-                    self::createCookies([COOKIE_ID_TRIAL => $account->getId('id'), COOKIE_TI_NAME => $account->getName(), COOKIE_TI_EMAIL => $account->getEmail(), COOKIE_TYPE => self::INSTITUTION], $permanent);
+                    self::storeAccount([COOKIE_ID_TRIAL => $account->getId('id'), COOKIE_TI_NAME => $account->getName(), COOKIE_TI_EMAIL => $account->getEmail(), COOKIE_TYPE => self::INSTITUTION], $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -174,7 +174,7 @@ class Account implements \JsonSerializable {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
                     $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, Government::ID => $account->getId(), Government::REGISTER => $account->getRegister(), 'name' => $account->getName(), Government::PERMISSION => $account->getPermission(), Government::PHOTO_URL => $account->getPhotoUrl(), 'account' => self::GOVERNMENT];
-                    self::createCookies([COOKIE_ID_TRIAL => $account->getId('id'), COOKIE_TG_NAME => $account->getName(), COOKIE_TG_EMAIL => $account->getEmail(), COOKIE_TYPE => self::GOVERNMENT], $permanent);
+                    self::storeAccount([COOKIE_ID_TRIAL => $account->getId('id'), COOKIE_TG_NAME => $account->getName(), COOKIE_TG_EMAIL => $account->getEmail(), COOKIE_TYPE => self::GOVERNMENT], $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -192,7 +192,7 @@ class Account implements \JsonSerializable {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
                     $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getGovernmentId(), 'department_id' => $account->getId(), 'name' => $account->getName(), 'permission' => $account->getPermission(), 'photo_url' => $account->getPhotoUrl(), 'account' => self::GOVERNMENTAL_DEPARTMENT];
-                    self::createCookies([COOKIE_ID_TRIAL => $account->getId(), COOKIE_TGD_NAME => $account->getName(), COOKIE_PERMISSION => $account->getPermission(), COOKIE_TG_ID_TRIAL => $account->getGovernmentId(), COOKIE_TYPE => self::GOVERNMENTAL_DEPARTMENT], $permanent);
+                    self::storeAccount([COOKIE_ID_TRIAL => $account->getId(), COOKIE_TGD_NAME => $account->getName(), COOKIE_PERMISSION => $account->getPermission(), COOKIE_TG_ID_TRIAL => $account->getGovernmentId(), COOKIE_TYPE => self::GOVERNMENTAL_DEPARTMENT], $permanent);
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -203,7 +203,7 @@ class Account implements \JsonSerializable {
         });
     }
     
-    private static function createCookies(array $cookies, bool &$permanent) {
+    private static function storeAccount(array $cookies, bool &$permanent) {
         $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
         foreach ($cookies as $key => $value) {
             setcookie($key, $value, !$permanent ? 0 : strtotime('+30 days'), '/', $domain);
