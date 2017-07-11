@@ -25,9 +25,8 @@ class StreetRaceAccount {
     public static function authenticateUser($id_trial) {
         $profile = self::getProfile($id_trial);
         if ($profile['message'] === Message::EXIST) {
-            $domain = filter_input(INPUT_SERVER, 'HTTP_HOST') !== 'localhost' ? '.trialent.com' : 'localhost';
-            setcookie(COOKIE_STREET_RACE_ID, $profile['id'], time() + (60 * 60 * 24 * 365), '/', $domain);
-            setcookie(COOKIE_STREET_RACE_TYPE, $profile['type'], time() + (60 * 60 * 24 * 365), '/', $domain);
+            $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
+            setcookie('trl_sr', base64_encode(json_encode(['id' => $profile['id'], 'type' => $profile['type']])), time() + (60 * 60 * 24 * 365), '/', $domain);
         }
         return $profile;
     }
