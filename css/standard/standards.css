@@ -68,7 +68,7 @@ nr-title-truncate, .title-truncate {
     position: relative
 }
 
-.background-opacity-black, .background-white, .window {
+trl-popup [background], .background-opacity-black, .background-white, .window {
     position: fixed;
     display: none;
     width: 0;
@@ -76,7 +76,7 @@ nr-title-truncate, .title-truncate {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
 }
 
-.background-opacity-black {
+trl-popup [background], .background-opacity-black {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
@@ -175,8 +175,8 @@ a.current {
     color: rgba(255, 255, 255, 0.6);
 }
 
+/* removed "line-height" property on 26/06/2017, 22:43:20 */
 #footer-developer, [owner] {
-    line-height: 310%;
     font-size: 16px;
     text-align: center;
     background: #222;
@@ -203,11 +203,11 @@ a.current {
 }
 
 /* changed [logo] to trl-logo on 17/12/2016, 16:13:42 */
+/* removed "top" property on 26/06/2017, 22:43:20 */
 #footer-developer > #logo-developer, [owner] > trl-logo {
     position: relative;
     float: left;
     clear: both;
-    top: 5px;
     opacity: 0.6;
     margin: 0 auto;
     background-color: transparent;
