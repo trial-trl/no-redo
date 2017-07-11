@@ -134,11 +134,11 @@ class Clicker implements \Serializable, \JsonSerializable {
         $get = self::get($id_trial, [self::OPTION_ACCOUNT_TYPE => $account_type, self::OPTION_USER_AS_ID => true]);
         $profile = $get->getId() != self::NO_ID ? $get : self::create($id_trial, $account_type)['profile'];
         $domain = filter_input(INPUT_SERVER, 'HTTP_HOST') !== 'localhost' ? '.trialent.com' : 'localhost';
-        setcookie(COOKIE_CLICKER_ID, $profile->getId(), time() + (60 * 60 * 24 * 365), '/', $domain);
+        $cookie = [self::ID => $profile->getId()];
         if (count($profile->getInstitutions()) > 0) {
-            setcookie(COOKIE_CLICKER_INSTITUTION, $profile->getInstitution()->getId(), time() + (60 * 60 * 24 * 365), '/', $domain);
-            setcookie(COOKIE_CLICKER_TYPE, $profile->getInstitution()->getClickerType(), time() + (60 * 60 * 24 * 365), '/', $domain);
+            $cookie[self::INSTITUTION] = [ClickerInstitution::ID => $profile->getInstitution()->getId(), ClickerInstitution::TYPE => $profile->getInstitution()->getClickerType()];
         }
+        setcookie('trl_cl', base64_encode(json_encode($cookie)), time() + (60 * 60 * 24 * 365), '/', $domain);
         return array_merge([self::ID => $profile->getId(), 'message' => Message::EXIST], $account_type === Institution::USER ? [self::USER => $profile->getUser(), self::INSTITUTIONS => $profile->getInstitutions()] : [self::INSTITUTION => $profile->getUser()]);
     }
     

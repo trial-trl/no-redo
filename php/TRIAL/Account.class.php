@@ -110,13 +110,14 @@ class Account implements \JsonSerializable {
     }
     
     private static function userAuth(&$login, string &$password, bool &$permanent) : array {
-        $id_login = gettype($login) === 'integer';
+        $id_login = is_numeric($login);
         return Query::helper((new Select(self::con()))->table(TABLE_USERS)->columns([User::ID, User::FIRST_NAME, User::LAST_NAME, User::EMAIL, User::PASSWORD, User::ACTIVATED, User::PERMISSION])->where($id_login ? User::ID . ' = :id' : User::EMAIL . ' = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, User::class)->run(), function ($user) use ($password, $permanent) {
             if ($user->existRows()) {
                 $account = $user->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, self::ID => $account->getId(), 'name' => $account->getFirstName(), User::LAST_NAME => $account->getLastName(), self::PHOTO_URL => $account->getPhotoUrl(), self::PERMISSION => $account->getPermission(), 'account' => self::USER];
-                    self::createCookies([COOKIE_ID_TRIAL => $account->getId(), COOKIE_NAME => $account->getFirstName(), COOKIE_EMAIL => $account->getEmail(), COOKIE_PERMISSION => $account->getPermission(), COOKIE_TYPE => self::USER], $permanent);
+                    self::storeAccount($account);
+                    self::setAccountLogged($account, $permanent);
+                    $result = [self::ID => $account->getId(), 'name' => $account->getFirstName(), User::LAST_NAME => $account->getLastName(), self::PHOTO_URL => $account->getPhotoUrl(), self::PERMISSION => $account->getPermission(), 'account' => self::USER, 'message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED];
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -128,13 +129,15 @@ class Account implements \JsonSerializable {
     }
     
     private static function institutionAuth(&$login, string &$password, bool &$permanent) : array {
-        $id_login = gettype($login) === 'integer';
+        $id_login = is_numeric($login);
         return Query::helper((new Select(self::con()))->table(Institution::TABLE)->columns([Institution::ID, Institution::CNPJ, Institution::REGISTER, Institution::NAME, self::EMAIL, self::PASSWORD, self::ACTIVATED])->where($id_login ? Institution::ID . ' = :id' : Institution::EMAIL . ' = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, Institution::class)->run(), function ($account) use ($password, $permanent) {
             if ($account->existRows()) {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, Institution::ID => $account->getId(), Institution::REGISTER => $account->getRegister(), 'name' => $account->getName(), Institution::PHOTO_URL => $account->getPhotoUrl(), 'account' => self::INSTITUTION];
-                    self::createCookies([COOKIE_ID_TRIAL => $account->getId('id'), COOKIE_TI_NAME => $account->getName(), COOKIE_TI_EMAIL => $account->getEmail(), COOKIE_TYPE => self::INSTITUTION], $permanent);
+                    $result = [Institution::ID => $account->getId(), Institution::REGISTER => $account->getRegister(), 'name' => $account->getName(), Institution::PHOTO_URL => $account->getPhotoUrl(), 'account' => self::INSTITUTION];
+                    self::storeAccount($account);
+                    self::setAccountLogged($account, $permanent);
+                    $result += ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED];
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -169,13 +172,14 @@ class Account implements \JsonSerializable {
     }
     
     private static function governmentAuth(&$login, string &$password, bool &$permanent) : array {
-        $id_login = gettype($login) === 'integer';
+        $id_login = is_numeric($login);
         return Query::helper((new Select(self::con()))->table(Government::TABLE)->columns([Government::ID, Government::CNPJ, Government::REGISTER, Government::NAME, self::EMAIL, self::PASSWORD, self::ACTIVATED])->where($id_login ? Government::ID . ' = :id' : self::EMAIL . ' = :email')->values($id_login ? [':id' => $login] : [':email' => $login])->fetchMode(PDO::FETCH_CLASS, Government::class)->run(), function ($account) use ($login, $password, $permanent) {
             if ($account->existRows()) {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, Government::ID => $account->getId(), Government::REGISTER => $account->getRegister(), 'name' => $account->getName(), Government::PERMISSION => $account->getPermission(), Government::PHOTO_URL => $account->getPhotoUrl(), 'account' => self::GOVERNMENT];
-                    self::createCookies([COOKIE_ID_TRIAL => $account->getId('id'), COOKIE_TG_NAME => $account->getName(), COOKIE_TG_EMAIL => $account->getEmail(), COOKIE_TYPE => self::GOVERNMENT], $permanent);
+                    self::storeAccount($account);
+                    self::setAccountLogged($account, $permanent);
+                    $result = [Government::ID => $account->getId(), Government::REGISTER => $account->getRegister(), 'name' => $account->getName(), Government::PERMISSION => $account->getPermission(), Government::PHOTO_URL => $account->getPhotoUrl(), 'account' => self::GOVERNMENT, 'message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED];
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -187,13 +191,14 @@ class Account implements \JsonSerializable {
     }
     
     private static function governmentalDepartmentAuth(&$login, string &$password, bool &$permanent) : array {
-        $id_login = gettype($login) === 'integer';
+        $id_login = is_numeric($login);
         return Query::helper((new Select(self::con()))->table('governmental_departments')->columns('id, government, name, login, password, activated')->where($id_login ? 'id = :id' : 'login = :login')->values($id_login ? [':id' => $login] : [':login' => $login])->fetchMode(PDO::FETCH_CLASS, Department::class)->run(), function ($account) use ($login, $password, $permanent) {
             if ($account->existRows()) {
                 $account = $account->getResult()[0];
                 if ($account->checkPassword($password)) {
-                    $result = ['message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED, 'id' => $account->getGovernmentId(), 'department_id' => $account->getId(), 'name' => $account->getName(), 'permission' => $account->getPermission(), 'photo_url' => $account->getPhotoUrl(), 'account' => self::GOVERNMENTAL_DEPARTMENT];
-                    self::createCookies([COOKIE_ID_TRIAL => $account->getId(), COOKIE_TGD_NAME => $account->getName(), COOKIE_PERMISSION => $account->getPermission(), COOKIE_TG_ID_TRIAL => $account->getGovernmentId(), COOKIE_TYPE => self::GOVERNMENTAL_DEPARTMENT], $permanent);
+                    self::storeAccount($account);
+                    self::setAccountLogged($account, $permanent);
+                    $result = ['id' => $account->getGovernmentId(), 'department_id' => $account->getId(), 'name' => $account->getName(), 'permission' => $account->getPermission(), 'photo_url' => $account->getPhotoUrl(), 'account' => self::GOVERNMENTAL_DEPARTMENT, 'message' => $account->isActivated() ? Message::EXIST : Message::NOT_ACTIVATED];
                 } else {
                     $result['message'] = Message::ERROR_PASSWORD_INCORRECT;
                 }
@@ -204,23 +209,39 @@ class Account implements \JsonSerializable {
         });
     }
     
-    private static function createCookies(array $cookies, bool &$permanent) {
+    // 20/06/2017, 23:41:53 => renamed createCookies() to storeAccount()
+    private static function storeAccount($account) {
         $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
-        foreach ($cookies as $key => $value) {
-            setcookie($key, $value, !$permanent ? 0 : strtotime('+30 days'), '/', $domain);
+        $trl_accounts = filter_has_var(INPUT_COOKIE, 'trl_accounts') ? json_decode(base64_decode(filter_input(INPUT_COOKIE, 'trl_accounts')), true) : [];
+        if (!isset($trl_accounts[$account->getTypeAccount()])) {
+            $trl_accounts[$account->getTypeAccount()] = [];
         }
+        if (!in_array($account->getId(), $trl_accounts[$account->getTypeAccount()])) {
+            $jd_account = json_decode(json_encode($account), true);
+            unset($jd_account['permission']);
+            unset($jd_account['activated']);
+            unset($jd_account['type']);
+            $trl_accounts[$account->getTypeAccount()][$account->getId()] = $jd_account;
+        }
+        setcookie('trl_accounts', base64_encode(json_encode($trl_accounts)), strtotime('+30 days'), '/', $domain);
+    }
+    
+    // created on 21/06/2017, 00:07:51
+    private static function setAccountLogged($account, bool $permanent = false) {
+        $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
+        setcookie('trl_logged', base64_encode($account->getTypeAccount() . ':' . $account->getId()), !$permanent ? 0 : strtotime('+30 days'), '/', $domain);
     }
     
     public static function logout() : array {
         $host = $_SERVER['HTTP_HOST'];
-        foreach ($_COOKIE as $key) {
-            if (strpos($key, 'TRL_') !== false) {
+        foreach ($_COOKIE as $k => $v) {
+            if ($k !== 'trl_accounts' && substr($k, 0, 4) === 'trl_') {
                 if ($host !== 'localhost') {
-                    $domain = (strpos($key, 'SR') !== false ? 'serginhocorridaderua' : strpos($key, 'CL') !== false ? 'clicker' : strpos($key, 'ON') !== false ? 'oportunidadeja' : '') . '.trialent.com';
+                    $domain = (strpos($k, '_sr') !== false ? 'serginhocorridaderua' : (strpos($k, '_cl') !== false ? 'clicker' : (strpos($k, '_on') !== false ? 'oportunidadeja' : ''))) . '.trialent.com';
                 } else {
                     $domain = $host;
                 }
-                setcookie($key, null, time() - 3600, '/', $domain);
+                setcookie($k, null, time() - 3600, '/', $domain);
             }
         }
         return ['message' => Message::SAVED_WITH_SUCCESS];
@@ -275,9 +296,7 @@ class Account implements \JsonSerializable {
     }
     
     public function getPhotoUrl() {
-        $url = 'http://trialent.com/images/' . $this->type_account . '/profile/' . $this->id . '/' . $this->id . '.jpg';
-        $response = Request::make($url);
-        return  $response->success() && $response->getResult()['http_code'] === 200 ? $url : '/no-redo/pattern-photo';
+        return 'http://trialent.com/images/' . $this->type_account . '/profile/' . $this->id . '/' . $this->id . '.jpg';
     }
     
     // added on 16:22:39
@@ -365,6 +384,36 @@ class Account implements \JsonSerializable {
             }
             return $response;
         });
+    }
+    
+    /**
+     * @copyright (c) 2017, TRIAL<Matheus Leonardo dos Santos Martins>
+     * Created on 21/06/2017, 00:38:21
+     */
+    public function getTypeAccount() {
+        return $this->type_account;
+    }
+    
+    /**
+     * Created on 21/06/2017, 16:10:06
+     */
+    public static function getStoredAccounts() : array {
+        return json_decode(base64_decode(filter_input(INPUT_COOKIE, 'trl_accounts')), true) ?? [];
+    }
+    
+    /**
+     * Created on 21/06/2017, 16:10:52
+     */
+    public static function getLoggedAccount() : array {
+        if (filter_has_var(INPUT_COOKIE, 'trl_logged')) {
+            $trl_logged = explode(':', base64_decode(filter_input(INPUT_COOKIE, 'trl_logged')));
+            $trl_accounts = self::getStoredAccounts();
+            if (!empty($trl_accounts) && isset($trl_accounts[$trl_logged[0]])) {
+                $trl_accounts[$trl_logged[0]][$trl_logged[1]]['type'] = $trl_logged[0];
+            }
+            return $trl_accounts[$trl_logged[0]][$trl_logged[1]] ?? [];
+        }
+        return [];
     }
 
     /**
