@@ -551,15 +551,12 @@
                 loaded_scripts.push(key);
                 if (i !== -1)
                     load_scripts.splice(i, 1);
-                if (last === true)
+                if (last === true) {
                     call(callback);
+                }
             }
             function addCallback(url, script, callback, last) {
-                script.addEventListener("load", (function (u, s, c, l) {
-                    return function () {
-                        addLoadedScript(u, c, l);
-                    };
-                })(url, script, callback, last));
+                script.addEventListener("load", addLoadedScript.bind(this, url, callback, last));
             }
             function addLoadScript(url, callback, check_for, last) {
                 if ((check_for && !T[check_for]) || !check_for) {
@@ -568,7 +565,7 @@
                     if (loaded_scripts.indexOf(url) !== -1 && !!exists && last === true)
                         call(callback);
                     else if (load !== -1)
-                        addCallback(load_scripts[load], scripts[url], callback, last);
+                        addCallback(url, scripts[url], callback, last);
                     else {
                         load_scripts.push(url);
                         var script = document.createElement("script");
@@ -663,9 +660,8 @@
                         }
                     } else
                         console.error("(T.dispatchCallback) Callback function name must be a string and length more than 0");
-                } else if (typeof callback === 'function') {
+                } else if (typeof callback === 'function')
                     callback();
-                }
             } else 
                 console.error("(T.dispatchCallback) Callback not defined");
         };
@@ -686,6 +682,7 @@
         
     })();
     (function () {
+        window.dispatchEvent(new CustomEvent("TReady"));
         var c = <?php echo filter_has_var(INPUT_GET, 'onload') ? '"' . filter_input(INPUT_GET, 'onload') . '"' : 'null' ?>;
         if (c)
             window.T.dispatchCallback(c);

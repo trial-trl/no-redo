@@ -29,6 +29,7 @@
                     var that = this;
                     this.stylesheet = document.getElementById("trl-loading-style");
                     if (!this.stylesheet) {
+                        this.style.display = "none !important";
                         missing(function () {
                             window.T.Utils.ajax({
                                 url: "/AnimacaoCSS/loading.css",
@@ -39,6 +40,7 @@
                                     document.head.appendChild(s);
                                     that.stylesheet = s.sheet;
                                     that.updateStyle();
+                                    that.style.display = "";
                                 }
                             });
                         });
