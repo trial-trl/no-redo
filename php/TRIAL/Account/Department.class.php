@@ -16,10 +16,7 @@
 
 namespace NoRedo\TRIAL\Account;
 
-use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\SQL\Select;
-
-require_once __DIR__ . '/../Account.class.php';
-require_once __DIR__ . '/../../../Request.class.php';
+use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\SQL\Select, NoRedo\Utils\Request;
 
 class Department extends TRIALAccount {
     

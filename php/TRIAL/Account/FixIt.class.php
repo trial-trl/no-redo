@@ -25,7 +25,7 @@
 namespace NoRedo\TRIAL\Account;
 
 use \PDO, \DateTime,
-        NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Utils\SQL\Insert;
+        NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Utils\SQL\Insert, NoRedo\Utils\Message;
 
 Database::setHost('localhost');
 Database::setAuth('root', '');
@@ -57,7 +57,7 @@ class FixIt implements \JsonSerializable {
             if ($key === self::ACCOUNT_TYPE)
                 continue;
             if ($key === self::USER && (is_int($value) || is_string($value)))
-                $value = $this->type === TRIALAccount::USER ? new User((int) $value) : Government::get((int) $value);
+                $value = $this->type === TRIALAccount::USER ? User::get((int) $value) : Government::get((int) $value);
             $this->{$key} = $value;
         }
         unset($this->type);
@@ -95,8 +95,8 @@ class FixIt implements \JsonSerializable {
             $profile = self::create($id, $type);
         }
         $domain = filter_input(INPUT_SERVER, 'HTTP_HOST') !== 'localhost' ? '.trialent.com' : 'localhost';
-        setcookie(COOKIE_FIX_IT_ID, $profile->getId(), time() + (60 * 60 * 24 * 365), '/', $domain);
-        return $profile;
+        setcookie('trl_fi', $profile->getId(), time() + (60 * 60 * 24 * 365), '/', $domain);
+        return [self::ID => $profile->getId(), self::LEVEL => $profile->getLevel(), self::XP => $profile->getXP(), 'message' => Message::EXIST];
     }
     
     /**

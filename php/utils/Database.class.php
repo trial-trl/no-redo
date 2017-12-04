@@ -28,7 +28,7 @@ use \PDO;
 class Database {
     
     private static $driver = 'mysql';
-    private static $host = 'trialent.com';
+    private static $host = '216.172.161.44';
     private static $user = 'trial105';//root
     private static $password = 'i1eDq8*5lVwHLk*!gB';//
     
