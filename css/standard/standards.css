@@ -235,7 +235,8 @@ trl-slideshow .controller.fill, [container-slideshow-items] .control {
 }
 
 /* removed display: none on 30/10/2016, 18:32:23 */
-trl-slideshow > *:not(header):not(.controller), [container-slideshow-items] [slideshow-item] {
+/* changed trl-slideshow > *[...] to trl-slideshow .slide[...] on 04/12/2017, 17:56:34 */
+trl-slideshow .slide:not(header):not(.controller), [container-slideshow-items] [slideshow-item] {
     position: relative;
     left: 0;
     float: left;
@@ -245,7 +246,7 @@ trl-slideshow > *:not(header):not(.controller), [container-slideshow-items] [sli
 }
 
 /* removed display: none on 30/10/2016, 18:33:16 */
-trl-slideshow > *:not(header):not(.controller):not(.current), [container-slideshow-items] [slideshow-item]:not(.current) {
+trl-slideshow .slide:not(header):not(.controller):not(.current), [container-slideshow-items] [slideshow-item]:not(.current) {
     display: none
 }
 

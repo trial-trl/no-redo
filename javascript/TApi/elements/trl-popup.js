@@ -259,8 +259,8 @@
                     
                     window.T.load("design", function () {
                         document.body.appendChild(that);
-                        calculateElements.call(that);
                         that.style.display = "block";
+                        calculateElements.call(that);
                         that.dispatchEvent(new CustomEvent("openstart"));
                         window.T.Animation.start({
                             duration: 200,
@@ -452,7 +452,8 @@
                     return this.opened;
                 }
             },
-            transition: function (options) {
+            transition: {
+                value: function (options) {
                 this.el_init_bottom = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("bottom").replace("px", ""));
                 this.el_init_right = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("right").replace("px", ""));
                 this.el_init_width = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("width").replace("px", ""));
@@ -485,8 +486,10 @@
                         options.transitionFinished(options);
                     }
                 }, options.duration | 1000);
+                }
             },
-            restore: function (options) {
+            restore: {
+                value: function (options) {
                 this.el_init_bottom = 30;
                 this.el_init_right = 30;
                 this.el_init_width = 64;
@@ -524,6 +527,7 @@
                             options.transitionFinished(options);
                         }
                     }, options.duration | 1000);
+                }
                 }
             }
         })

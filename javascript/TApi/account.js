@@ -35,7 +35,7 @@
                 data.type = options.type;
             window.T.Utils.ajax({
                 data: data,
-                url: T.Account.url + "/action",
+                url: window.T.Account.SERVER,
                 response: "json",
                 onloadend: options.onloadend
             });
@@ -44,9 +44,11 @@
     
     window.T = window.T || {};
     window.T.Account = {
-        url: "http://account.trialent.com",
+        URL: "http://account.trialent.com",
+        SERVER: "http://account.trialent.com/action",
+        // end creation
         open: function (options) {
-            var url = T.Account.url + "/entrar/" + btoa(JSON.stringify(options));
+            var url = this.URL + "/entrar/" + btoa(JSON.stringify(options));
             if (typeof options.popup === "boolean" && !options.popup) {
                 location.href = url;
             } else if (typeof options.popup === "string") {
@@ -62,7 +64,8 @@
                         T(account_page).Standards.open({fit_screen: true});
                         break;
                     case "window":
-                        window.open(T.Account.url + "/entrar/" + btoa(JSON.stringify(options)) + (options.hasOwnProperty("keep") ? "#" + options.keep : ""), "trl-account-page", "resizable,scrollbars,width=413,height=554");
+                        // added 'options.keep' on 28/04/2017, 15:24:54 
+                        window.open(this.URL + "/entrar/" + btoa(JSON.stringify(options)) + (options.hasOwnProperty("keep") ? "#" + options.keep : ""), "trl-account-page", "resizable,scrollbars,width=413,height=554");
                         break;
                 }
             }
@@ -71,7 +74,7 @@
             missing(function () {
                 window.T.Utils.ajax({
                     data: {r: 'lgout'},
-                    url: T.Account.url + "/action",
+                    url: window.T.Account.SERVER,
                     onloadend: function () {
                         window.T.Cookies('trl_').deleteAll();
                         if (after)
