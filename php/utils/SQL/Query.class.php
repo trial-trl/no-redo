@@ -14,6 +14,8 @@
  * 21/01/2017
  *      03:19:19 => renamed namespace from SQL to Utils\SQL
  *      18:16:35 => renamed namespace from Utils\SQL to NoRedo\Utils\SQL
+ * 
+ * 26/11/2017, 16:16 => prepareToBind(): now, when $column name have '.' (dot), it's replaced with '_' (underline);
  */
 
 namespace NoRedo\Utils\SQL;
@@ -67,12 +69,12 @@ abstract class Query extends CommonQuery {
             for ($c = 0; $c < $count; $c++) {
                 $prepared_columns[$c] = [];
                 foreach ($exploded_columns as $column) {
-                    $prepared_columns[$c][] = ':' . $column . $c;
+                    $prepared_columns[$c][] = ':' . preg_replace('/\./i', '_', $column) . $c;
                 }
             }
         } else {
             foreach ($exploded_columns as $i => $column) {
-                $prepared_columns[$i] = $keep_name_column ? $column . ' = :' . $column : ':' . $column;
+                $prepared_columns[$i] = $keep_name_column ? $column . ' = :' . preg_replace('/\./i', '_', $column) : ':' . preg_replace('/\./i', '_', $column);
             }
         }
         return $prepared_columns;

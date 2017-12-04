@@ -1,0 +1,8 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+Header set Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Headers "X-REQUESTED-WITH"
+
+RewriteRule ^group-pattern-photo?$ images/TRIAL/trl_pattern_group_photo_bg.svg [NC,L]
+RewriteRule ^pattern-photo?$ images/TRIAL/trl_pattern_photo_bg.svg [NC,L]

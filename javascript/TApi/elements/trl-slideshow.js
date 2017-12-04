@@ -78,14 +78,24 @@
             },
             recalcSlides: {
                 value: function () {
-                    var slide_items = this.children;
+                    var slide_items = this.slideSelector !== null ? this.querySelectorAll(this.slideSelector) : this.children;
                     this.slideshow_items = [];
                     for (var i = 0, total = slide_items.length; i < total; i++) {
                         var slide = slide_items[i];
                         if (!slide.classList.contains("controller") && slide.nodeName !== "HEADER") {
+                            slide.classList.add("slide");
                             this.slideshow_items.push(slide);
                         }
                     }
+                }
+            },
+            // created 04/12/2017, 17:43:16
+            slideSelector: {
+                set: function (selector) {
+                    this.setAttribute("trl-slide-selector", selector);
+                },
+                get: function () {
+                    return this.hasAttribute("trl-slide-selector") ? this.getAttribute("trl-slide-selector") : null;
                 }
             },
             slides: {
@@ -224,6 +234,14 @@
             },
             setup: {
                 value: function () {
+                    var observer = new MutationObserver(function (m) {
+                        this.recalcSlides();
+                        this.dispatchEvent(new CustomEvent("append"), {
+                            detail: m
+                        });
+                    }.bind(this));
+                    observer.observe(this, {childList: true});
+                    
                     var slides = this.slides, that = this;
                     this.controller = {};
                     try {

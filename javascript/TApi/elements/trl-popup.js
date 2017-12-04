@@ -332,8 +332,8 @@
                     
                     window.T.load("design", function () {
                         document.body.appendChild(that);
-                        calculateElements.call(that);
                         that.style.display = "block";
+                        calculateElements.call(that);
                         that.dispatchEvent(new CustomEvent("openstart"));
                         window.T.Animation.start({
                             duration: 200,
@@ -528,7 +528,8 @@
                 }
             },
             // moved from window.T.js to elements.js on 17/06/2017, 13:28:14
-            transition: function (options) {
+            transition: {
+                value: function (options) {
                 this.el_init_bottom = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("bottom").replace("px", ""));
                 this.el_init_right = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("right").replace("px", ""));
                 this.el_init_width = +(window.getComputedStyle(options.element_triggered, null).getPropertyValue("width").replace("px", ""));
@@ -561,9 +562,11 @@
                         options.transitionFinished(options);
                     }
                 }, options.duration | 1000);
+                }
             },
             // moved from window.T.js to elements.js on 17/06/2017, 13:28:14
-            restore: function (options) {
+            restore: {
+                value: function (options) {
                 this.el_init_bottom = 30;
                 this.el_init_right = 30;
                 this.el_init_width = 64;
@@ -601,6 +604,7 @@
                             options.transitionFinished(options);
                         }
                     }, options.duration | 1000);
+                }
                 }
             }
         })

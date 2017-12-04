@@ -35,7 +35,7 @@
                 data.type = options.type;
             window.T.Utils.ajax({
                 data: data,
-                url: "/Library/account/action",
+                url: window.T.Account.SERVER,
                 response: "json",
                 onloadend: options.onloadend
             });
@@ -45,9 +45,13 @@
     window.T = window.T || {};
     // 17/10/2016, 19:28:03
     window.T.Account = {
+        // created on 11/11/2017 11:46:31
+        URL: "/Library/account",
+        SERVER: "/Library/account/action",
+        // end creation
         open: function (options) {
             // 17/10/2016, 15:51:30 - 15:57:01: added multiple popup types: a lot of ways to use TRIAL Account login, in-page & window
-            var url = "/Library/account/entrar/" + btoa(JSON.stringify(options));
+            var url = this.URL + "/entrar/" + btoa(JSON.stringify(options));
             if (typeof options.popup === "boolean" && !options.popup) {
                 location.href = url;
             } else if (typeof options.popup === "string") {
@@ -64,7 +68,7 @@
                         break;
                     case "window":
                         // added 'options.keep' on 28/04/2017, 15:24:54 
-                        window.open("/Library/account/entrar/" + btoa(JSON.stringify(options)) + (options.hasOwnProperty("keep") ? "#" + options.keep : ""), "trl-account-page", "resizable,scrollbars,width=413,height=554");
+                        window.open(this.URL + "/entrar/" + btoa(JSON.stringify(options)) + (options.hasOwnProperty("keep") ? "#" + options.keep : ""), "trl-account-page", "resizable,scrollbars,width=413,height=554");
                         break;
                 }
             }
@@ -74,7 +78,7 @@
                 // 18/10/2015, 00:42:33 => added after callback and updated the usage of deprecated T library codes
                 window.T.Utils.ajax({
                     data: {r: 'lgout'},
-                    url: "/Library/account/action",
+                    url: window.T.Account.SERVER,
                     onloadend: function () {
                         window.T.Cookies('trl_').deleteAll();
                         if (after)

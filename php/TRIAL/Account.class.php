@@ -6,7 +6,7 @@
  * @author Matheus Leonardo dos Santos Martins
  * @copyright (c) 2016, TRIAL
  * 
- * @version 1.301
+ * @version 1.31
  * @package TRIAL
  */
     
@@ -116,6 +116,10 @@
  * 
  * 23/01/2017
  *      19:22:15 => when authenticate any type of TRIAL Account, the ID cookie is set with constant COOKIE_ID_TRIAL
+ * 
+ * 01/11/2017
+ *      21:09:33 => changed all TRIAL domains from http:// to https:// due recent SSL support added to them thanks to CloudFlare
+ *      22:16:04 => setcookie() from storeAccount and setLoggedAccount methods changed to setrawcookie() due to encoding problems
  */
 
 namespace NoRedo\TRIAL;
@@ -331,13 +335,13 @@ class Account implements \JsonSerializable {
             unset($jd_account['type']);
             $trl_accounts[$account->getTypeAccount()][$account->getId()] = $jd_account;
         }
-        setcookie('trl_accounts', base64_encode(json_encode($trl_accounts)), strtotime('+30 days'), '/', $domain);
+        setrawcookie('trl_accounts', base64_encode(json_encode($trl_accounts)), strtotime('+30 days'), '/', $domain);
     }
     
     // created on 21/06/2017, 00:07:51
     private static function setAccountLogged($account, bool $permanent = false) {
         $domain = $_SERVER['HTTP_HOST'] !== 'localhost' ? '.trialent.com' : 'localhost';
-        setcookie('trl_logged', base64_encode($account->getTypeAccount() . ':' . $account->getId()), !$permanent ? 0 : strtotime('+30 days'), '/', $domain);
+        setrawcookie('trl_logged', base64_encode($account->getTypeAccount() . ':' . $account->getId()), !$permanent ? 0 : strtotime('+30 days'), '/', $domain);
     }
     
     public static function logout() : array {
@@ -366,7 +370,7 @@ class Account implements \JsonSerializable {
         if (isset($field['tmp_name'])) {
             if (is_uploaded_file($field['tmp_name'])) {
                 $divided_namespace = explode('\\', get_class($account));
-                $url = '/TRIAL/images/' . strtolower(array_pop($divided_namespace)) . '/profile/' . $account->getId() . '/' . $account->getId() . '.jpg';
+                $url = 'https://trialent.com/images/' . strtolower(array_pop($divided_namespace)) . '/profile/' . $account->getId() . '/' . $account->getId() . '.jpg';
                 if (move_uploaded_file($field['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $url)) {
                     return ['message' => Message::SAVED_WITH_SUCCESS, 'url' => $url];
                 }
@@ -404,7 +408,7 @@ class Account implements \JsonSerializable {
     }
     
     public function getPhotoUrl() {
-        return 'http://trialent.com/images/' . $this->type_account . '/profile/' . $this->id . '/' . $this->id . '.jpg';
+        return 'https://trialent.com/images/' . $this->type_account . '/profile/' . $this->id . '/' . $this->id . '.jpg';
     }
     
     // added on 16:22:39
