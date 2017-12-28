@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
+/*
+ * 18/12/2017 00:32:07 => updated" /Library/account" URL to "/TRIALAccount"
+ */
+
 (function (window) {
+    // added on 18/12/2017, 00:20:50
+    var VERSION = "v0";
+    
     function missing(c, cookies) {
         var m = [];
         if (!window.T.Utils)
@@ -46,8 +53,8 @@
     // 17/10/2016, 19:28:03
     window.T.Account = {
         // created on 11/11/2017 11:46:31
-        URL: "/Library/account",
-        SERVER: "/Library/account/action",
+        URL: "/" + VERSION + "/TRIALAccount",
+        SERVER: "/" + VERSION + "/TRIALAccount/action",
         // end creation
         open: function (options) {
             // 17/10/2016, 15:51:30 - 15:57:01: added multiple popup types: a lot of ways to use TRIAL Account login, in-page & window

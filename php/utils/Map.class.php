@@ -16,7 +16,7 @@
 
 namespace NoRedo\Utils;
 
-require_once $_SERVER['DOCUMENT_ROOT'] . '/no-redo/repository/php/autoload.inc.php';
+require_once __DIR__ . '/../autoload.inc.php';
 
 use NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select;
 

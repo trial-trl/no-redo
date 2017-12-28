@@ -65,7 +65,7 @@
             });
         
         function reg() {
-            window.T.load("http://" + window.location.host + "/no-redo/repository/javascript/TApi/elements/register/" + arr.join(","), callback);
+            window.T.load("http://" + window.location.host + "/no-redo/" + window.T.VERSION + "/repository/javascript/T/elements/register/" + arr.join(","), callback);
         }
     };
 })(window);

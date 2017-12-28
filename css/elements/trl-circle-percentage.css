@@ -1,0 +1,1066 @@
+.rect-auto,
+trl-circle-percentage[trl-percentage="51"] .slice,
+trl-circle-percentage[trl-percentage="52"] .slice,
+trl-circle-percentage[trl-percentage="53"] .slice,
+trl-circle-percentage[trl-percentage="54"] .slice,
+trl-circle-percentage[trl-percentage="55"] .slice,
+trl-circle-percentage[trl-percentage="56"] .slice,
+trl-circle-percentage[trl-percentage="57"] .slice,
+trl-circle-percentage[trl-percentage="58"] .slice,
+trl-circle-percentage[trl-percentage="59"] .slice,
+trl-circle-percentage[trl-percentage="60"] .slice,
+trl-circle-percentage[trl-percentage="61"] .slice,
+trl-circle-percentage[trl-percentage="62"] .slice,
+trl-circle-percentage[trl-percentage="63"] .slice,
+trl-circle-percentage[trl-percentage="64"] .slice,
+trl-circle-percentage[trl-percentage="65"] .slice,
+trl-circle-percentage[trl-percentage="66"] .slice,
+trl-circle-percentage[trl-percentage="67"] .slice,
+trl-circle-percentage[trl-percentage="68"] .slice,
+trl-circle-percentage[trl-percentage="69"] .slice,
+trl-circle-percentage[trl-percentage="70"] .slice,
+trl-circle-percentage[trl-percentage="71"] .slice,
+trl-circle-percentage[trl-percentage="72"] .slice,
+trl-circle-percentage[trl-percentage="73"] .slice,
+trl-circle-percentage[trl-percentage="74"] .slice,
+trl-circle-percentage[trl-percentage="75"] .slice,
+trl-circle-percentage[trl-percentage="76"] .slice,
+trl-circle-percentage[trl-percentage="77"] .slice,
+trl-circle-percentage[trl-percentage="78"] .slice,
+trl-circle-percentage[trl-percentage="79"] .slice,
+trl-circle-percentage[trl-percentage="80"] .slice,
+trl-circle-percentage[trl-percentage="81"] .slice,
+trl-circle-percentage[trl-percentage="82"] .slice,
+trl-circle-percentage[trl-percentage="83"] .slice,
+trl-circle-percentage[trl-percentage="84"] .slice,
+trl-circle-percentage[trl-percentage="85"] .slice,
+trl-circle-percentage[trl-percentage="86"] .slice,
+trl-circle-percentage[trl-percentage="87"] .slice,
+trl-circle-percentage[trl-percentage="88"] .slice,
+trl-circle-percentage[trl-percentage="89"] .slice,
+trl-circle-percentage[trl-percentage="90"] .slice,
+trl-circle-percentage[trl-percentage="91"] .slice,
+trl-circle-percentage[trl-percentage="92"] .slice,
+trl-circle-percentage[trl-percentage="93"] .slice,
+trl-circle-percentage[trl-percentage="94"] .slice,
+trl-circle-percentage[trl-percentage="95"] .slice,
+trl-circle-percentage[trl-percentage="96"] .slice,
+trl-circle-percentage[trl-percentage="97"] .slice,
+trl-circle-percentage[trl-percentage="98"] .slice,
+trl-circle-percentage[trl-percentage="99"] .slice,
+trl-circle-percentage[trl-percentage="100"] .slice {
+  clip: rect(auto, auto, auto, auto);
+}
+.pie,
+trl-circle-percentage .bar,
+trl-circle-percentage[trl-percentage="51"] .fill,
+trl-circle-percentage[trl-percentage="52"] .fill,
+trl-circle-percentage[trl-percentage="53"] .fill,
+trl-circle-percentage[trl-percentage="54"] .fill,
+trl-circle-percentage[trl-percentage="55"] .fill,
+trl-circle-percentage[trl-percentage="56"] .fill,
+trl-circle-percentage[trl-percentage="57"] .fill,
+trl-circle-percentage[trl-percentage="58"] .fill,
+trl-circle-percentage[trl-percentage="59"] .fill,
+trl-circle-percentage[trl-percentage="60"] .fill,
+trl-circle-percentage[trl-percentage="61"] .fill,
+trl-circle-percentage[trl-percentage="62"] .fill,
+trl-circle-percentage[trl-percentage="63"] .fill,
+trl-circle-percentage[trl-percentage="64"] .fill,
+trl-circle-percentage[trl-percentage="65"] .fill,
+trl-circle-percentage[trl-percentage="66"] .fill,
+trl-circle-percentage[trl-percentage="67"] .fill,
+trl-circle-percentage[trl-percentage="68"] .fill,
+trl-circle-percentage[trl-percentage="69"] .fill,
+trl-circle-percentage[trl-percentage="70"] .fill,
+trl-circle-percentage[trl-percentage="71"] .fill,
+trl-circle-percentage[trl-percentage="72"] .fill,
+trl-circle-percentage[trl-percentage="73"] .fill,
+trl-circle-percentage[trl-percentage="74"] .fill,
+trl-circle-percentage[trl-percentage="75"] .fill,
+trl-circle-percentage[trl-percentage="76"] .fill,
+trl-circle-percentage[trl-percentage="77"] .fill,
+trl-circle-percentage[trl-percentage="78"] .fill,
+trl-circle-percentage[trl-percentage="79"] .fill,
+trl-circle-percentage[trl-percentage="80"] .fill,
+trl-circle-percentage[trl-percentage="81"] .fill,
+trl-circle-percentage[trl-percentage="82"] .fill,
+trl-circle-percentage[trl-percentage="83"] .fill,
+trl-circle-percentage[trl-percentage="84"] .fill,
+trl-circle-percentage[trl-percentage="85"] .fill,
+trl-circle-percentage[trl-percentage="86"] .fill,
+trl-circle-percentage[trl-percentage="87"] .fill,
+trl-circle-percentage[trl-percentage="88"] .fill,
+trl-circle-percentage[trl-percentage="89"] .fill,
+trl-circle-percentage[trl-percentage="90"] .fill,
+trl-circle-percentage[trl-percentage="91"] .fill,
+trl-circle-percentage[trl-percentage="92"] .fill,
+trl-circle-percentage[trl-percentage="93"] .fill,
+trl-circle-percentage[trl-percentage="94"] .fill,
+trl-circle-percentage[trl-percentage="95"] .fill,
+trl-circle-percentage[trl-percentage="96"] .fill,
+trl-circle-percentage[trl-percentage="97"] .fill,
+trl-circle-percentage[trl-percentage="98"] .fill,
+trl-circle-percentage[trl-percentage="99"] .fill,
+trl-circle-percentage[trl-percentage="100"] .fill {
+  position: absolute;
+  border: 0.08em solid #307bbb;
+  width: 0.84em;
+  height: 0.84em;
+  clip: rect(0em, 0.5em, 1em, 0em);
+  border-radius: 50%;
+  -webkit-transform: rotate(0deg);
+  -moz-transform: rotate(0deg);
+  -ms-transform: rotate(0deg);
+  -o-transform: rotate(0deg);
+  transform: rotate(0deg);
+}
+.pie-fill,
+trl-circle-percentage[trl-percentage="51"] .bar:after,
+trl-circle-percentage[trl-percentage="51"] .fill,
+trl-circle-percentage[trl-percentage="52"] .bar:after,
+trl-circle-percentage[trl-percentage="52"] .fill,
+trl-circle-percentage[trl-percentage="53"] .bar:after,
+trl-circle-percentage[trl-percentage="53"] .fill,
+trl-circle-percentage[trl-percentage="54"] .bar:after,
+trl-circle-percentage[trl-percentage="54"] .fill,
+trl-circle-percentage[trl-percentage="55"] .bar:after,
+trl-circle-percentage[trl-percentage="55"] .fill,
+trl-circle-percentage[trl-percentage="56"] .bar:after,
+trl-circle-percentage[trl-percentage="56"] .fill,
+trl-circle-percentage[trl-percentage="57"] .bar:after,
+trl-circle-percentage[trl-percentage="57"] .fill,
+trl-circle-percentage[trl-percentage="58"] .bar:after,
+trl-circle-percentage[trl-percentage="58"] .fill,
+trl-circle-percentage[trl-percentage="59"] .bar:after,
+trl-circle-percentage[trl-percentage="59"] .fill,
+trl-circle-percentage[trl-percentage="60"] .bar:after,
+trl-circle-percentage[trl-percentage="60"] .fill,
+trl-circle-percentage[trl-percentage="61"] .bar:after,
+trl-circle-percentage[trl-percentage="61"] .fill,
+trl-circle-percentage[trl-percentage="62"] .bar:after,
+trl-circle-percentage[trl-percentage="62"] .fill,
+trl-circle-percentage[trl-percentage="63"] .bar:after,
+trl-circle-percentage[trl-percentage="63"] .fill,
+trl-circle-percentage[trl-percentage="64"] .bar:after,
+trl-circle-percentage[trl-percentage="64"] .fill,
+trl-circle-percentage[trl-percentage="65"] .bar:after,
+trl-circle-percentage[trl-percentage="65"] .fill,
+trl-circle-percentage[trl-percentage="66"] .bar:after,
+trl-circle-percentage[trl-percentage="66"] .fill,
+trl-circle-percentage[trl-percentage="67"] .bar:after,
+trl-circle-percentage[trl-percentage="67"] .fill,
+trl-circle-percentage[trl-percentage="68"] .bar:after,
+trl-circle-percentage[trl-percentage="68"] .fill,
+trl-circle-percentage[trl-percentage="69"] .bar:after,
+trl-circle-percentage[trl-percentage="69"] .fill,
+trl-circle-percentage[trl-percentage="70"] .bar:after,
+trl-circle-percentage[trl-percentage="70"] .fill,
+trl-circle-percentage[trl-percentage="71"] .bar:after,
+trl-circle-percentage[trl-percentage="71"] .fill,
+trl-circle-percentage[trl-percentage="72"] .bar:after,
+trl-circle-percentage[trl-percentage="72"] .fill,
+trl-circle-percentage[trl-percentage="73"] .bar:after,
+trl-circle-percentage[trl-percentage="73"] .fill,
+trl-circle-percentage[trl-percentage="74"] .bar:after,
+trl-circle-percentage[trl-percentage="74"] .fill,
+trl-circle-percentage[trl-percentage="75"] .bar:after,
+trl-circle-percentage[trl-percentage="75"] .fill,
+trl-circle-percentage[trl-percentage="76"] .bar:after,
+trl-circle-percentage[trl-percentage="76"] .fill,
+trl-circle-percentage[trl-percentage="77"] .bar:after,
+trl-circle-percentage[trl-percentage="77"] .fill,
+trl-circle-percentage[trl-percentage="78"] .bar:after,
+trl-circle-percentage[trl-percentage="78"] .fill,
+trl-circle-percentage[trl-percentage="79"] .bar:after,
+trl-circle-percentage[trl-percentage="79"] .fill,
+trl-circle-percentage[trl-percentage="80"] .bar:after,
+trl-circle-percentage[trl-percentage="80"] .fill,
+trl-circle-percentage[trl-percentage="81"] .bar:after,
+trl-circle-percentage[trl-percentage="81"] .fill,
+trl-circle-percentage[trl-percentage="82"] .bar:after,
+trl-circle-percentage[trl-percentage="82"] .fill,
+trl-circle-percentage[trl-percentage="83"] .bar:after,
+trl-circle-percentage[trl-percentage="83"] .fill,
+trl-circle-percentage[trl-percentage="84"] .bar:after,
+trl-circle-percentage[trl-percentage="84"] .fill,
+trl-circle-percentage[trl-percentage="85"] .bar:after,
+trl-circle-percentage[trl-percentage="85"] .fill,
+trl-circle-percentage[trl-percentage="86"] .bar:after,
+trl-circle-percentage[trl-percentage="86"] .fill,
+trl-circle-percentage[trl-percentage="87"] .bar:after,
+trl-circle-percentage[trl-percentage="87"] .fill,
+trl-circle-percentage[trl-percentage="88"] .bar:after,
+trl-circle-percentage[trl-percentage="88"] .fill,
+trl-circle-percentage[trl-percentage="89"] .bar:after,
+trl-circle-percentage[trl-percentage="89"] .fill,
+trl-circle-percentage[trl-percentage="90"] .bar:after,
+trl-circle-percentage[trl-percentage="90"] .fill,
+trl-circle-percentage[trl-percentage="91"] .bar:after,
+trl-circle-percentage[trl-percentage="91"] .fill,
+trl-circle-percentage[trl-percentage="92"] .bar:after,
+trl-circle-percentage[trl-percentage="92"] .fill,
+trl-circle-percentage[trl-percentage="93"] .bar:after,
+trl-circle-percentage[trl-percentage="93"] .fill,
+trl-circle-percentage[trl-percentage="94"] .bar:after,
+trl-circle-percentage[trl-percentage="94"] .fill,
+trl-circle-percentage[trl-percentage="95"] .bar:after,
+trl-circle-percentage[trl-percentage="95"] .fill,
+trl-circle-percentage[trl-percentage="96"] .bar:after,
+trl-circle-percentage[trl-percentage="96"] .fill,
+trl-circle-percentage[trl-percentage="97"] .bar:after,
+trl-circle-percentage[trl-percentage="97"] .fill,
+trl-circle-percentage[trl-percentage="98"] .bar:after,
+trl-circle-percentage[trl-percentage="98"] .fill,
+trl-circle-percentage[trl-percentage="99"] .bar:after,
+trl-circle-percentage[trl-percentage="99"] .fill,
+trl-circle-percentage[trl-percentage="100"] .bar:after,
+trl-circle-percentage[trl-percentage="100"] .fill {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+trl-circle-percentage {
+  position: relative;
+  font-size: 120px;
+  width: 1em;
+  height: 1em;
+  border-radius: 50%;
+  float: left;
+  margin: 0 0.1em 0.1em 0;
+  background-color: #cccccc;
+}
+trl-circle-percentage *,
+trl-circle-percentage *:before,
+trl-circle-percentage *:after {
+  -webkit-box-sizing: content-box;
+  -moz-box-sizing: content-box;
+  box-sizing: content-box;
+}
+trl-circle-percentage.center {
+  float: none;
+  margin: 0 auto;
+}
+trl-circle-percentage.big {
+  font-size: 240px;
+}
+trl-circle-percentage.small {
+  font-size: 80px;
+}
+trl-circle-percentage > span {
+  position: absolute;
+  width: 100%;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 5em;
+  line-height: 5em;
+  font-size: 0.2em;
+  color: #cccccc;
+  display: block;
+  text-align: center;
+  white-space: nowrap;
+  -webkit-transition-property: all;
+  -moz-transition-property: all;
+  -o-transition-property: all;
+  transition-property: all;
+  -webkit-transition-duration: 0.2s;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -webkit-transition-timing-function: ease-out;
+  -moz-transition-timing-function: ease-out;
+  -o-transition-timing-function: ease-out;
+  transition-timing-function: ease-out;
+  content: attr(trl-percentage) + "%";
+}
+trl-circle-percentage:after {
+  position: absolute;
+  top: 0.08em;
+  left: 0.08em;
+  display: block;
+  content: " ";
+  border-radius: 50%;
+  background-color: #f5f5f5;
+  width: 0.84em;
+  height: 0.84em;
+  -webkit-transition-property: all;
+  -moz-transition-property: all;
+  -o-transition-property: all;
+  transition-property: all;
+  -webkit-transition-duration: 0.2s;
+  -moz-transition-duration: 0.2s;
+  -o-transition-duration: 0.2s;
+  transition-duration: 0.2s;
+  -webkit-transition-timing-function: ease-in;
+  -moz-transition-timing-function: ease-in;
+  -o-transition-timing-function: ease-in;
+  transition-timing-function: ease-in;
+}
+trl-circle-percentage .slice {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  clip: rect(0em, 1em, 1em, 0.5em);
+}
+trl-circle-percentage[trl-percentage="1"] .bar {
+  -webkit-transform: rotate(3.6deg);
+  -moz-transform: rotate(3.6deg);
+  -ms-transform: rotate(3.6deg);
+  -o-transform: rotate(3.6deg);
+  transform: rotate(3.6deg);
+}
+trl-circle-percentage[trl-percentage="2"] .bar {
+  -webkit-transform: rotate(7.2deg);
+  -moz-transform: rotate(7.2deg);
+  -ms-transform: rotate(7.2deg);
+  -o-transform: rotate(7.2deg);
+  transform: rotate(7.2deg);
+}
+trl-circle-percentage[trl-percentage="3"] .bar {
+  -webkit-transform: rotate(10.8deg);
+  -moz-transform: rotate(10.8deg);
+  -ms-transform: rotate(10.8deg);
+  -o-transform: rotate(10.8deg);
+  transform: rotate(10.8deg);
+}
+trl-circle-percentage[trl-percentage="4"] .bar {
+  -webkit-transform: rotate(14.4deg);
+  -moz-transform: rotate(14.4deg);
+  -ms-transform: rotate(14.4deg);
+  -o-transform: rotate(14.4deg);
+  transform: rotate(14.4deg);
+}
+trl-circle-percentage[trl-percentage="5"] .bar {
+  -webkit-transform: rotate(18deg);
+  -moz-transform: rotate(18deg);
+  -ms-transform: rotate(18deg);
+  -o-transform: rotate(18deg);
+  transform: rotate(18deg);
+}
+trl-circle-percentage[trl-percentage="6"] .bar {
+  -webkit-transform: rotate(21.6deg);
+  -moz-transform: rotate(21.6deg);
+  -ms-transform: rotate(21.6deg);
+  -o-transform: rotate(21.6deg);
+  transform: rotate(21.6deg);
+}
+trl-circle-percentage[trl-percentage="7"] .bar {
+  -webkit-transform: rotate(25.2deg);
+  -moz-transform: rotate(25.2deg);
+  -ms-transform: rotate(25.2deg);
+  -o-transform: rotate(25.2deg);
+  transform: rotate(25.2deg);
+}
+trl-circle-percentage[trl-percentage="8"] .bar {
+  -webkit-transform: rotate(28.8deg);
+  -moz-transform: rotate(28.8deg);
+  -ms-transform: rotate(28.8deg);
+  -o-transform: rotate(28.8deg);
+  transform: rotate(28.8deg);
+}
+trl-circle-percentage[trl-percentage="9"] .bar {
+  -webkit-transform: rotate(32.4deg);
+  -moz-transform: rotate(32.4deg);
+  -ms-transform: rotate(32.4deg);
+  -o-transform: rotate(32.4deg);
+  transform: rotate(32.4deg);
+}
+trl-circle-percentage[trl-percentage="10"] .bar {
+  -webkit-transform: rotate(36deg);
+  -moz-transform: rotate(36deg);
+  -ms-transform: rotate(36deg);
+  -o-transform: rotate(36deg);
+  transform: rotate(36deg);
+}
+trl-circle-percentage[trl-percentage="11"] .bar {
+  -webkit-transform: rotate(39.6deg);
+  -moz-transform: rotate(39.6deg);
+  -ms-transform: rotate(39.6deg);
+  -o-transform: rotate(39.6deg);
+  transform: rotate(39.6deg);
+}
+trl-circle-percentage[trl-percentage="12"] .bar {
+  -webkit-transform: rotate(43.2deg);
+  -moz-transform: rotate(43.2deg);
+  -ms-transform: rotate(43.2deg);
+  -o-transform: rotate(43.2deg);
+  transform: rotate(43.2deg);
+}
+trl-circle-percentage[trl-percentage="13"] .bar {
+  -webkit-transform: rotate(46.800000000000004deg);
+  -moz-transform: rotate(46.800000000000004deg);
+  -ms-transform: rotate(46.800000000000004deg);
+  -o-transform: rotate(46.800000000000004deg);
+  transform: rotate(46.800000000000004deg);
+}
+trl-circle-percentage[trl-percentage="14"] .bar {
+  -webkit-transform: rotate(50.4deg);
+  -moz-transform: rotate(50.4deg);
+  -ms-transform: rotate(50.4deg);
+  -o-transform: rotate(50.4deg);
+  transform: rotate(50.4deg);
+}
+trl-circle-percentage[trl-percentage="15"] .bar {
+  -webkit-transform: rotate(54deg);
+  -moz-transform: rotate(54deg);
+  -ms-transform: rotate(54deg);
+  -o-transform: rotate(54deg);
+  transform: rotate(54deg);
+}
+trl-circle-percentage[trl-percentage="16"] .bar {
+  -webkit-transform: rotate(57.6deg);
+  -moz-transform: rotate(57.6deg);
+  -ms-transform: rotate(57.6deg);
+  -o-transform: rotate(57.6deg);
+  transform: rotate(57.6deg);
+}
+trl-circle-percentage[trl-percentage="17"] .bar {
+  -webkit-transform: rotate(61.2deg);
+  -moz-transform: rotate(61.2deg);
+  -ms-transform: rotate(61.2deg);
+  -o-transform: rotate(61.2deg);
+  transform: rotate(61.2deg);
+}
+trl-circle-percentage[trl-percentage="18"] .bar {
+  -webkit-transform: rotate(64.8deg);
+  -moz-transform: rotate(64.8deg);
+  -ms-transform: rotate(64.8deg);
+  -o-transform: rotate(64.8deg);
+  transform: rotate(64.8deg);
+}
+trl-circle-percentage[trl-percentage="19"] .bar {
+  -webkit-transform: rotate(68.4deg);
+  -moz-transform: rotate(68.4deg);
+  -ms-transform: rotate(68.4deg);
+  -o-transform: rotate(68.4deg);
+  transform: rotate(68.4deg);
+}
+trl-circle-percentage[trl-percentage="20"] .bar {
+  -webkit-transform: rotate(72deg);
+  -moz-transform: rotate(72deg);
+  -ms-transform: rotate(72deg);
+  -o-transform: rotate(72deg);
+  transform: rotate(72deg);
+}
+trl-circle-percentage[trl-percentage="21"] .bar {
+  -webkit-transform: rotate(75.60000000000001deg);
+  -moz-transform: rotate(75.60000000000001deg);
+  -ms-transform: rotate(75.60000000000001deg);
+  -o-transform: rotate(75.60000000000001deg);
+  transform: rotate(75.60000000000001deg);
+}
+trl-circle-percentage[trl-percentage="22"] .bar {
+  -webkit-transform: rotate(79.2deg);
+  -moz-transform: rotate(79.2deg);
+  -ms-transform: rotate(79.2deg);
+  -o-transform: rotate(79.2deg);
+  transform: rotate(79.2deg);
+}
+trl-circle-percentage[trl-percentage="23"] .bar {
+  -webkit-transform: rotate(82.8deg);
+  -moz-transform: rotate(82.8deg);
+  -ms-transform: rotate(82.8deg);
+  -o-transform: rotate(82.8deg);
+  transform: rotate(82.8deg);
+}
+trl-circle-percentage[trl-percentage="24"] .bar {
+  -webkit-transform: rotate(86.4deg);
+  -moz-transform: rotate(86.4deg);
+  -ms-transform: rotate(86.4deg);
+  -o-transform: rotate(86.4deg);
+  transform: rotate(86.4deg);
+}
+trl-circle-percentage[trl-percentage="25"] .bar {
+  -webkit-transform: rotate(90deg);
+  -moz-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  -o-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+trl-circle-percentage[trl-percentage="26"] .bar {
+  -webkit-transform: rotate(93.60000000000001deg);
+  -moz-transform: rotate(93.60000000000001deg);
+  -ms-transform: rotate(93.60000000000001deg);
+  -o-transform: rotate(93.60000000000001deg);
+  transform: rotate(93.60000000000001deg);
+}
+trl-circle-percentage[trl-percentage="27"] .bar {
+  -webkit-transform: rotate(97.2deg);
+  -moz-transform: rotate(97.2deg);
+  -ms-transform: rotate(97.2deg);
+  -o-transform: rotate(97.2deg);
+  transform: rotate(97.2deg);
+}
+trl-circle-percentage[trl-percentage="28"] .bar {
+  -webkit-transform: rotate(100.8deg);
+  -moz-transform: rotate(100.8deg);
+  -ms-transform: rotate(100.8deg);
+  -o-transform: rotate(100.8deg);
+  transform: rotate(100.8deg);
+}
+trl-circle-percentage[trl-percentage="29"] .bar {
+  -webkit-transform: rotate(104.4deg);
+  -moz-transform: rotate(104.4deg);
+  -ms-transform: rotate(104.4deg);
+  -o-transform: rotate(104.4deg);
+  transform: rotate(104.4deg);
+}
+trl-circle-percentage[trl-percentage="30"] .bar {
+  -webkit-transform: rotate(108deg);
+  -moz-transform: rotate(108deg);
+  -ms-transform: rotate(108deg);
+  -o-transform: rotate(108deg);
+  transform: rotate(108deg);
+}
+trl-circle-percentage[trl-percentage="31"] .bar {
+  -webkit-transform: rotate(111.60000000000001deg);
+  -moz-transform: rotate(111.60000000000001deg);
+  -ms-transform: rotate(111.60000000000001deg);
+  -o-transform: rotate(111.60000000000001deg);
+  transform: rotate(111.60000000000001deg);
+}
+trl-circle-percentage[trl-percentage="32"] .bar {
+  -webkit-transform: rotate(115.2deg);
+  -moz-transform: rotate(115.2deg);
+  -ms-transform: rotate(115.2deg);
+  -o-transform: rotate(115.2deg);
+  transform: rotate(115.2deg);
+}
+trl-circle-percentage[trl-percentage="33"] .bar {
+  -webkit-transform: rotate(118.8deg);
+  -moz-transform: rotate(118.8deg);
+  -ms-transform: rotate(118.8deg);
+  -o-transform: rotate(118.8deg);
+  transform: rotate(118.8deg);
+}
+trl-circle-percentage[trl-percentage="34"] .bar {
+  -webkit-transform: rotate(122.4deg);
+  -moz-transform: rotate(122.4deg);
+  -ms-transform: rotate(122.4deg);
+  -o-transform: rotate(122.4deg);
+  transform: rotate(122.4deg);
+}
+trl-circle-percentage[trl-percentage="35"] .bar {
+  -webkit-transform: rotate(126deg);
+  -moz-transform: rotate(126deg);
+  -ms-transform: rotate(126deg);
+  -o-transform: rotate(126deg);
+  transform: rotate(126deg);
+}
+trl-circle-percentage[trl-percentage="36"] .bar {
+  -webkit-transform: rotate(129.6deg);
+  -moz-transform: rotate(129.6deg);
+  -ms-transform: rotate(129.6deg);
+  -o-transform: rotate(129.6deg);
+  transform: rotate(129.6deg);
+}
+trl-circle-percentage[trl-percentage="37"] .bar {
+  -webkit-transform: rotate(133.20000000000002deg);
+  -moz-transform: rotate(133.20000000000002deg);
+  -ms-transform: rotate(133.20000000000002deg);
+  -o-transform: rotate(133.20000000000002deg);
+  transform: rotate(133.20000000000002deg);
+}
+trl-circle-percentage[trl-percentage="38"] .bar {
+  -webkit-transform: rotate(136.8deg);
+  -moz-transform: rotate(136.8deg);
+  -ms-transform: rotate(136.8deg);
+  -o-transform: rotate(136.8deg);
+  transform: rotate(136.8deg);
+}
+trl-circle-percentage[trl-percentage="39"] .bar {
+  -webkit-transform: rotate(140.4deg);
+  -moz-transform: rotate(140.4deg);
+  -ms-transform: rotate(140.4deg);
+  -o-transform: rotate(140.4deg);
+  transform: rotate(140.4deg);
+}
+trl-circle-percentage[trl-percentage="40"] .bar {
+  -webkit-transform: rotate(144deg);
+  -moz-transform: rotate(144deg);
+  -ms-transform: rotate(144deg);
+  -o-transform: rotate(144deg);
+  transform: rotate(144deg);
+}
+trl-circle-percentage[trl-percentage="41"] .bar {
+  -webkit-transform: rotate(147.6deg);
+  -moz-transform: rotate(147.6deg);
+  -ms-transform: rotate(147.6deg);
+  -o-transform: rotate(147.6deg);
+  transform: rotate(147.6deg);
+}
+trl-circle-percentage[trl-percentage="42"] .bar {
+  -webkit-transform: rotate(151.20000000000002deg);
+  -moz-transform: rotate(151.20000000000002deg);
+  -ms-transform: rotate(151.20000000000002deg);
+  -o-transform: rotate(151.20000000000002deg);
+  transform: rotate(151.20000000000002deg);
+}
+trl-circle-percentage[trl-percentage="43"] .bar {
+  -webkit-transform: rotate(154.8deg);
+  -moz-transform: rotate(154.8deg);
+  -ms-transform: rotate(154.8deg);
+  -o-transform: rotate(154.8deg);
+  transform: rotate(154.8deg);
+}
+trl-circle-percentage[trl-percentage="44"] .bar {
+  -webkit-transform: rotate(158.4deg);
+  -moz-transform: rotate(158.4deg);
+  -ms-transform: rotate(158.4deg);
+  -o-transform: rotate(158.4deg);
+  transform: rotate(158.4deg);
+}
+trl-circle-percentage[trl-percentage="45"] .bar {
+  -webkit-transform: rotate(162deg);
+  -moz-transform: rotate(162deg);
+  -ms-transform: rotate(162deg);
+  -o-transform: rotate(162deg);
+  transform: rotate(162deg);
+}
+trl-circle-percentage[trl-percentage="46"] .bar {
+  -webkit-transform: rotate(165.6deg);
+  -moz-transform: rotate(165.6deg);
+  -ms-transform: rotate(165.6deg);
+  -o-transform: rotate(165.6deg);
+  transform: rotate(165.6deg);
+}
+trl-circle-percentage[trl-percentage="47"] .bar {
+  -webkit-transform: rotate(169.20000000000002deg);
+  -moz-transform: rotate(169.20000000000002deg);
+  -ms-transform: rotate(169.20000000000002deg);
+  -o-transform: rotate(169.20000000000002deg);
+  transform: rotate(169.20000000000002deg);
+}
+trl-circle-percentage[trl-percentage="48"] .bar {
+  -webkit-transform: rotate(172.8deg);
+  -moz-transform: rotate(172.8deg);
+  -ms-transform: rotate(172.8deg);
+  -o-transform: rotate(172.8deg);
+  transform: rotate(172.8deg);
+}
+trl-circle-percentage[trl-percentage="49"] .bar {
+  -webkit-transform: rotate(176.4deg);
+  -moz-transform: rotate(176.4deg);
+  -ms-transform: rotate(176.4deg);
+  -o-transform: rotate(176.4deg);
+  transform: rotate(176.4deg);
+}
+trl-circle-percentage[trl-percentage="50"] .bar {
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+trl-circle-percentage[trl-percentage="51"] .bar {
+  -webkit-transform: rotate(183.6deg);
+  -moz-transform: rotate(183.6deg);
+  -ms-transform: rotate(183.6deg);
+  -o-transform: rotate(183.6deg);
+  transform: rotate(183.6deg);
+}
+trl-circle-percentage[trl-percentage="52"] .bar {
+  -webkit-transform: rotate(187.20000000000002deg);
+  -moz-transform: rotate(187.20000000000002deg);
+  -ms-transform: rotate(187.20000000000002deg);
+  -o-transform: rotate(187.20000000000002deg);
+  transform: rotate(187.20000000000002deg);
+}
+trl-circle-percentage[trl-percentage="53"] .bar {
+  -webkit-transform: rotate(190.8deg);
+  -moz-transform: rotate(190.8deg);
+  -ms-transform: rotate(190.8deg);
+  -o-transform: rotate(190.8deg);
+  transform: rotate(190.8deg);
+}
+trl-circle-percentage[trl-percentage="54"] .bar {
+  -webkit-transform: rotate(194.4deg);
+  -moz-transform: rotate(194.4deg);
+  -ms-transform: rotate(194.4deg);
+  -o-transform: rotate(194.4deg);
+  transform: rotate(194.4deg);
+}
+trl-circle-percentage[trl-percentage="55"] .bar {
+  -webkit-transform: rotate(198deg);
+  -moz-transform: rotate(198deg);
+  -ms-transform: rotate(198deg);
+  -o-transform: rotate(198deg);
+  transform: rotate(198deg);
+}
+trl-circle-percentage[trl-percentage="56"] .bar {
+  -webkit-transform: rotate(201.6deg);
+  -moz-transform: rotate(201.6deg);
+  -ms-transform: rotate(201.6deg);
+  -o-transform: rotate(201.6deg);
+  transform: rotate(201.6deg);
+}
+trl-circle-percentage[trl-percentage="57"] .bar {
+  -webkit-transform: rotate(205.20000000000002deg);
+  -moz-transform: rotate(205.20000000000002deg);
+  -ms-transform: rotate(205.20000000000002deg);
+  -o-transform: rotate(205.20000000000002deg);
+  transform: rotate(205.20000000000002deg);
+}
+trl-circle-percentage[trl-percentage="58"] .bar {
+  -webkit-transform: rotate(208.8deg);
+  -moz-transform: rotate(208.8deg);
+  -ms-transform: rotate(208.8deg);
+  -o-transform: rotate(208.8deg);
+  transform: rotate(208.8deg);
+}
+trl-circle-percentage[trl-percentage="59"] .bar {
+  -webkit-transform: rotate(212.4deg);
+  -moz-transform: rotate(212.4deg);
+  -ms-transform: rotate(212.4deg);
+  -o-transform: rotate(212.4deg);
+  transform: rotate(212.4deg);
+}
+trl-circle-percentage[trl-percentage="60"] .bar {
+  -webkit-transform: rotate(216deg);
+  -moz-transform: rotate(216deg);
+  -ms-transform: rotate(216deg);
+  -o-transform: rotate(216deg);
+  transform: rotate(216deg);
+}
+trl-circle-percentage[trl-percentage="61"] .bar {
+  -webkit-transform: rotate(219.6deg);
+  -moz-transform: rotate(219.6deg);
+  -ms-transform: rotate(219.6deg);
+  -o-transform: rotate(219.6deg);
+  transform: rotate(219.6deg);
+}
+trl-circle-percentage[trl-percentage="62"] .bar {
+  -webkit-transform: rotate(223.20000000000002deg);
+  -moz-transform: rotate(223.20000000000002deg);
+  -ms-transform: rotate(223.20000000000002deg);
+  -o-transform: rotate(223.20000000000002deg);
+  transform: rotate(223.20000000000002deg);
+}
+trl-circle-percentage[trl-percentage="63"] .bar {
+  -webkit-transform: rotate(226.8deg);
+  -moz-transform: rotate(226.8deg);
+  -ms-transform: rotate(226.8deg);
+  -o-transform: rotate(226.8deg);
+  transform: rotate(226.8deg);
+}
+trl-circle-percentage[trl-percentage="64"] .bar {
+  -webkit-transform: rotate(230.4deg);
+  -moz-transform: rotate(230.4deg);
+  -ms-transform: rotate(230.4deg);
+  -o-transform: rotate(230.4deg);
+  transform: rotate(230.4deg);
+}
+trl-circle-percentage[trl-percentage="65"] .bar {
+  -webkit-transform: rotate(234deg);
+  -moz-transform: rotate(234deg);
+  -ms-transform: rotate(234deg);
+  -o-transform: rotate(234deg);
+  transform: rotate(234deg);
+}
+trl-circle-percentage[trl-percentage="66"] .bar {
+  -webkit-transform: rotate(237.6deg);
+  -moz-transform: rotate(237.6deg);
+  -ms-transform: rotate(237.6deg);
+  -o-transform: rotate(237.6deg);
+  transform: rotate(237.6deg);
+}
+trl-circle-percentage[trl-percentage="67"] .bar {
+  -webkit-transform: rotate(241.20000000000002deg);
+  -moz-transform: rotate(241.20000000000002deg);
+  -ms-transform: rotate(241.20000000000002deg);
+  -o-transform: rotate(241.20000000000002deg);
+  transform: rotate(241.20000000000002deg);
+}
+trl-circle-percentage[trl-percentage="68"] .bar {
+  -webkit-transform: rotate(244.8deg);
+  -moz-transform: rotate(244.8deg);
+  -ms-transform: rotate(244.8deg);
+  -o-transform: rotate(244.8deg);
+  transform: rotate(244.8deg);
+}
+trl-circle-percentage[trl-percentage="69"] .bar {
+  -webkit-transform: rotate(248.4deg);
+  -moz-transform: rotate(248.4deg);
+  -ms-transform: rotate(248.4deg);
+  -o-transform: rotate(248.4deg);
+  transform: rotate(248.4deg);
+}
+trl-circle-percentage[trl-percentage="70"] .bar {
+  -webkit-transform: rotate(252deg);
+  -moz-transform: rotate(252deg);
+  -ms-transform: rotate(252deg);
+  -o-transform: rotate(252deg);
+  transform: rotate(252deg);
+}
+trl-circle-percentage[trl-percentage="71"] .bar {
+  -webkit-transform: rotate(255.6deg);
+  -moz-transform: rotate(255.6deg);
+  -ms-transform: rotate(255.6deg);
+  -o-transform: rotate(255.6deg);
+  transform: rotate(255.6deg);
+}
+trl-circle-percentage[trl-percentage="72"] .bar {
+  -webkit-transform: rotate(259.2deg);
+  -moz-transform: rotate(259.2deg);
+  -ms-transform: rotate(259.2deg);
+  -o-transform: rotate(259.2deg);
+  transform: rotate(259.2deg);
+}
+trl-circle-percentage[trl-percentage="73"] .bar {
+  -webkit-transform: rotate(262.8deg);
+  -moz-transform: rotate(262.8deg);
+  -ms-transform: rotate(262.8deg);
+  -o-transform: rotate(262.8deg);
+  transform: rotate(262.8deg);
+}
+trl-circle-percentage[trl-percentage="74"] .bar {
+  -webkit-transform: rotate(266.40000000000003deg);
+  -moz-transform: rotate(266.40000000000003deg);
+  -ms-transform: rotate(266.40000000000003deg);
+  -o-transform: rotate(266.40000000000003deg);
+  transform: rotate(266.40000000000003deg);
+}
+trl-circle-percentage[trl-percentage="75"] .bar {
+  -webkit-transform: rotate(270deg);
+  -moz-transform: rotate(270deg);
+  -ms-transform: rotate(270deg);
+  -o-transform: rotate(270deg);
+  transform: rotate(270deg);
+}
+trl-circle-percentage[trl-percentage="76"] .bar {
+  -webkit-transform: rotate(273.6deg);
+  -moz-transform: rotate(273.6deg);
+  -ms-transform: rotate(273.6deg);
+  -o-transform: rotate(273.6deg);
+  transform: rotate(273.6deg);
+}
+trl-circle-percentage[trl-percentage="77"] .bar {
+  -webkit-transform: rotate(277.2deg);
+  -moz-transform: rotate(277.2deg);
+  -ms-transform: rotate(277.2deg);
+  -o-transform: rotate(277.2deg);
+  transform: rotate(277.2deg);
+}
+trl-circle-percentage[trl-percentage="78"] .bar {
+  -webkit-transform: rotate(280.8deg);
+  -moz-transform: rotate(280.8deg);
+  -ms-transform: rotate(280.8deg);
+  -o-transform: rotate(280.8deg);
+  transform: rotate(280.8deg);
+}
+trl-circle-percentage[trl-percentage="79"] .bar {
+  -webkit-transform: rotate(284.40000000000003deg);
+  -moz-transform: rotate(284.40000000000003deg);
+  -ms-transform: rotate(284.40000000000003deg);
+  -o-transform: rotate(284.40000000000003deg);
+  transform: rotate(284.40000000000003deg);
+}
+trl-circle-percentage[trl-percentage="80"] .bar {
+  -webkit-transform: rotate(288deg);
+  -moz-transform: rotate(288deg);
+  -ms-transform: rotate(288deg);
+  -o-transform: rotate(288deg);
+  transform: rotate(288deg);
+}
+trl-circle-percentage[trl-percentage="81"] .bar {
+  -webkit-transform: rotate(291.6deg);
+  -moz-transform: rotate(291.6deg);
+  -ms-transform: rotate(291.6deg);
+  -o-transform: rotate(291.6deg);
+  transform: rotate(291.6deg);
+}
+trl-circle-percentage[trl-percentage="82"] .bar {
+  -webkit-transform: rotate(295.2deg);
+  -moz-transform: rotate(295.2deg);
+  -ms-transform: rotate(295.2deg);
+  -o-transform: rotate(295.2deg);
+  transform: rotate(295.2deg);
+}
+trl-circle-percentage[trl-percentage="83"] .bar {
+  -webkit-transform: rotate(298.8deg);
+  -moz-transform: rotate(298.8deg);
+  -ms-transform: rotate(298.8deg);
+  -o-transform: rotate(298.8deg);
+  transform: rotate(298.8deg);
+}
+trl-circle-percentage[trl-percentage="84"] .bar {
+  -webkit-transform: rotate(302.40000000000003deg);
+  -moz-transform: rotate(302.40000000000003deg);
+  -ms-transform: rotate(302.40000000000003deg);
+  -o-transform: rotate(302.40000000000003deg);
+  transform: rotate(302.40000000000003deg);
+}
+trl-circle-percentage[trl-percentage="85"] .bar {
+  -webkit-transform: rotate(306deg);
+  -moz-transform: rotate(306deg);
+  -ms-transform: rotate(306deg);
+  -o-transform: rotate(306deg);
+  transform: rotate(306deg);
+}
+trl-circle-percentage[trl-percentage="86"] .bar {
+  -webkit-transform: rotate(309.6deg);
+  -moz-transform: rotate(309.6deg);
+  -ms-transform: rotate(309.6deg);
+  -o-transform: rotate(309.6deg);
+  transform: rotate(309.6deg);
+}
+trl-circle-percentage[trl-percentage="87"] .bar {
+  -webkit-transform: rotate(313.2deg);
+  -moz-transform: rotate(313.2deg);
+  -ms-transform: rotate(313.2deg);
+  -o-transform: rotate(313.2deg);
+  transform: rotate(313.2deg);
+}
+trl-circle-percentage[trl-percentage="88"] .bar {
+  -webkit-transform: rotate(316.8deg);
+  -moz-transform: rotate(316.8deg);
+  -ms-transform: rotate(316.8deg);
+  -o-transform: rotate(316.8deg);
+  transform: rotate(316.8deg);
+}
+trl-circle-percentage[trl-percentage="89"] .bar {
+  -webkit-transform: rotate(320.40000000000003deg);
+  -moz-transform: rotate(320.40000000000003deg);
+  -ms-transform: rotate(320.40000000000003deg);
+  -o-transform: rotate(320.40000000000003deg);
+  transform: rotate(320.40000000000003deg);
+}
+trl-circle-percentage[trl-percentage="90"] .bar {
+  -webkit-transform: rotate(324deg);
+  -moz-transform: rotate(324deg);
+  -ms-transform: rotate(324deg);
+  -o-transform: rotate(324deg);
+  transform: rotate(324deg);
+}
+trl-circle-percentage[trl-percentage="91"] .bar {
+  -webkit-transform: rotate(327.6deg);
+  -moz-transform: rotate(327.6deg);
+  -ms-transform: rotate(327.6deg);
+  -o-transform: rotate(327.6deg);
+  transform: rotate(327.6deg);
+}
+trl-circle-percentage[trl-percentage="92"] .bar {
+  -webkit-transform: rotate(331.2deg);
+  -moz-transform: rotate(331.2deg);
+  -ms-transform: rotate(331.2deg);
+  -o-transform: rotate(331.2deg);
+  transform: rotate(331.2deg);
+}
+trl-circle-percentage[trl-percentage="93"] .bar {
+  -webkit-transform: rotate(334.8deg);
+  -moz-transform: rotate(334.8deg);
+  -ms-transform: rotate(334.8deg);
+  -o-transform: rotate(334.8deg);
+  transform: rotate(334.8deg);
+}
+trl-circle-percentage[trl-percentage="94"] .bar {
+  -webkit-transform: rotate(338.40000000000003deg);
+  -moz-transform: rotate(338.40000000000003deg);
+  -ms-transform: rotate(338.40000000000003deg);
+  -o-transform: rotate(338.40000000000003deg);
+  transform: rotate(338.40000000000003deg);
+}
+trl-circle-percentage[trl-percentage="95"] .bar {
+  -webkit-transform: rotate(342deg);
+  -moz-transform: rotate(342deg);
+  -ms-transform: rotate(342deg);
+  -o-transform: rotate(342deg);
+  transform: rotate(342deg);
+}
+trl-circle-percentage[trl-percentage="96"] .bar {
+  -webkit-transform: rotate(345.6deg);
+  -moz-transform: rotate(345.6deg);
+  -ms-transform: rotate(345.6deg);
+  -o-transform: rotate(345.6deg);
+  transform: rotate(345.6deg);
+}
+trl-circle-percentage[trl-percentage="97"] .bar {
+  -webkit-transform: rotate(349.2deg);
+  -moz-transform: rotate(349.2deg);
+  -ms-transform: rotate(349.2deg);
+  -o-transform: rotate(349.2deg);
+  transform: rotate(349.2deg);
+}
+trl-circle-percentage[trl-percentage="98"] .bar {
+  -webkit-transform: rotate(352.8deg);
+  -moz-transform: rotate(352.8deg);
+  -ms-transform: rotate(352.8deg);
+  -o-transform: rotate(352.8deg);
+  transform: rotate(352.8deg);
+}
+trl-circle-percentage[trl-percentage="99"] .bar {
+  -webkit-transform: rotate(356.40000000000003deg);
+  -moz-transform: rotate(356.40000000000003deg);
+  -ms-transform: rotate(356.40000000000003deg);
+  -o-transform: rotate(356.40000000000003deg);
+  transform: rotate(356.40000000000003deg);
+}
+trl-circle-percentage[trl-percentage="100"] .bar {
+  -webkit-transform: rotate(360deg);
+  -moz-transform: rotate(360deg);
+  -ms-transform: rotate(360deg);
+  -o-transform: rotate(360deg);
+  transform: rotate(360deg);
+}
+trl-circle-percentage:hover {
+  cursor: default;
+}
+trl-circle-percentage:hover > span {
+  width: 3.33em;
+  line-height: 3.33em;
+  font-size: 0.3em;
+  color: #307bbb;
+}
+trl-circle-percentage:hover:after {
+  top: 0.04em;
+  left: 0.04em;
+  width: 0.92em;
+  height: 0.92em;
+}
+trl-circle-percentage.dark {
+  background-color: #777777;
+}
+trl-circle-percentage.dark .bar,
+trl-circle-percentage.dark .fill {
+  border-color: #c6ff00 !important;
+}
+trl-circle-percentage.dark > span {
+  color: #777777;
+}
+trl-circle-percentage.dark:after {
+  background-color: #666666;
+}
+trl-circle-percentage.dark:hover > span {
+  color: #c6ff00;
+}
+trl-circle-percentage.green .bar,
+trl-circle-percentage.green .fill {
+  border-color: #4db53c !important;
+}
+trl-circle-percentage.green:hover > span {
+  color: #4db53c;
+}
+trl-circle-percentage.green.dark .bar,
+trl-circle-percentage.green.dark .fill {
+  border-color: #5fd400 !important;
+}
+trl-circle-percentage.green.dark:hover > span {
+  color: #5fd400;
+}
+trl-circle-percentage.orange .bar,
+trl-circle-percentage.orange .fill {
+  border-color: #dd9d22 !important;
+}
+trl-circle-percentage.orange:hover > span {
+  color: #dd9d22;
+}
+trl-circle-percentage.orange.dark .bar,
+trl-circle-percentage.orange.dark .fill {
+  border-color: #e08833 !important;
+}
+trl-circle-percentage.orange.dark:hover > span {
+  color: #e08833;
+}

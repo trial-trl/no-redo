@@ -49,10 +49,18 @@
  * 22/06/2017, 21:17:04 - 21:19:36 => moved all T library files from Library/account/TApi to /no-redo/repository/javascript/TApi as in HostGator trialent.com account
  *
  * 21/11/2017, 12:06:09 => added dispatch "TReady" event when library is fully loaded
+ *
+ * 18/12/2017, 00:18:02 => added VERSION variable. It controls the Library version.
+ *
+ * 20/12/2017, 23:43:59 => added T.VERSION property equal to VERSION value. It allows Library version to be readed publicy.
+ *
+ * 21/12/2017, 02:35:10 => rename T.php to api.php.
  */
 
 "use strict";
 (function () {
+    var VERSION = "v0";
+    
     window.T = (function () {
         var on, T = function (element) {
                     if (!(this instanceof T))
@@ -449,6 +457,7 @@
                 }
             }
         };
+        Object.defineProperty(T, "VERSION", {value: VERSION});
         return T;
     })();
 
@@ -671,15 +680,15 @@
                         case "navigation":
                         case "utils":
                             check_for = url.charAt(0).toUpperCase() + url.slice(1);
-                            url = "/no-redo/repository/javascript/TApi/" + url + ".js";
+                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
                             break;
                         case "elements":
                             check_for = url;
-                            url = "/no-redo/repository/javascript/TApi/" + url + ".js";
+                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
                             break;
                         case "design":
                             check_for = "Animation";
-                            url = "/no-redo/repository/javascript/TApi/" + url + ".js";
+                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
                             break;
                         default:
                             check_for = null;
@@ -703,7 +712,7 @@
                     var url = scripts[i];
                     switch (url) {
                         case 'elements':
-                            url = '/no-redo/repository/javascript/TApi/elements.js';
+                            url = "/no-redo/" + VERSION + "/repository/javascript/T/elements";
                             break;
                     }
                 }

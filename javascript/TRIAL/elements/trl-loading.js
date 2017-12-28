@@ -36,7 +36,7 @@
                         this.style.display = "none !important";
                         missing(function () {
                             window.T.Utils.ajax({
-                                url: "/AnimacaoCSS/loading.css",
+                                url: "/no-redo/" + window.T.VERSION + "/repository/css/elements/trl-loading",
                                 onloadend: function (e) {
                                     var s = document.createElement("style");
                                     s.id = "trl-loading-style";

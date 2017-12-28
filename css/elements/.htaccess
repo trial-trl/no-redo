@@ -1,0 +1,5 @@
+Options +FollowSymLinks
+RewriteEngine On
+
+RewriteRule ^trl-circle-percentage?$ trl-circle-percentage.css [NC,L]
+RewriteRule ^trl-loading?$ trl-loading.css [NC,L]
