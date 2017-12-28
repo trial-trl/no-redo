@@ -1,0 +1,4 @@
+Options -Indexes
+RewriteEngine On
+
+RewriteRule ^transparent$ dot.gif [NC,L]
