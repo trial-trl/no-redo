@@ -1,0 +1,4 @@
+Movido de "/AnimacaoCSS/" para "/no-redo/css/elements/" em 21/12/2017 02h09min
+Renamed from "loading.css" to "trl-loading.css" on 21/12/2017 02h12min
+
+Moved/renamed from "/AnimacaoCSS/"/"circle-percentage.css" to ""/no-redo/css/elements/"/"trl-circle-percentage.css" on 21/12/2017 02h17min
