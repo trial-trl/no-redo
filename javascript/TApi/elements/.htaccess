@@ -1,4 +1,0 @@
-Options +FollowSymLinks
-RewriteEngine On
-
-RewriteRule ^register/(.*)$ register.php?elements=$1 [NC,L,QSA]

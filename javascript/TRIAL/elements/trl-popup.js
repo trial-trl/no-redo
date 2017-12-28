@@ -215,7 +215,7 @@
             },
             open: {
                 value: function (e) {
-                    var that = this, e, top, left, center_horizontal_padding, center_vertical_padding, 
+                    var that = this, top, left, center_horizontal_padding, center_vertical_padding, 
                             center_container, container; // MUST be removed
 
                     calculateEventArea.call(this, e);
@@ -272,8 +272,8 @@
                                     popup_content.style.top = top - (top * delta) + "px";
                                     popup_content.style.left = left - (left * delta) + "px";
                                 }
-                                if (that.getAlignment() & that.ALIGNMENT_CENTER || that.getAlignment() & that.ALIGNMENT_CENTER_HORIZONTAL || center_container) {
-                                    if (center_container) {
+                                if (that.getAlignment() & that.ALIGNMENT_CENTER_HORIZONTAL || center_container) {
+                                    if (center_container === true) {
                                         var size = (that.sizes.width.size) + center_horizontal_padding,
                                                 real_container_left = container.left.unit !== "%" ? window.T.prototype.Utils.toPercent(container.left.size, window.innerWidth) : (50 - container.left.size) + container.left.size + (container.left.size / 2.75);
                                         popup_content.style.left = "calc(" + ((window.T.prototype.Utils.toPercent(that.sizes.width.size + container.width.size, window.innerWidth) / 2) * delta) + "% + " + (window.T.prototype.Utils.toPercent(left, window.innerWidth) - (window.T.prototype.Utils.toPercent(left, window.innerWidth) * delta)) + "%)";
@@ -284,7 +284,7 @@
                                         popup_content.style.marginLeft = "-" + (size * delta) + "px";
                                     }
                                 }
-                                if (that.getAlignment() & that.ALIGNMENT_CENTER || that.getAlignment() & that.ALIGNMENT_CENTER_VERTICAL || center_container) {
+                                if (that.getAlignment() & that.ALIGNMENT_CENTER_VERTICAL || center_container === true) {
                                     var size = (that.sizes.height.size / 2) + center_vertical_padding;
                                     popup_content.style.top = "calc(" + (50 * delta) + "% + " + (top - (top * delta)) + "px)";
                                     popup_content.style.marginTop = "-" + (size * delta) + "px";
@@ -344,7 +344,7 @@
                                 height: calculateStyle(popup_content, "height")
                             };
                         }
-                        if (center_container) {
+                        if (center_container === true) {
                             container = popup_content.parentNode;
                             container.width = calculateStyle(container, "width");
                             container.height = calculateStyle(container, "height");
@@ -352,10 +352,10 @@
                         }
                         if ((this.getAlignment() & this.ALIGNMENT_CENTER) || (this.getAlignment() & this.ALIGNMENT_CENTER_HORIZONTAL) || (this.getAlignment() & this.ALIGNMENT_CENTER_VERTICAL) || center_container) {
                             popup_content.padding = window.T(popup_content).Utils.getTotalPadding();
-                            if ((this.getAlignment() & this.ALIGNMENT_CENTER) || (this.getAlignment() & this.ALIGNMENT_CENTER_VERTICAL) || center_container) {
+                            if ((this.getAlignment() & this.ALIGNMENT_CENTER_VERTICAL) || center_container === true) {
                                 center_vertical_padding = ((popup_content.padding.padding_top.size + popup_content.padding.padding_bottom.size) / 2);
                             }
-                            if ((this.getAlignment() & this.ALIGNMENT_CENTER) || (this.getAlignment() & this.ALIGNMENT_CENTER_HORIZONTAL) || center_container) {
+                            if ((this.getAlignment() & this.ALIGNMENT_CENTER_HORIZONTAL) || center_container === true) {
                                 center_horizontal_padding = ((popup_content.padding.padding_left.size + popup_content.padding.padding_right.size) / 2);
                             }
                         }

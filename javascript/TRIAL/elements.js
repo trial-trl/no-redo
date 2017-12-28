@@ -62,7 +62,7 @@
             });
         
         function reg() {
-            window.T.load("/no-redo/javascript/TApi/elements/register/" + arr.join(","), callback);
+            window.T.load("http://" + window.location.host + "/no-redo/" + window.T.VERSION + "/javascript/T/elements/register/" + arr.join(","), callback);
         }
     };
 })(window);

@@ -80,6 +80,11 @@ class Account implements \JsonSerializable {
             case self::GOVERNMENTAL_DEPARTMENT:
                 $result = self::governmentalDepartmentAuth($login, $password, $permanent);
                 break;
+            default:
+                $result = [
+                    'message' => Message::ERROR,
+                    'error' => '\'type_account\' is missing or unknown. Acceptable values are: Account::USER | Account::INSTITUTION | Account::INSTITUTION_MEMBER | Account::GOVERNMENT | Account::GOVERNMENTAL_DEPARTMENT'
+                ];
         }
 	return $result;
     }

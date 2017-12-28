@@ -26,20 +26,15 @@
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
-                    var circle = this,
-                            loaded_style = false;
-                    for (var i in document.styleSheets) {
-                        if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf("circle-percentage.css") !== -1) {
-                            loaded_style = true;
-                            break;
-                        }
-                    }
-                    if (!loaded_style) {
-                        var style = document.createElement("link");
-                        style.rel = "stylesheet";
-                        style.type = "text/css";
-                        style.href = "/AnimacaoCSS/circle-percentage.css";
-                        document.head.appendChild(style);
+                    var circle = this;
+                    this.stylesheet = document.getElementById("trl-circle-percentage-style");
+                    if (!this.stylesheet) {
+                        var s = document.createElement("link");
+                        s.id = "trl-circle-percentage-style";
+                        s.rel = "stylesheet";
+                        s.type = "text/css";
+                        s.href = "/no-redo/" + window.T.VERSION + "/repository/css/elements/trl-circle-percentage";
+                        document.head.appendChild(s);
                     }
                     this.percentage = document.createElement("span");
                     this.slice = document.createElement("div");

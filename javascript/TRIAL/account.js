@@ -15,7 +15,14 @@
  * limitations under the License.
  */
 
+/*
+ * 18/12/2017 00:32:07 => updated" /Library/account" URL to "/TRIALAccount"
+ */
+
 (function (window) {
+    // added on 18/12/2017, 00:20:50
+    var VERSION = "v0";
+    
     function missing(c, cookies) {
         var m = [];
         if (!window.T.Utils)
@@ -44,8 +51,9 @@
     
     window.T = window.T || {};
     window.T.Account = {
-        URL: "http://account.trialent.com",
-        SERVER: "http://account.trialent.com/action",
+        // created on 11/11/2017 11:46:31
+        URL: "/" + VERSION + "/TRIALAccount",
+        SERVER: "/" + VERSION + "/TRIALAccount/action",
         // end creation
         open: function (options) {
             var url = this.URL + "/entrar/" + btoa(JSON.stringify(options));
