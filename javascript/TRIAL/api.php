@@ -24,6 +24,8 @@
 
 "use strict";
 (function () {
+    var VERSION = "v0";
+    
     window.T = (function () {
         var on, T = function (element) {
                     if (!(this instanceof T))
@@ -414,6 +416,7 @@
                 }
             }
         };
+        Object.defineProperty(T, "VERSION", {value: VERSION});
         return T;
     })();
 
@@ -601,6 +604,7 @@
                         case "navigation":
                         case "utils":
                             check_for = url.charAt(0).toUpperCase() + url.slice(1);
+<<<<<<< HEAD:javascript/TApi/T.php
                             url = "/no-redo/javascript/TApi/" + url + ".js";
                             break;
                         case "elements":
@@ -610,6 +614,17 @@
                         case "design":
                             check_for = "Animation";
                             url = "/no-redo/javascript/TApi/" + url + ".js";
+=======
+                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
+                            break;
+                        case "elements":
+                            check_for = url;
+                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
+                            break;
+                        case "design":
+                            check_for = "Animation";
+                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
+>>>>>>> c799704 (refactor: reorganize JavaScript files and remove deprecated code):javascript/TRIAL/api.php
                             break;
                         default:
                             check_for = null;
@@ -632,7 +647,11 @@
                     var url = scripts[i];
                     switch (url) {
                         case 'elements':
+<<<<<<< HEAD:javascript/TApi/T.php
                             url = '/no-redo/javascript/TApi/elements.js';
+=======
+                            url = "/no-redo/" + VERSION + "/repository/javascript/T/elements";
+>>>>>>> c799704 (refactor: reorganize JavaScript files and remove deprecated code):javascript/TRIAL/api.php
                             break;
                     }
                 }

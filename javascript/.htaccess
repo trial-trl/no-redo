@@ -20,4 +20,7 @@
 Options -Indexes
 RewriteEngine On
 
-RewriteRule ^T$ TApi/T.php [NC,L,QSA]
+RewriteRule ^T/elements/register/(.*)$ TRIAL/elements/register.php?elements=$1 [NC,L,QSA]
+RewriteRule ^T/elements/(.*)$ TRIAL/elements/$1\.js [NC,L,QSA]
+RewriteRule ^T/(.*)$ TRIAL/$1\.js [NC,L,QSA]
+RewriteRule ^T$ TRIAL/api.php [NC,L,QSA]
