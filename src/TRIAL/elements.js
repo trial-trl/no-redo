@@ -63,7 +63,7 @@
         
         function reg() {
             for (var i = 0, t = arr.length; i < t; i++)
-                arr[i] = window.T.ROOT + "T/elements/" + arr[i];
+                arr[i] = "elements/" + arr[i] + ".js";
             window.T.load(arr, callback);
         }
     };
