@@ -5,13 +5,6 @@
         <data xmlns="http://www.netbeans.org/ns/clientside-project/1">
             <name>No-Redo Javascript</name>
         </data>
-        <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1">
-            <library name="classlist" version="1.2.201711092">
-                <file localPath="libs/classlist/classList.min.js" path="classList.min.js"/>
-            </library>
-            <library name="webcomponentsjs" version="1.0.22">
-                <file localPath="libs/webcomponentsjs/webcomponents-hi-sd-ce.js" path="webcomponents-hi-sd-ce.js"/>
-            </library>
-        </libraries>
+        <libraries xmlns="http://www.netbeans.org/ns/cdnjs-libraries/1"/>
     </configuration>
 </project>
