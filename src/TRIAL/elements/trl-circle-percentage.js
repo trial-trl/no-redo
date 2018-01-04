@@ -33,7 +33,7 @@
                         s.id = "trl-circle-percentage-style";
                         s.rel = "stylesheet";
                         s.type = "text/css";
-                        s.href = "/no-redo/" + window.T.VERSION + "/repository/css/elements/trl-circle-percentage";
+                        s.href = "/no-redo/" + window.T.VERSION + "/css/elements/trl-circle-percentage";
                         document.head.appendChild(s);
                     }
                     this.percentage = document.createElement("span");
