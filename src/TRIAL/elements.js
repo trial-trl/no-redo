@@ -62,7 +62,9 @@
             });
         
         function reg() {
-            window.T.load("http://" + window.location.host + "/no-redo/" + window.T.VERSION + "/javascript/T/elements/register/" + arr.join(","), callback);
+            for (var i = 0, t = arr.length; i < t; i++)
+                arr[i] = window.T.ROOT + "T/elements/" + arr[i];
+            window.T.load(arr, callback);
         }
     };
 })(window);

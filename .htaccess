@@ -1,8 +1,25 @@
-Options +FollowSymLinks
+<IfModule mod_expires.c>
+    <FilesMatch "\.(css|js|html|xml|php|svg|shtml)$">
+        ExpiresActive On
+        ExpiresDefault "access plus 1 month"
+    </FilesMatch>
+    <FilesMatch "\.(png|jpg|jpeg|gif|tiff|bmp|ttf|otf)$">
+        ExpiresActive On
+        ExpiresDefault "access plus 1 year"
+    </FilesMatch>
+</IfModule>
+
+<IfModule mod_deflate.c>
+    SetOutputFilter DEFLATE
+    BrowserMatch ^Mozilla/4 gzip-only-text/html
+    BrowserMatch ^Mozilla/4\.0[678] no-gzip
+    SetEnvIfNoCase Request_URI \\.(?:gif|jpe?g|png|gif)$ no-gzip dont-vary
+    Header append Vary User-Agent env=!dont-vary
+</IfModule>
+
+Options -Indexes
 RewriteEngine On
 
-Header set Access-Control-Allow-Origin "*"
-Header add Access-Control-Allow-Headers "X-REQUESTED-WITH"
-
-RewriteRule ^group-pattern-photo?$ images/TRIAL/trl_pattern_group_photo_bg.svg [NC,L]
-RewriteRule ^pattern-photo?$ images/TRIAL/trl_pattern_photo_bg.svg [NC,L]
+RewriteRule ^T/elements/(.*)$ src/TRIAL/elements/$1\.js [NC,L,QSA]
+RewriteRule ^T/(.*)$ src/TRIAL/$1\.js [NC,L,QSA]
+RewriteRule ^T$ src/TRIAL/api.js [NC,L,QSA]
