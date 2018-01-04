@@ -11,7 +11,7 @@
 "use strict";
 (function () {
     var VERSION = "v0";
-    var ROOT = "/";
+    var ROOT = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "") + "/bower_components/trl-no-redo/src/TRIAL/";
     
     window.T = (function () {
         var on, T = function (element) {
@@ -552,7 +552,7 @@
                     case "utils":
                     case "elements":
                     case "design":
-                        url = url + ".js";
+                        url = T.ROOT + url + ".js";
                         break;
                 }
                 js.push(url);
@@ -560,7 +560,7 @@
             
             if (!(!!lib)) {
                 var s = document.createElement("script");
-                s.src = "../../../loadjs/dist/loadjs.min.js";
+                s.src = T.ROOT + "../../../loadjs/dist/loadjs.min.js";
                 s.onload = load.bind(this, fn);
                 document.body.appendChild(s);
             } else
