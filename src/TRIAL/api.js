@@ -48,7 +48,7 @@
 "use strict";
 (function () {
     var VERSION = "v0";
-    var ROOT = "http://localhost/no-redo-git/javascript/";
+    var ROOT = "/";
     
     window.T = (function () {
         var on, T = function (element) {
@@ -630,7 +630,7 @@
                     case "utils":
                     case "elements":
                     case "design":
-                        url = T.ROOT + "T/" + url;
+                        url = url + ".js";
                         break;
                 }
                 js.push(url);
@@ -638,7 +638,7 @@
             
             if (!(!!lib)) {
                 var s = document.createElement("script");
-                s.src = T.ROOT + "bower_components/loadjs/dist/loadjs.min.js";
+                s.src = "../../../loadjs/dist/loadjs.min.js";
                 s.onload = load.bind(this, fn);
                 document.body.appendChild(s);
             } else
