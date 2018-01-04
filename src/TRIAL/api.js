@@ -1,17 +1,3 @@
-<?php 
-    $timestamp = filemtime(__FILE__);
-    $tsstring = gmdate('D, d M Y H:i:s', $timestamp);
-    $etag = md5('pt-BR' . $timestamp);
-    $if_modified_since = isset($_SERVER['HTTP_IF_MODIFIED_SINCE']) ? $_SERVER['HTTP_IF_MODIFIED_SINCE'] : false;
-    $if_none_match = isset($_SERVER['HTTP_IF_NONE_MATCH']) ? $_SERVER['HTTP_IF_NONE_MATCH'] : false;
-    if ((($if_none_match && $if_none_match == $etag) || !$if_none_match) && ($if_modified_since && $if_modified_since == $tsstring)) {
-        header('HTTP/1.1 304 Not Modified');
-        exit;
-    }
-    header('Last-Modified: ' . $tsstring);
-    header('ETag: ' . $etag);
-    header('Content-Type: application/javascript');
-?>
 /*
  * T.js Library₢
  * Version: 1.2
@@ -55,11 +41,14 @@
  * 20/12/2017, 23:43:59 => added T.VERSION property equal to VERSION value. It allows Library version to be readed publicy.
  *
  * 21/12/2017, 02:35:10 => rename T.php to api.php.
+ * 
+ * 31/12/2017, 21:21:08 => rename api.php to api.js.
  */
 
 "use strict";
 (function () {
     var VERSION = "v0";
+    var ROOT = "http://localhost/no-redo-git/javascript/";
     
     window.T = (function () {
         var on, T = function (element) {
@@ -458,6 +447,7 @@
             }
         };
         Object.defineProperty(T, "VERSION", {value: VERSION});
+        Object.defineProperty(T, "ROOT", {value: ROOT});
         return T;
     })();
 
@@ -532,7 +522,7 @@
             },
             // 17/09/2016, 17:42:02
             Paths: {
-                IMAGE_PROFILE: '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png'
+                IMAGE_PROFILE: 'http://no-redo.trialent.com/repository/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png'
             }
         };
 
@@ -620,114 +610,52 @@
         };
 
         /* added on 15/06/2017 22:46 */
-        T.load = (function () {
-            var load_scripts = [],
-                    loaded_scripts = [],
-                    scripts = {},
-                    all_loaded = false;
-            function addLoadedScript(key, callback, last) {
-                var i = load_scripts.indexOf(key);
-                loaded_scripts.push(key);
-                if (i !== -1)
-                    load_scripts.splice(i, 1);
-                if (last === true) {
-                    call(callback);
+        T.load = function (jss, fn) {
+            var js = [];
+            var lib = document.querySelector("script[href*=\"loadjs\"]");
+            var jss_str = typeof jss === "string";
+            
+            if (!jss_str && !(jss.constructor === Array))
+                throw new TypeError("(T.load) Param must be a string or array");
+              
+            jss = jss_str ? [jss] : jss;
+            
+            for (var i in jss) {
+                var url = jss[i];
+                switch (url) {
+                    case "account":
+                    case "cookies":
+                    case "history":
+                    case "navigation":
+                    case "utils":
+                    case "elements":
+                    case "design":
+                        url = T.ROOT + "T/" + url;
+                        break;
                 }
-            }
-            function addCallback(url, script, callback, last) {
-                script.addEventListener("load", addLoadedScript.bind(this, url, callback, last));
-            }
-            function addLoadScript(url, callback, check_for, last) {
-                if ((check_for && !T[check_for]) || !check_for) {
-                    var load = load_scripts.indexOf(url),
-                            exists = document.querySelector("script[src=\"" + url + "\"]");
-                    if (loaded_scripts.indexOf(url) !== -1 && !!exists && last === true)
-                        call(callback);
-                    else if (load !== -1)
-                        addCallback(url, scripts[url], callback, last);
-                    else {
-                        load_scripts.push(url);
-                        var script = document.createElement("script");
-                        scripts[url] = script;
-                        document.body.appendChild(script);
-                        addCallback(url, script, callback, last);
-                        script.src = url;
-                    }
-                } else if (last === true)
-                    call(callback);
-            }
-            function call(callback) {
-                if (ready())
-                    if (callback)
-                        T.dispatchCallback(callback);
-            }
-            function ready() {
-                if (!all_loaded)
-                    all_loaded = load_scripts.length <= 0;
-                return all_loaded;
-            }
-            return function (urls, callback) {
-                var is_l_str = typeof urls === "string";
-                if (!is_l_str && !(urls.constructor === Array))
-                    throw new TypeError("(T.load) Param must be a string or array");
-                urls = is_l_str ? [urls] : urls;
-                for (var url, check_for, i = 0, t = urls.length; i < t; i++) {
-                    url = urls[i];
-                    switch (url) {
-                        case "account":
-                        case "cookies":
-                        case "history":
-                        case "navigation":
-                        case "utils":
-                            check_for = url.charAt(0).toUpperCase() + url.slice(1);
-                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
-                            break;
-                        case "elements":
-                            check_for = url;
-                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
-                            break;
-                        case "design":
-                            check_for = "Animation";
-                            url = "/no-redo/" + VERSION + "/repository/javascript/T/" + url;
-                            break;
-                        default:
-                            check_for = null;
-                    }
-                    addLoadScript(url, callback, check_for, i === (t - 1));
-                };
+                js.push(url);
             };
-        })();
-        
-        /* created on 16/06/2017, 20:52:59 */
-        T.require = function (scripts) {
-            if (scripts === undefined)
-                throw new TypeError("(T.require) Param isn't defined");
-            if (!(typeof scripts === 'array'))
-                throw new TypeError("(T.require) Param must be an array");
             
-            var all_loaded = false;
-            
-            (function () {
-                for (var i in scripts) {
-                    var url = scripts[i];
-                    switch (url) {
-                        case 'elements':
-                            url = "/no-redo/" + VERSION + "/repository/javascript/T/elements";
-                            break;
-                    }
-                }
-            })();
-            
-            return {
-                then: function (callback) {
-                    if (callback === undefined)
-                        throw new TypeError("(T.require.then) Param isn't defined");
-                    if (all_loaded) {
+            if (!(!!lib)) {
+                var s = document.createElement("script");
+                s.src = T.ROOT + "bower_components/loadjs/dist/loadjs.min.js";
+                s.onload = load.bind(this, fn);
+                document.body.appendChild(s);
+            } else
+                load(fn);
+              
+            function load(callback) {
+                loadjs(js, {
+                    success: function () {
                         T.dispatchCallback(callback);
                     }
-                }
-            };
+                });
+            }
         };
+        
+        /* created T.require on 16/06/2017, 20:52:59
+         * removed T.require on 04/01/2018, 09:58:35
+         */
 
         /* created on 16/06/2017, 10:28:16 */
         T.dispatchCallback = function (callback) {
@@ -754,20 +682,15 @@
             if (!T._callbacks[event])
                 T._callbacks[event] = [];
             T._callbacks[event].push(fn);
-        }
+        };
         
         T.dispatchEvent = function (event, lib) {
             if (T._callbacks[event])
                 for (var i = 0, t = T._callbacks[event].length; i < t; i++)
                     T._callbacks[event][i](lib);
-        }
+        };
         // end created
         
     })();
-    (function () {
-        window.dispatchEvent(new CustomEvent("TReady"));
-        var c = <?php echo filter_has_var(INPUT_GET, 'onload') ? '"' . filter_input(INPUT_GET, 'onload') . '"' : 'null' ?>;
-        if (c)
-            window.T.dispatchCallback(c);
-    })();
+    window.dispatchEvent(new CustomEvent("TReady"));
 })(window);
