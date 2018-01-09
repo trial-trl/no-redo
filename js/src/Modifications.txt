@@ -1,0 +1,5 @@
+21/12/2017:
+    Rename TApi to T on 02h29min43s
+    Rename T to TRIAL on 02h34min15s
+
+No-Redo Javascript created on 31/12/2017, 21:24:44.

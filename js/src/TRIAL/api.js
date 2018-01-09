@@ -522,7 +522,7 @@
             },
             // 17/09/2016, 17:42:02
             Paths: {
-                IMAGE_PROFILE: 'http://no-redo.trialent.com/repository/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png'
+                IMAGE_PROFILE: '/no-redo/img/TRIAL/logo/icon/social/min/T_icon_social_invert.png'
             }
         };
 
