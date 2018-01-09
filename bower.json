@@ -1,10 +1,14 @@
 {
   "name": "trl-no-redo",
-  "description": "TRIAL's library of common files used in all products",
-  "version": "0.0.3",
+  "description": "TRIAL's library of common front-end files used in all products",
+  "version": "0.0.4",
   "ignore": [
     "**/*.txt",
-    "bower_components"
+    "bower_components/",
+    "less/",
+    "html/",
+    "php/",
+    "**/nbproject/"
   ],
   "dependencies": {
     "loadjs": "3.5.1"
