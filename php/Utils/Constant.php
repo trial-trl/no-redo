@@ -23,8 +23,8 @@
 
 // Database connection constants
 const DB_DATABASE = 'mysql';
-const DB_USER = 'root';
-const DB_PASSWORD = '';
+const DB_USER = 'root';//trial105
+const DB_PASSWORD = '';//i1eDq8*5lVwHLk*!gB
 const DB_PREFIX = 'trial105_';
 
 // Database names

@@ -20,6 +20,17 @@
 Options -Indexes
 RewriteEngine On
 
-RewriteRule ^T/elements/(.*)$ src/TRIAL/elements/$1\.js [NC,L,QSA]
-RewriteRule ^T/(.*)$ src/TRIAL/$1\.js [NC,L,QSA]
-RewriteRule ^T$ src/TRIAL/api.js [NC,L,QSA]
+Header set Access-Control-Allow-Origin "*"
+Header add Access-Control-Allow-Headers "X-REQUESTED-WITH"
+
+RewriteRule ^css/common?$ css/common.css [NC,L]
+
+RewriteRule ^css/elements/trl-circle-percentage?$ css/elements/trl-circle-percentage.css [NC,L]
+RewriteRule ^css/elements/trl-loading?$ css/elements/trl-loading.css [NC,L]
+
+RewriteRule ^img/group-pattern-photo?$ img/TRIAL/trl_pattern_group_photo_bg.svg [NC,L]
+RewriteRule ^img/pattern-photo?$ img/TRIAL/trl_pattern_photo_bg.svg [NC,L]
+
+RewriteRule ^javascript/T/elements/(.*)$ js/src/TRIAL/elements/$1 [NC,L]
+RewriteRule ^javascript/T/(.*)$ js/src/TRIAL/$1 [NC,L]
+RewriteRule ^javascript/T$ js/src/TRIAL/api.js [NC,L]

@@ -449,7 +449,7 @@
                 CONTAINER_BACKGROUND: "Cn_bCk_Ssw-Ll"
             },
             Paths: {
-                IMAGE_PROFILE: '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png'
+                IMAGE_PROFILE: '/no-redo/img/TRIAL/logo/icon/social/min/T_icon_social_invert.png'
             }
         };
 
