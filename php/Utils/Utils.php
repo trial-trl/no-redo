@@ -144,7 +144,7 @@ function urlExist($type_url, $url) {
     } else {
         switch ($type_url) {
             case IMAGE_PROFILE:
-                $img = '/no-redo/images/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
+                $img = '/no-redo/img/TRIAL/logo/icon/social/min/T_icon_social_invert.png';
                 break;
         }
     }

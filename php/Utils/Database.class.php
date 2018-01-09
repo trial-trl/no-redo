@@ -29,8 +29,8 @@ class Database {
     
     private static $driver = 'mysql';
     private static $host = '216.172.161.44';
-    private static $user = 'trial105';//root
-    private static $password = 'i1eDq8*5lVwHLk*!gB';//
+    private static $user = 'root';
+    private static $password = '';
     
     public static function setAuth(string $user, string $password) {
         self::$user = $user;
