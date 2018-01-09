@@ -1,0 +1,418 @@
+/*
+(c) 2018 TRIAL.
+Created on 09/01/2018, 20:29:22.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+/* 
+    common.less:
+      Created on : 09/01/2018, 20:29:22
+      Author     : Matheus Leonardo dos Santos Martins <mlsm@trialent.com>
+
+    Original standards.css:
+      Created on : 06/11/2015, 19:59:05
+      Author     : Matheus Leonardo dos Santos Martins <mlsm@trialent.com>
+      Renamed to common.css on 09/01/2018, ~20:20
+*/
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  padding: 0;
+}
+trl-table {
+  display: table;
+}
+trl-trow {
+  display: table-row;
+  width: 100%;
+}
+trl-tcolumn {
+  display: table-cell;
+}
+nr-title-truncate,
+.title-truncate {
+  float: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.text-center {
+  position: relative;
+  float: left;
+  width: 100%;
+  text-align: center;
+}
+.not-display {
+  display: none;
+}
+.left {
+  float: left;
+}
+.right {
+  float: right;
+}
+.clear {
+  clear: both;
+}
+.full-width {
+  width: 100%;
+}
+.relative {
+  position: relative;
+}
+trl-popup [background],
+.background-opacity-black,
+.background-white,
+.window {
+  position: fixed;
+  display: none;
+  width: 0;
+  height: 0;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+trl-popup [background],
+.background-opacity-black {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.background-white {
+  background-color: #FFF;
+}
+#background-loading {
+  position: fixed;
+  display: none;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #f8fef7;
+}
+.background-loading {
+  display: none;
+  width: 100%;
+  height: 100%;
+  background-color: #f8fef7;
+}
+/* 21/11/2016, 20:21:10 => removed code below
+    #loading {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        z-index: 5;
+    }
+*/
+.hover-float-effect:not(.current):hover {
+  cursor: pointer;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.4);
+}
+.active-nofloat-effect:not(.current):active {
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+.active-float-effect:not(.current):active {
+  box-shadow: none;
+}
+.float-effect {
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  transition: 0.15s all ease-in-out;
+}
+.float-effect:not(.current):active {
+  box-shadow: none;
+}
+.float-effect:not(.current):hover {
+  cursor: pointer;
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.4);
+}
+.no-float-effect:not(.current):active {
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
+}
+a.current {
+  box-shadow: inset 0 0 7px rgba(0, 0, 0, 0.2);
+}
+.profile {
+  position: relative;
+  float: right;
+  width: 100px;
+  text-align: center;
+  transition: 0.2s all ease-in-out;
+  text-decoration: none;
+}
+.profile:hover {
+  background-color: rgba(230, 230, 230, 0.6);
+}
+.img-profile {
+  position: relative;
+  background-size: 100%;
+  background-position: 50% 50%;
+  background-repeat: no-repeat;
+}
+#footer-developer,
+[owner],
+#footer-links {
+  position: relative;
+  clear: both;
+  width: 100%;
+}
+#copyright,
+[copyright] {
+  width: 100%;
+  color: rgba(255, 255, 255, 0.6);
+}
+/* removed "line-height" property on 26/06/2017, 22:43:20 */
+#footer-developer,
+[owner] {
+  font-size: 16px;
+  text-align: center;
+  background: #222;
+}
+#footer-links {
+  text-align: center;
+  height: 100%;
+  background: #333;
+}
+#footer-links a {
+  display: inline;
+  line-height: 40px;
+  margin: 0 15px;
+  color: #e2e2e2;
+  text-decoration: none;
+  transition: 0.1s all ease-out;
+}
+#footer-links a:hover {
+  color: #fff;
+  transition: 0.1s all ease-in;
+}
+/* changed [logo] to trl-logo on 17/12/2016, 16:13:42 */
+/* removed "top" property on 26/06/2017, 22:43:20 */
+#footer-developer > #logo-developer,
+[owner] > trl-logo {
+  position: relative;
+  float: left;
+  clear: both;
+  opacity: 0.6;
+  margin: 0 auto;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 100%;
+}
+trl-slideshow,
+[container-slideshow-items] {
+  position: relative;
+  float: left;
+  width: 100%;
+  z-index: 3;
+}
+trl-slideshow .controller {
+  z-index: 2;
+}
+trl-slideshow .controller.fill,
+[container-slideshow-items] .control {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+/* removed display: none on 30/10/2016, 18:32:23 */
+/* changed trl-slideshow > *[...] to trl-slideshow .slide[...] on 04/12/2017, 17:56:34 */
+trl-slideshow .slide:not(header):not(.controller),
+[container-slideshow-items] [slideshow-item] {
+  position: relative;
+  left: 0;
+  float: left;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+/* removed display: none on 30/10/2016, 18:33:16 */
+trl-slideshow .slide:not(header):not(.controller):not(.current),
+[container-slideshow-items] [slideshow-item]:not(.current) {
+  display: none;
+}
+/* added 31/10/2016, 20:33:32 */
+.center,
+.center-vertical,
+.center-horizontal {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  flex-flow: row wrap;
+}
+.center,
+.center-vertical {
+  -ms-align-items: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+.center,
+.center-horizontal {
+  -ms-justify-content: center;
+  -webkit-justify-content: center;
+  justify-content: center;
+}
+/* end added */
+/* added 06/12/2016 19:31:04 */
+a[is="trl-button"] {
+  position: relative;
+  cursor: pointer;
+  text-align: center;
+  padding: 15px 30px;
+  border: none;
+  font: 20px "Share", arial, sans-serif;
+  font-weight: 800;
+}
+a[is="trl-button"]:not(.left):not(.right),
+a[is="trl-button"].left {
+  float: left;
+}
+a[is="trl-button"].right {
+  float: right;
+}
+a[is="trl-button"]:not(.button-no-style) {
+  background-color: #444;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+}
+a[is="trl-button"]:not(.button-square) {
+  transform: skewX(-25deg);
+}
+a[is="trl-button"]:not(.button-no-style):hover {
+  background-color: #6a6a6a;
+}
+a[is="trl-button"] > div {
+  color: #fff;
+}
+a[is="trl-button"]:not(.button-square) > div {
+  transform: skewX(25deg);
+}
+/* end added */
+/* added on 13/03/2017, 13:45:36 */
+trl-rating > span::before,
+trl-rating > .subtitle::after {
+  transition: 0.2s all ease-in-out;
+}
+trl-rating > span,
+trl-rating > .subtitle {
+  text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+trl-rating > .subtitle {
+  font-weight: 100;
+  font-size: 13px;
+}
+trl-rating > .subtitle::after {
+  position: relative;
+  float: none;
+  text-align: center;
+}
+trl-rating > span {
+  position: relative;
+  float: right;
+  font-size: inherit;
+  color: #eee;
+}
+trl-rating[trl-interactive="true"] > span {
+  cursor: pointer;
+}
+trl-rating[trl-interactive="true"]:hover > span::before {
+  color: #eee !important;
+}
+trl-rating[trl-rate="5"] > .star-5::before,
+trl-rating[trl-rate="5"] > .star-5 ~ span::before,
+trl-rating[trl-rate="5"] > .star-5 ~ .subtitle::after {
+  color: #1c9b7f;
+}
+trl-rating[trl-rate="4"] > .star-4::before,
+trl-rating[trl-rate="4"] > .star-4 ~ span::before,
+trl-rating[trl-rate="4"] > .star-4 ~ .subtitle::after {
+  color: #84b325;
+}
+trl-rating[trl-rate="3"] > .star-3::before,
+trl-rating[trl-rate="3"] > .star-3 ~ span::before,
+trl-rating[trl-rate="3"] > .star-3 ~ .subtitle::after {
+  color: #ffcf6f;
+}
+trl-rating[trl-rate="2"] > .star-2::before,
+trl-rating[trl-rate="2"] > .star-2 ~ span::before,
+trl-rating[trl-rate="2"] > .star-2 ~ .subtitle::after {
+  color: #ffad70;
+}
+trl-rating[trl-rate="1"] > .star-1::before,
+trl-rating[trl-rate="1"] > .star-1 ~ span::before,
+trl-rating[trl-rate="1"] > .star-1 ~ .subtitle::after {
+  color: #ef6b5d;
+}
+trl-rating[trl-interactive="true"] > .star-5:hover::before,
+trl-rating[trl-interactive="true"] > .star-5:hover ~ span::before,
+trl-rating[trl-interactive="true"] > .star-5:hover ~ .subtitle::after {
+  color: #1c9b7f !important;
+}
+trl-rating[trl-interactive="true"] > .star-4:hover::before,
+trl-rating[trl-interactive="true"] > .star-4:hover ~ span::before,
+trl-rating[trl-interactive="true"] > .star-4:hover ~ .subtitle::after {
+  color: #84b325 !important;
+}
+trl-rating[trl-interactive="true"] > .star-3:hover::before,
+trl-rating[trl-interactive="true"] > .star-3:hover ~ span::before,
+trl-rating[trl-interactive="true"] > .star-3:hover ~ .subtitle::after {
+  color: #ffcf6f !important;
+}
+trl-rating[trl-interactive="true"] > .star-2:hover::before,
+trl-rating[trl-interactive="true"] > .star-2:hover ~ span::before,
+trl-rating[trl-interactive="true"] > .star-2:hover ~ .subtitle::after {
+  color: #ffad70 !important;
+}
+trl-rating[trl-interactive="true"] > .star-1:hover::before,
+trl-rating[trl-interactive="true"] > .star-1:hover ~ span::before,
+trl-rating[trl-interactive="true"] > .star-1:hover ~ .subtitle::after {
+  color: #ef6b5d !important;
+}
+trl-rating[trl-rate="5"] .subtitle::after {
+  content: "Avaliado como Muito bom";
+}
+trl-rating[trl-rate="4"] .subtitle::after {
+  content: "Avaliado como Bom";
+}
+trl-rating[trl-rate="3"] .subtitle::after {
+  content: "Avaliado como Mais ou menos";
+}
+trl-rating[trl-rate="2"] .subtitle::after {
+  content: "Avaliado como Ruim";
+}
+trl-rating[trl-rate="1"] .subtitle::after {
+  content: "Avaliado como Muito ruim";
+}
+trl-rating[trl-interactive="true"] > .star-5:hover ~ .subtitle::after,
+trl-rating[trl-rate="5"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="5"]:not([trl-interactive]) .subtitle::after {
+  content: "Muito bom" !important;
+}
+trl-rating[trl-interactive="true"] > .star-4:hover ~ .subtitle::after,
+trl-rating[trl-rate="4"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="4"]:not([trl-interactive]) .subtitle::after {
+  content: "Bom" !important;
+}
+trl-rating[trl-interactive="true"] > .star-3:hover ~ .subtitle::after,
+trl-rating[trl-rate="3"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="3"]:not([trl-interactive]) .subtitle::after {
+  content: "Mais ou menos" !important;
+}
+trl-rating[trl-interactive="true"] > .star-2:hover ~ .subtitle::after,
+trl-rating[trl-rate="2"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="2"]:not([trl-interactive]) .subtitle::after {
+  content: "Ruim" !important;
+}
+trl-rating[trl-interactive="true"] > .star-1:hover ~ .subtitle::after,
+trl-rating[trl-rate="1"][trl-interactive="false"] .subtitle::after,
+trl-rating[trl-rate="1"]:not([trl-interactive]) .subtitle::after {
+  content: "Muito ruim" !important;
+}
+/* end added */
+/*# sourceMappingURL=common.css.map */

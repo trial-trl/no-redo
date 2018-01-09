@@ -260,7 +260,7 @@ class Account implements \JsonSerializable {
         if (isset($field['tmp_name'])) {
             if (is_uploaded_file($field['tmp_name'])) {
                 $divided_namespace = explode('\\', get_class($account));
-                $url = 'https://trialent.com/images/' . strtolower(array_pop($divided_namespace)) . '/profile/' . $account->getId() . '/' . $account->getId() . '.jpg';
+                $url = 'https://trialent.com/img/' . strtolower(array_pop($divided_namespace)) . '/profile/' . $account->getId() . '/' . $account->getId() . '.jpg';
                 if (move_uploaded_file($field['tmp_name'], $_SERVER['DOCUMENT_ROOT'] . $url)) {
                     return ['message' => Message::SAVED_WITH_SUCCESS, 'url' => $url];
                 }
@@ -298,7 +298,7 @@ class Account implements \JsonSerializable {
     }
     
     public function getPhotoUrl() {
-        return 'https://trialent.com/images/' . $this->type_account . '/profile/' . $this->id . '/' . $this->id . '.jpg';
+        return 'https://trialent.com/img/' . $this->type_account . '/profile/' . $this->id . '/' . $this->id . '.jpg';
     }
     
     public function getPermission() {
