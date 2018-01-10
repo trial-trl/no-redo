@@ -24,6 +24,7 @@ Header set Access-Control-Allow-Origin "*"
 Header add Access-Control-Allow-Headers "X-REQUESTED-WITH"
 
 RewriteRule ^css/common?$ css/common.css [NC,L]
+RewriteRule ^css/fonts/Share?$ css/fonts/Share.css [NC,L]
 
 RewriteRule ^css/elements/trl-circle-percentage?$ css/elements/trl-circle-percentage.css [NC,L]
 RewriteRule ^css/elements/trl-loading?$ css/elements/trl-loading.css [NC,L]
