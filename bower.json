@@ -7,7 +7,6 @@
     "bower_components/",
     "less/",
     "html/",
-    "php/",
     "**/nbproject/"
   ],
   "dependencies": {
