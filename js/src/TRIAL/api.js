@@ -48,7 +48,7 @@
 "use strict";
 (function () {
     var VERSION = "v0";
-    var ROOT = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "") + "/bower_components/trl-no-redo/src/TRIAL/";
+    var ROOT = "./";
     
     window.T = (function () {
         var on, T = function (element) {
@@ -638,7 +638,7 @@
             
             if (!(!!lib)) {
                 var s = document.createElement("script");
-                s.src = T.ROOT + "../../../loadjs/dist/loadjs.min.js";
+                s.src = T.ROOT + "../../../../loadjs/dist/loadjs.min.js";
                 s.onload = load.bind(this, fn);
                 document.body.appendChild(s);
             } else
