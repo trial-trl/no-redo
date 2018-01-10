@@ -63,7 +63,7 @@
         
         function reg() {
             for (var i = 0, t = arr.length; i < t; i++)
-                arr[i] = T.ROOT + "elements/" + arr[i] + ".js";
+                arr[i] = T.API + "/elements/" + arr[i] + ".js";
             window.T.load(arr, callback);
         }
     };
