@@ -647,7 +647,7 @@
                     case "utils":
                     case "elements":
                     case "design":
-                        url = T.API + url + ".js";
+                        url = T.API + "/" + url + ".js";
                         break;
                 }
                 js.push(url);
