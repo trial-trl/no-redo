@@ -43,12 +43,25 @@
  * 21/12/2017, 02:35:10 => rename T.php to api.php.
  * 
  * 31/12/2017, 21:21:08 => rename api.php to api.js.
+ *
+ * 09/01/2018
+ *      23:00:17 => added T.LOADJS property equal to LOADJS value. Points to dist of loadjs library.
+ *      23:03:20 => added T.BOWER property equal to BOWER value. Points to root dir of Bower.
+ *      23:04:06 => added T.HOST property equal to HOST value. Has the current url website using this API.
+ *      23:04:17 => removed T.VERSION property and VERSION var.
+ *      23:12:01: 
+ *          added T.CSS property equal to CSS value. Points to css resources of library.
+ *          renamed T.ROOT property and ROOT var to T.API and API respectively. Points to API resources (js) of library.
  */
 
 "use strict";
 (function () {
-    var VERSION = "v0";
-    var ROOT = "./";
+    var HOST = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
+    var BOWER = HOST + "/bower_components";
+    var LIBRARY = BOWER + "/trl-no-redo";
+    var CSS = LIBRARY + "/css";
+    var API = LIBRARY + "/js/src/TRIAL";
+    var LOADJS = BOWER + "/loadjs/dist/loadjs.min.js";
     
     window.T = (function () {
         var on, T = function (element) {
@@ -446,8 +459,12 @@
                 }
             }
         };
-        Object.defineProperty(T, "VERSION", {value: VERSION});
-        Object.defineProperty(T, "ROOT", {value: ROOT});
+        Object.defineProperty(T, "HOST", {value: HOST});
+        Object.defineProperty(T, "BOWER", {value: BOWER});
+        Object.defineProperty(T, "LIBRARY", {value: LIBRARY});
+        Object.defineProperty(T, "CSS", {value: CSS});
+        Object.defineProperty(T, "API", {value: API});
+        Object.defineProperty(T, "LOADJS", {value: LOADJS});
         return T;
     })();
 
@@ -630,7 +647,7 @@
                     case "utils":
                     case "elements":
                     case "design":
-                        url = T.ROOT + url + ".js";
+                        url = T.API + url + ".js";
                         break;
                 }
                 js.push(url);
@@ -638,7 +655,7 @@
             
             if (!(!!lib)) {
                 var s = document.createElement("script");
-                s.src = T.ROOT + "../../../../loadjs/dist/loadjs.min.js";
+                s.src = T.LOADJS;
                 s.onload = load.bind(this, fn);
                 document.body.appendChild(s);
             } else
