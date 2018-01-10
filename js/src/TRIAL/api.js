@@ -10,8 +10,12 @@
 
 "use strict";
 (function () {
-    var VERSION = "v0";
-    var ROOT = "./";
+    var HOST = location.protocol + "//" + location.hostname + (location.port ? ":" + location.port : "");
+    var BOWER = HOST + "/bower_components";
+    var LIBRARY = BOWER + "/trl-no-redo";
+    var CSS = LIBRARY + "/css";
+    var API = LIBRARY + "/js/src/TRIAL";
+    var LOADJS = BOWER + "/loadjs/dist/loadjs.min.js";
     
     window.T = (function () {
         var on, T = function (element) {
@@ -403,8 +407,12 @@
                 }
             }
         };
-        Object.defineProperty(T, "VERSION", {value: VERSION});
-        Object.defineProperty(T, "ROOT", {value: ROOT});
+        Object.defineProperty(T, "HOST", {value: HOST});
+        Object.defineProperty(T, "BOWER", {value: BOWER});
+        Object.defineProperty(T, "LIBRARY", {value: LIBRARY});
+        Object.defineProperty(T, "CSS", {value: CSS});
+        Object.defineProperty(T, "API", {value: API});
+        Object.defineProperty(T, "LOADJS", {value: LOADJS});
         return T;
     })();
 
@@ -552,7 +560,7 @@
                     case "utils":
                     case "elements":
                     case "design":
-                        url = T.ROOT + url + ".js";
+                        url = T.API + url + ".js";
                         break;
                 }
                 js.push(url);
@@ -560,7 +568,7 @@
             
             if (!(!!lib)) {
                 var s = document.createElement("script");
-                s.src = T.ROOT + "../../../../loadjs/dist/loadjs.min.js";
+                s.src = T.LOADJS;
                 s.onload = load.bind(this, fn);
                 document.body.appendChild(s);
             } else
