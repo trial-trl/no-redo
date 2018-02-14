@@ -1,4 +1,9 @@
 <?php
+
+namespace NoRedo\TRIAL\Account;
+
+use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Address, NoRedo\TRIAL\Account\Register;
+
 /**
  * Description of Institution
  *
@@ -9,11 +14,6 @@
  * @version 1.02
  * @package Account
  */
-
-namespace NoRedo\TRIAL\Account;
-
-use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Address, NoRedo\TRIAL\Account\Register;
-
 class Institution extends TRIALAccount implements \JsonSerializable {
     
     const TABLE = 'institutions';
@@ -34,8 +34,8 @@ class Institution extends TRIALAccount implements \JsonSerializable {
             if ($k === 'cnpj' && !empty($v) && empty($loop['infos'])) {
                 $this->register = (new Register\Builder())->setCNPJ($v)->build();
             } else if ($k === 'infos' && !empty($v)) {
-                $i = json_decode(utf8_encode(base64_decode($v)));
-                $this->register = (new Register\Builder())->setCNPJ($i->{'cnpj'})->setType($i->{'tipo'})->setOpening($i->{'abertura'})->setCompanyName($i->{'nome'})->setTradingName($i->{'fantasia'})->setMainActivity($i->{'atividade_principal'}[0])->setSecondaryActivities($i->{'atividades_secundarias'})->setAddress(new Address([Address::NUMBER => $i->{'numero'}, Address::POSTAL_CODE => $i->{'cep'}, Address::DISTRICT => $i->{'logradouro'}, Address::CITY => $i->{'municipio'}, Address::STATE => $i->{'uf'}, Address::COUNTRY => 'BR']))->setLegalNature($i->{'natureza_juridica'})->setEmail($i->{'email'})->setPhone($i->{'telefone'})->setERF($i->{'efr'})->setSituation($i->{'situacao'})->setSituationDate($i->{'data_situacao'})->setSituationReason($i->{'motivo_situacao'})->setSpecialSituation($i->{'situacao_especial'})->setSpecialSituationDate($i->{'data_situacao_especial'})->setLastUpdate($i->{'ultima_atualizacao'})->build();
+                $i = json_decode(utf8_encode(base64_decode($v)), true);
+                $this->register = (new Register\Builder())->setCNPJ($i['cnpj'])->setType($i['tipo'])->setOpening(date('Y-m-d', strtotime(str_replace('/', '-', $i['abertura']))))->setCompanyName($i['nome'])->setTradingName($i['fantasia'])->setMainActivity($i['atividade_principal'][0])->setSecondaryActivities($i['atividades_secundarias'])->setAddress(new Address($i['endereco'] ?? [Address::NUMBER => $i['numero'], Address::POSTAL_CODE => $i['cep'], Address::DISTRICT => $i['logradouro'], Address::CITY => $i['municipio'], Address::STATE => $i['uf'], Address::COUNTRY => 'BR']))->setLegalNature($i['natureza_juridica'])->setEmail($i['email'])->setPhone($i['telefone'])->setERF($i['efr'])->setSituation($i['situacao'])->setSituationDate(date('Y-m-d', strtotime(str_replace('/', '-', $i['data_situacao']))))->setSituationReason($i['motivo_situacao'])->setSpecialSituation($i['situacao_especial'])->setSpecialSituationDate(date('Y-m-d', strtotime(str_replace('/', '-', $i['data_situacao_especial']))))->setLastUpdate(date('Y-m-d', strtotime(str_replace('/', '-', $i['ultima_atualizacao']))))->build();
             } else {
                 $this->{$k} = $v;
             }
