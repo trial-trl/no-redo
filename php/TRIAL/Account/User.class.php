@@ -1,15 +1,4 @@
 <?php
-/**
- * Description of User
- *
- * Created on 06/09/2016, ~15:50:45
- * @author Matheus Leonardo dos Santos Martins
- * @copyright (c) 2016, TRIAL
- * 
- * @version 1.22
- * @package Account
- */
-
 /* 
  * 18/10/2016
  *      22:38:18 => setted all vars to private, $con argument is created with no necessity of pass argument
@@ -80,6 +69,16 @@ namespace NoRedo\TRIAL\Account;
 
 use \DateTime, NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Address;
 
+/**
+ * Description of User
+ *
+ * Created on 06/09/2016, ~15:50:45
+ * @author Matheus Leonardo dos Santos Martins
+ * @copyright (c) 2016, TRIAL
+ * 
+ * @version 1.22
+ * @package Account
+ */
 final class User extends TRIALAccount implements \JsonSerializable {
     
     const TABLE = 'users';

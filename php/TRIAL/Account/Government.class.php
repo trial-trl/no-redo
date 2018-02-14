@@ -1,4 +1,21 @@
 <?php
+/*
+ * 16/12/2016
+ *      16:26:36 => remove $permission and getPermission()
+ *      19:40:15 => added parent::__construct(TRIALAccount::GOVENRMENT); removed namespace, update Connection code
+ * 
+ * 21/01/2017
+ *      01:26:14 => added namespace TRIAL\Account
+ *      20:39:43 => renamed namespace from TRIAL\Account to NoRedo\TRIAL\Account
+ * 
+ * 20/01/2018
+ *      14:12:26 => added argument array $columns to get() method
+ */
+
+namespace NoRedo\TRIAL\Account;
+
+use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\TRIAL\Account\Register, NoRedo\Address;
+
 /**
  * Description of Government
  * 
@@ -9,22 +26,6 @@
  * @version 1.02
  * @package Account
  */
-
-/*
- * 16/12/2016
- *      16:26:36 => remove $permission and getPermission()
- *      19:40:15 => added parent::__construct(TRIALAccount::GOVENRMENT); removed namespace, update Connection code
- * 
- * 21/01/2017
- *      01:26:14 => added namespace TRIAL\Account
- *      20:39:43 => renamed namespace from TRIAL\Account to NoRedo\TRIAL\Account
- */
-     
-
-namespace NoRedo\TRIAL\Account;
-
-use NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\TRIAL\Account\Register, NoRedo\Address;
-
 final class Government extends TRIALAccount {
     
     const TABLE = 'governments';
@@ -61,14 +62,14 @@ final class Government extends TRIALAccount {
      * @return type
      * @throws \InvalidArgumentException
      * 
-     * @version 1.0
+     * @version 1.1
      * @since 1.02
      */
-    public static function get($search) {
+    public static function get($search, array $columns = [self::ID, self::CNPJ, self::REGISTER, self::NAME, self::EMAIL, self::PASSWORD, self::ACTIVATED]) {
         if (!is_int($search) && !is_string($search)) {
             throw new \InvalidArgumentException('Government::get(): search must be an integer or string');
         }
-        $q = (new Select(Database::connect(DATABASE_USERS)))->table(self::TABLE)->columns([self::ID, self::CNPJ, self::REGISTER, self::NAME, self::EMAIL, self::PASSWORD, self::ACTIVATED])->fetchMode(\PDO::FETCH_CLASS, self::class);
+        $q = (new Select(Database::connect(DATABASE_USERS)))->table(self::TABLE)->columns($columns)->fetchMode(\PDO::FETCH_CLASS, self::class);
         if (is_string($search)) {
             $q->where(self::EMAIL . ' = :email')->values([':email' => $search]);
         } else if (is_int($search)) {
