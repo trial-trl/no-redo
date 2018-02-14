@@ -46,7 +46,7 @@ class Builder {
     }
     
     public function setOpening(string $opening) : Builder {
-        $this->values['opening'] = DateTime::createFromFormat('d/m/Y', $opening);
+        $this->values['opening'] = DateTime::createFromFormat('Y-m-d', $opening);
         return $this;
     }
     
@@ -105,7 +105,7 @@ class Builder {
     }
     
     public function setSituationDate(string $date) : Builder {
-        $this->values['situation_date'] = DateTime::createFromFormat('d/m/Y', $date);
+        $this->values['situation_date'] = DateTime::createFromFormat('Y-m-d', $date);
         return $this;
     }
     
@@ -120,7 +120,7 @@ class Builder {
     }
     
     public function setSpecialSituationDate(string $date) : Builder {
-        $this->values['special_situation_date'] = DateTime::createFromFormat('d/m/Y', $date);
+        $this->values['special_situation_date'] = DateTime::createFromFormat('Y-m-d', $date);
         return $this;
     }
     
@@ -135,7 +135,7 @@ class Builder {
     }
     
     public function setLastUpdate(string $date) : Builder {
-        $this->values['last_update'] = DateTime::createFromFormat('d/m/Y', $date);
+        $this->values['last_update'] = DateTime::createFromFormat('Y-m-d', $date);
         return $this;
     }
     

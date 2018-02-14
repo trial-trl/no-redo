@@ -12,6 +12,9 @@
 
 namespace NoRedo;
 
+include_once 'Utils/Constant.php';
+include_once 'Utils/Utils.php';
+
 function load($namespace) {
     $splitpath = explode('\\', $namespace);
     $path = '';
@@ -44,6 +47,3 @@ function load($namespace) {
 
 spl_autoload_extensions('.php,.class.php,.interface.php');
 spl_autoload_register(__NAMESPACE__ . '\load');
-
-include_once 'Utils\Constant.php';
-include_once 'Utils\Utils.php';

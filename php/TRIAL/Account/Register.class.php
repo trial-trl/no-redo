@@ -270,25 +270,25 @@ class Register implements \JsonSerializable {
     public function jsonSerialize() {
         return [
             'cnpj' => $this->cnpj,
-            'type' => $this->type,
-            'opening' => $this->opening,
-            'company_name' => $this->company_name,
-            'trading_name' => $this->trading_name,
-            'main_activity' => $this->main_activity,
-            'secondary_activities' => $this->secondary_activities,
-            'legal_nature' => $this->legal_nature,
-            'address' => $this->address,
+            'tipo' => $this->type,
+            'abertura' => $this->opening->format('Y-m-d'),
+            'nome' => $this->company_name,
+            'fantasia' => $this->trading_name,
+            'atividade_principal' => $this->main_activity,
+            'atividades_secundarias' => $this->secondary_activities,
+            'natureza_juridica' => $this->legal_nature,
+            'endereco' => $this->address,
             'email' => $this->email,
-            'phone' => $this->phone,
-            'erf' => $this->erf,
-            'situation' => $this->situation,
-            'situation_date' => $this->situation_date,
-            'situation_reason' => $this->situation_reason,
-            'special_situation' => $this->special_situation,
-            'special_situation_date' => $this->special_situation_date,
-            'share_capital' => $this->share_capital,
-            'membership' => $this->membership,
-            'last_update' => $this->last_update
+            'telefone' => $this->phone,
+            'efr' => $this->erf,
+            'situacao' => $this->situation,
+            'data_situacao' => $this->situation_date->format('Y-m-d'),
+            'motivo_situacao' => $this->situation_reason,
+            'situacao_especial' => $this->special_situation,
+            'data_situacao_especial' => $this->special_situation_date->format('Y-m-d'),
+            'capital_social' => $this->share_capital,
+            'qsa' => $this->membership,
+            'ultima_atualizacao' => $this->last_update->format('Y-m-d')
         ];
     }
 

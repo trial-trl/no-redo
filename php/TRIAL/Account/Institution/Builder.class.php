@@ -37,7 +37,7 @@ class Builder extends AccountBuilder {
     }
     
     public function build() {
-        return new Institution($this->values);
+        return Institution::copy($this->values);
     }
     
 }
