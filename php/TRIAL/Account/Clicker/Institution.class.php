@@ -125,7 +125,6 @@ class Institution extends InstitutionAccount implements \JsonSerializable {
      * 
      * @version 1.0
      * @since 1.01
-     */
     public static function edit() : array {
         $institution = func_get_arg(0); $user = func_get_arg(1); $which = func_get_arg(2);
         if (!is_int($institution) && !($institution instanceof self)) {
@@ -141,6 +140,7 @@ class Institution extends InstitutionAccount implements \JsonSerializable {
             return ['message' => $query->success() ? Message::SAVED_WITH_SUCCESS : Message::ERROR];
         });
     }
+     */
     
     /**
      * @param array $copy

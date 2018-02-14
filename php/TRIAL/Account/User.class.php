@@ -1,4 +1,9 @@
 <?php
+
+namespace NoRedo\TRIAL\Account;
+
+use \DateTime, NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Address;
+
 /**
  * Description of User
  *
@@ -9,11 +14,6 @@
  * @version 1.22
  * @package Account
  */
-
-namespace NoRedo\TRIAL\Account;
-
-use \DateTime, NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Address;
-
 final class User extends TRIALAccount implements \JsonSerializable {
     
     const TABLE = 'users';
