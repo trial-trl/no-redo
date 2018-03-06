@@ -16,7 +16,7 @@
  */
 
 (function (window) {
-    
+        
     window.T = window.T || {};
     window.T.Utils = window.T.Utils || {};
     window.T.Utils.isNode = function (element) {
@@ -26,7 +26,7 @@
         return (typeof HTMLElement === "object" ? element instanceof HTMLElement : element && typeof element === "object" && element !== null && element.nodeType === 1 & typeof element.nodeName === "string");
     };
     window.T.Utils.ajax = function (options) {
-        var e = options.event || event,
+        var e = options.event || (event !== undefined ? event : null),
                 xhr = new XMLHttpRequest,
                 method = "GET",
                 url,
@@ -88,6 +88,8 @@
 
         if (data) xhr.send(data);
         else      xhr.send();
+        
+        return xhr;
 
         function prepareData() {
             if (options.additional_data) {
@@ -101,7 +103,7 @@
         function eventHandler(e, custom) {
             if (custom) {
                 try {
-                    var response = options.response === T.Constants.Response.JSON ? (e.target.responseText ? JSON.parse(e.target.responseText) : null) : e.target.response;
+                    var response = options.response === T.Constants.Response.JSON || !options.response ? (e.target.responseText ? JSON.parse(e.target.responseText) : null) : e.target.response;
                 } catch (e) {
                     var response = {error: e};
                 }

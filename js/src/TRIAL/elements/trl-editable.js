@@ -14,14 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function (window) {
-    /* 
-     * 21/05/2017
-     *      21:17:16 - 21:22:38 => Due to memory leaks caused by MutationObserver, it gaves place to update(), which is the old observerCallback() in a trl-editable method
-     *      23:05:26 => Changes in code, calling some function with call() method to maintain context
-     */
-    window.T.elements.Editable = document.registerElement(window.T.elements.TRL_EDITABLE, {
+    window.T.elements.custom(window.T.elements.TRL_EDITABLE, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -222,5 +216,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Editable);
 })(window);

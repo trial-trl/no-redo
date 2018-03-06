@@ -1,0 +1,122 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "fdb017feb257839d861f8010a37a7398",
+    "packages": [
+        {
+            "name": "atk4/core",
+            "version": "1.1.11",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atk4/core.git",
+                "reference": "16992e7c34c9457ccd6d9cc7a84fbff4e326b96c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/atk4/core/zipball/16992e7c34c9457ccd6d9cc7a84fbff4e326b96c",
+                "reference": "16992e7c34c9457ccd6d9cc7a84fbff4e326b96c",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "*",
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "atk4\\core\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romans Malinovskis",
+                    "email": "romans@agiletoolkit.org",
+                    "homepage": "https://nearly.guru/"
+                }
+            ],
+            "description": "Agile Core - collection of PHP Traits for designing object-oriented frameworks",
+            "homepage": "https://github.com/atk4/core",
+            "keywords": [
+                "Agile Toolkit",
+                "framework",
+                "php",
+                "trains"
+            ],
+            "time": "2017-02-18T18:10:59+00:00"
+        },
+        {
+            "name": "atk4/dsql",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/atk4/dsql.git",
+                "reference": "045322b51da7b5719a8d4d454f25534a6667fad3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/atk4/dsql/zipball/045322b51da7b5719a8d4d454f25534a6667fad3",
+                "reference": "045322b51da7b5719a8d4d454f25534a6667fad3",
+                "shasum": ""
+            },
+            "require": {
+                "atk4/core": "~1.1.3",
+                "php": ">=5.5.0"
+            },
+            "require-dev": {
+                "codeclimate/php-test-reporter": "*",
+                "phpunit/dbunit": ">=1.2",
+                "phpunit/phpcov": "*",
+                "phpunit/phpunit": "~4.8|~5.2"
+            },
+            "suggest": {
+                "jdorn/sql-formatter": "*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "atk4\\dsql\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Romans Malinovskis",
+                    "email": "romans@agiletoolkit.org",
+                    "homepage": "https://nearly.guru/"
+                }
+            ],
+            "description": "Dynamic SQL Builder in PHP",
+            "homepage": "http://agiletoolkit.org/dsql/",
+            "keywords": [
+                "builder",
+                "framework",
+                "orm",
+                "sql"
+            ],
+            "time": "2017-03-15T15:35:03+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "atk4/dsql": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": [],
+    "platform-dev": []
+}

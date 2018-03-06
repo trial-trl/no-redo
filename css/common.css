@@ -288,6 +288,7 @@ a[is="trl-button"]:not(.button-no-style):hover {
   background-color: #6a6a6a;
 }
 a[is="trl-button"] > div {
+  pointer-events: none;
   color: #fff;
 }
 a[is="trl-button"]:not(.button-square) > div {
