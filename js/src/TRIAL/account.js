@@ -17,6 +17,11 @@
 
 /*
  * 18/12/2017 00:32:07 => updated" /Library/account" URL to "/TRIALAccount"
+ * 
+ * 12/02/2018 
+ *      00:24:51 - 00:26:34 => updated service() and logout() methods to newer TRIAL Account codes
+ *      00:24:56 => renamed Account.SERVER(action) to Account.LOGIN(api/login)
+ *      00:25:15 => added Account.LOGOUT
  */
 
 (function (window) {
@@ -37,12 +42,10 @@
     
     function service(code, options) {
         missing(function () {
-            var data = {r: code + "auth", id: options.id};
-            if (options.type)
-                data.type = options.type;
+            var data = {sub_account: code, id: options.id, type: options.type, only_sub_account: true};
             window.T.Utils.ajax({
                 data: data,
-                url: window.T.Account.SERVER,
+                url: window.T.Account.LOGIN,
                 response: "json",
                 onloadend: options.onloadend
             });
@@ -52,8 +55,9 @@
     window.T = window.T || {};
     window.T.Account = {
         // created on 11/11/2017 11:46:31
-        URL: "/" + VERSION + "/TRIALAccount",
-        SERVER: "/" + VERSION + "/TRIALAccount/action",
+        URL: "https://conta.trialent.com",
+        LOGIN: "https://conta.trialent.com/api/login",
+        LOGOUT: "https://conta.trialent.com/api/logout",
         // end creation
         open: function (options) {
             var url = this.URL + "/entrar/" + btoa(JSON.stringify(options));
@@ -81,8 +85,7 @@
         logout: function (after) {
             missing(function () {
                 window.T.Utils.ajax({
-                    data: {r: 'lgout'},
-                    url: window.T.Account.SERVER,
+                    url: window.T.Account.LOGOUT,
                     onloadend: function () {
                         window.T.Cookies('trl_').deleteAll();
                         if (after)

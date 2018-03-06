@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function (window) {
-    window.T.elements.Suggestions = document.registerElement(window.T.elements.TRL_SUGGESTIONS, {
+    window.T.elements.custom(window.T.elements.TRL_SUGGESTIONS, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -105,5 +104,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Suggestions);
 })(window);

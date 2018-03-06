@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function (window) {
-    window.T.elements.TRIAL.LoginButton = document.registerElement(window.T.elements.TRL_LOGIN_BUTTON, {
+    window.T.elements.custom(window.T.elements.TRL_LOGIN_BUTTON, {
         prototype: Object.create(HTMLButtonElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -69,5 +68,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.TRIAL.LoginButton);
 })(window);
