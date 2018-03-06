@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function (window) {
-    window.T.elements.Rating = document.registerElement(window.T.elements.TRL_RATING, {
+    // created on 03/03/2017, 20:01:04
+    // added template use on 12/03/2017 00:47:07
+    window.T.elements.custom(window.T.elements.TRL_RATING, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -114,5 +115,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Rating);
 })(window);

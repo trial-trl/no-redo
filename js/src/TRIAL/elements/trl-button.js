@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function (window) {
-    window.T.elements.TRIAL.Button = document.registerElement(window.T.elements.TRL_BUTTON, {
+    window.T.elements.custom(window.T.elements.TRL_BUTTON, {
         prototype: Object.create(HTMLAnchorElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -41,5 +40,5 @@
             }
         }),
         extends: "a"
-    });
+    }, window.T.elements.TRIAL.Button);
 })(window);

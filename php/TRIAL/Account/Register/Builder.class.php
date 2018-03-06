@@ -61,14 +61,14 @@ class Builder {
     }
     
     public function setMainActivity($activity) : Builder {
-        $this->values['main_activity'] = new InstitutionActivity($activity->{'code'}, $activity->{'text'});
+        $this->values['main_activity'] = new InstitutionActivity($activity['code'], $activity['text']);
         return $this;
     }
     
     public function setSecondaryActivities($activities) : Builder {
         $secondary_activities = [];
         foreach ($activities as $i => $activity) {
-            $secondary_activities[$i] = new InstitutionActivity($activity->{'code'}, $activity->{'text'});
+            $secondary_activities[$i] = new InstitutionActivity($activity['code'], $activity['text']);
         }
         $this->values['secondary_activities'] = $secondary_activities;
         return $this;

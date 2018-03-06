@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function (window) {
-    window.T.elements.SelectableItems = document.registerElement(window.T.elements.TRL_SELECTABLE_ITEMS, {
+    window.T.elements.custom(window.T.elements.TRL_SELECTABLE_ITEMS, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -181,5 +180,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.SelectableItems);
 })(window);

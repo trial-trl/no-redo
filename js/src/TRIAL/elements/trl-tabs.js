@@ -14,17 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function (window) {
-    window.T.elements.TabsContents = document.registerElement("trl-tabs-contents", {
+    window.T.elements.custom("trl-tabs-contents", {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {}
             }
         })
-    });
+    }, window.T.elements.TabsContents);
 
-    window.T.elements.TabContent = document.registerElement("trl-tab-content", {
+    window.T.elements.custom("trl-tab-content", {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -35,9 +34,9 @@
                 }
             }
         })
-    });
+    }, window.T.elements.TabContent);
 
-    window.T.elements.Tabs = document.registerElement(window.T.elements.TRL_TABS, {
+    window.T.elements.custom(window.T.elements.TRL_TABS, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -151,9 +150,9 @@
             }
         }),
         extends: "nav"
-    });
+    }, window.T.elements.Tabs);
         
-    window.T.elements.Tab = document.registerElement("trl-tab", {
+    window.T.elements.custom("trl-tab", {
         prototype: Object.create(HTMLButtonElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -164,5 +163,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Tab);
 })(window);

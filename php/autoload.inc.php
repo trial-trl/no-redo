@@ -14,6 +14,8 @@ namespace NoRedo;
 
 include_once 'Utils/Constant.php';
 include_once 'Utils/Utils.php';
+include_once 'Utils/global.php';
+include_once 'vendor/autoload.php';
 
 function load($namespace) {
     $splitpath = explode('\\', $namespace);
