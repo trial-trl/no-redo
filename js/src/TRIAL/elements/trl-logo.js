@@ -14,13 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// moved all from T.php to trl-logo.js on 18/06/2017, 21:01:41
+/*
+ * moved all from T.php to trl-logo.js on 18/06/2017, 21:01:41
+ * 
+ * 17/12/2016, 15:04:26 - 16:16:18 => added document.registerElement() code
+ * 
+ * 12/01/2018, 01:41:07 => updated document.registerElement() code to newer window.T.elements.custom() code
+ */
 (function (window) {
-    /*
-     * Added on: 17/12/2016, 15:04:26 - 16:16:18
-     */
-    window.T.elements.TRIAL.Logo = document.registerElement(window.T.elements.TRL_LOGO, {
+    window.T.elements.custom(window.T.elements.TRL_LOGO, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -126,5 +128,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.TRIAL.Logo);
 })(window);

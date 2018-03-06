@@ -14,8 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// moved all from T.php to trl-suggestions.js on 18/06/2017, 21:05:36
+/*
+ * moved all from T.php to trl-suggestions.js on 18/06/2017, 21:05:36
+ * 
+ * 12/01/2018, 02:01:47 => updated document.registerElement() code to newer window.T.elements.custom() code
+ */
 (function (window) {
     /*
      * Fix It₢ project.
@@ -23,7 +26,7 @@
      * 
      * Added to window.T.js on 10/05/2017, 13:32:26
      */
-    window.T.elements.Suggestions = document.registerElement(window.T.elements.TRL_SUGGESTIONS, {
+    window.T.elements.custom(window.T.elements.TRL_SUGGESTIONS, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -112,5 +115,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Suggestions);
 })(window);

@@ -14,8 +14,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// moved all from T.php to trl-loading.js on 18/06/2017, 20:59:35
+/* 
+ * moved all from T.php to trl-loading.js on 18/06/2017, 20:59:35
+ * 
+ * 21/11/2016, 19:24:49 => added document.registerElement() code
+ * 
+ * 26/11/2016
+ *    11:54:04 => added attributeChangedCallback()
+ *    12:03:59 => added updateStyle()
+ *    
+ * 31/01/2017, 16:21:16 => added isLoading()
+ * 
+ * 20/06/2017, 16:39:34 => start(): renamed createSVGShape() to svg()
+ * 
+ * 12/01/2018, 01:48:40 => updated document.registerElement() code to newer window.T.elements.custom() code
+ */
 (function (window) {
     function missing(x) {
         if (!window.T.Utils && !window.T.style)
@@ -23,10 +36,7 @@
         else
             x();
     }
-    /*
-     * 21/11/2016, 19:24:49
-     */
-    window.T.elements.TRIAL.Loading = document.registerElement(window.T.elements.TRL_LOADING, {
+    window.T.elements.custom(window.T.elements.TRL_LOADING, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -51,7 +61,6 @@
                     }
                 }
             },
-            // added on 26/11/2016, 11:54:04
             attributeChangedCallback: {
                 value: function (attr_name, old_value, new_value) {
                     this.updateStyle();
@@ -86,7 +95,6 @@
                     return this.getAttribute("trl-duration") || "8s";
                 }
             },
-            // 26/11/2016, 12:03:59
             updateStyle: {
                 value: function () {
                     var that = this, color = this.color, size = this.size, duration = this.duration, 
@@ -109,7 +117,6 @@
                     });
                 }
             },
-            // Added on 31/01/2017, 16:21:16
             isLoading: {
                 value: function () {
                     return this.children.length > 0;
@@ -166,8 +173,6 @@
                     loading.appendChild(down_right);
 
                     this.appendChild(loading);
-
-                    // 20/06/2017, 16:39:34 => renamed from createSVGShape() to svg()
                     function svg(path) {
                         var id = "f" + (shape_number++);
                         return '<svg viewBox="0 0 50 50" style="width: 100%; height: 100%">' +
@@ -193,5 +198,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.TRIAL.Loading);
 })(window);

@@ -14,12 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// moved all from T.php to trl-ratinh.js on 18/06/2017, 21:04:41
+/*
+ * moved all from T.php to trl-ratinh.js on 18/06/2017, 21:04:41
+ * 
+ * 12/01/2018, 02:04:39 => updated document.registerElement() code to newer window.T.elements.custom() code
+ */
 (function (window) {
     // created on 03/03/2017, 20:01:04
     // added template use on 12/03/2017 00:47:07
-    window.T.elements.Rating = document.registerElement(window.T.elements.TRL_RATING, {
+    window.T.elements.custom(window.T.elements.TRL_RATING, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -117,5 +120,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Rating);
 })(window);

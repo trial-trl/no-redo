@@ -14,36 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// moved all from T.php to trl-editable.js on 18/06/2017, 20:55:19
+/* 
+ * moved all from T.php to trl-editable.js on 18/06/2017, 20:55:19
+ * 
+ * ultima edição ~= 29/07/2016 21:05:56
+ * ultima edição ~= 30/07/2016 21:13:54
+ * 
+ * 19/10/2016
+ *      23:48:54 => title attr is now used, if exists, to define a substitute of undefined innerHTML
+ *      21:36:48 => call observerCallback() when createdCallback is called
+ *      23:51:13 => now input placeholder is defined by title attr
+ * 
+ * 20/10/2016
+ *      23:21:24 => removed typeof that.onedit check
+ * 
+ * 21/10/2016
+ *      21:24:09 => now textarea takes the placeholder object and inserts into the placeholder attr in input
+ *      22:29:26 => now isn't necessary to have trl-onedit for trl-editable works
+ *      23:44:09
+ *          added placeholder object with get and set with attr trl-placeholder (work together)
+ *          trl-editable textarea type placeholder works only with placeholder object | trl-placeholder, because textarea uses innerHTML to define his value
+ *          
+ * 23/01/2017
+ *      01:30:58 - 02:20:24 => added copyAttrs(to): this function copy all trl-editable non-"trl-" prefixed attributes to the created input, select, or textarea
+ *      
+ * 21/05/2017
+ *      21:17:16 - 21:22:38 => Due to memory leaks caused by MutationObserver, it gaves place to update(), which is the old observerCallback() in a trl-editable method
+ *      23:05:26 => Changes in code, calling some function with call() method to maintain context
+ *      
+ * 12/01/2018, 01:54:12 => updated document.registerElement() code to newer window.T.elements.custom() code
+ */
 (function (window) {
-    /* 
-     * ultima edição ~= 29/07/2016 21:05:56
-     * ultima edição ~= 30/07/2016 21:13:54
-     * 
-     * 19/10/2016
-     *      23:48:54 => title attr is now used, if exists, to define a substitute of undefined innerHTML
-     *      21:36:48 => call observerCallback() when createdCallback is called
-     *      23:51:13 => now input placeholder is defined by title attr
-     * 
-     * 20/10/2016
-     *      23:21:24 => removed typeof that.onedit check
-     * 
-     * 21/10/2016
-     *      21:24:09 => now textarea takes the placeholder object and inserts into the placeholder attr in input
-     *      22:29:26 => now isn't necessary to have trl-onedit for trl-editable works
-     *      23:44:09
-     *          added placeholder object with get and set with attr trl-placeholder (work together)
-     *          trl-editable textarea type placeholder works only with placeholder object | trl-placeholder, because textarea uses innerHTML to define his value
-     *          
-     * 23/01/2017
-     *      01:30:58 - 02:20:24 => added copyAttrs(to): this function copy all trl-editable non-"trl-" prefixed attributes to the created input, select, or textarea
-     *      
-     * 21/05/2017
-     *      21:17:16 - 21:22:38 => Due to memory leaks caused by MutationObserver, it gaves place to update(), which is the old observerCallback() in a trl-editable method
-     *      23:05:26 => Changes in code, calling some function with call() method to maintain context
-     */
-    window.T.elements.Editable = document.registerElement(window.T.elements.TRL_EDITABLE, {
+    window.T.elements.custom(window.T.elements.TRL_EDITABLE, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -247,5 +249,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Editable);
 })(window);

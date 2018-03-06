@@ -14,18 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// moved all from T.php to trl-popup.js on 18/06/2017, 20:58:39
-// start code modifications on 19/06/2017 01:25:37
+/*
+ * moved all from T.php to trl-popup.js on 18/06/2017, 20:58:39
+ * 
+ * start code modifications on 19/06/2017 01:25:37
+ * 
+ * 12/01/2018, 01:56:44 => updated document.registerElement() code to newer window.T.elements.custom() code
+ */
 (function (window) {
-    /*
-     * TRIAL Circle Percentage
-     * Added on: 21/09/2016, 12:45:26
-     * 
-     * Modification of CSS Script "Pure CSS Circular Percentage Bar"
-     * in http://www.cssscript.com/pure-css-circular-percentage-bar/
-     */
-    window.T.elements.Popup = document.registerElement(window.T.elements.TRL_POPUP, {
+    window.T.elements.custom(window.T.elements.TRL_POPUP, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -608,5 +605,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Popup);
 })(window);

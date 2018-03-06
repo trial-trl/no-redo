@@ -14,13 +14,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// moved all from T.php to trl-selectable-items.js on 18/06/2017, 20:56:44
+/*
+ * moved all from T.php to trl-selectable-items.js on 18/06/2017, 20:56:44
+ * 
+ * 12/01/2018, 02:04:08 => updated document.registerElement() code to newer window.T.elements.custom() code
+ */
 (function (window) {
     /**
      * 02/05/2017, 01:42:12 => added "state" get and set
      */
-    window.T.elements.SelectableItems = document.registerElement(window.T.elements.TRL_SELECTABLE_ITEMS, {
+    window.T.elements.custom(window.T.elements.TRL_SELECTABLE_ITEMS, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -185,5 +188,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.SelectableItems);
 })(window);

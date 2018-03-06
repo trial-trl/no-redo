@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/**
+/*
+ * 18/01/2017, 00:32:10 => added document.registerElement() code
+ * 
  * 18/06/2017, 21:02:25 => moved all from T.php to trl-slideshow.js
  * 
  * 11/07/2017, 17:46:18 - 17:47:12 - 17:54:52 => removed the obligation to have a controller next and previous buttons, consequently the controller itself.
+ * 
+ * 12/01/2018, 01:44:22 => updated document.registerElement() code to newer window.T.elements.custom() code
  */
 (function (window) {
-    /*
-     * Added on 18/01/2017, 00:32:10
-     */
-    window.T.elements.Slideshow = document.registerElement(window.T.elements.TRL_SLIDESHOW, {
+    window.T.elements.custom(window.T.elements.TRL_SLIDESHOW, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -167,9 +167,9 @@
                         this.defineInterval();
                     }
                     current = before = this.position;
-                    if (!this.unidirectional) {
-                        this.controller.previous.style.display = "";
-                    }
+                    if (!this.unidirectional)
+                        if (this.controller.previous)
+                            this.controller.previous.style.display = "";
                     if (this.controller.next)
                         this.controller.next.style.display = "";
                     if (this.controller.conclude)
@@ -291,9 +291,6 @@
                                 });
                             }
                         }
-                        if (this.controller.previous) {
-                            this.controller.previous.style.display = "none";
-                        }
                         if (this.controller.conclude) {
                             this.controller.conclude.style.display = "none";
                         }
@@ -360,5 +357,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Slideshow);
 })(window);

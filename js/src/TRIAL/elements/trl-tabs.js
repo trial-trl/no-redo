@@ -14,10 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-// moved all from T.php to trl-tabs.js on 18/06/2017, 20:53:37
+/*
+ * moved all from T.php to trl-tabs.js on 18/06/2017, 20:53:37
+ * 
+ * 12/01/2018, 01:58:35 => updated all document.registerElement() codes to newer window.T.elements.custom() codes
+ */
 (function (window) {
-    window.T.elements.TabsContents = document.registerElement("trl-tabs-contents", {
+    window.T.elements.custom("trl-tabs-contents", {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -26,9 +29,9 @@
                 }
             }
         })
-    });
+    }, window.T.elements.TabsContents);
 
-    window.T.elements.TabContent = document.registerElement("trl-tab-content", {
+    window.T.elements.custom("trl-tab-content", {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -39,14 +42,14 @@
                 }
             }
         })
-    });
+    }, window.T.elements.TabContent);
 
     /*
      * 22/10/2016
      *      14:31:22 => tab.onclick changed to addEventListener("click", function)
      *      14:41:30 - 15:38:52 => added trl-default: it specifies which tab is default, it means, tab that'll will be opened in setup. Values are: "none" => no default tab, "integer" => default tab index.
      */
-    window.T.elements.Tabs = document.registerElement(window.T.elements.TRL_TABS, {
+    window.T.elements.custom(window.T.elements.TRL_TABS, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -162,9 +165,9 @@
             }
         }),
         extends: "nav"
-    });
+    }, window.T.elements.Tabs);
         
-    window.T.elements.Tab = document.registerElement("trl-tab", {
+    window.T.elements.custom("trl-tab", {
         prototype: Object.create(HTMLButtonElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -175,5 +178,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Tab);
 })(window);
