@@ -18,6 +18,8 @@
 "use strict";
 
 (function (window) {
+    var polyfill = {has: false, loading: false, loaded: false};
+  
     window.T = window.T || {};
     window.T.elements = window.T.elements || {};
     window.T.elements.TRIAL = window.T.elements.TRIAL || {};
@@ -35,13 +37,34 @@
     window.T.elements.TRL_SUGGESTIONS = 'trl-suggestions';
     window.T.elements.TRL_TABS = 'trl-tabs';
     
-    var Polyfills = {
-        WebComponents: 'https://cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/0.7.24/webcomponents.min.js',
-        classList: 'https://cdnjs.cloudflare.com/ajax/libs/classlist/1.1.20150312/classList.min.js'
+    window.T.elements.polyfill = function () {
+        if ('registerElement' in document)
+            return false;
+        else {
+            window.T.load(window.T.BOWER + "/document-register-element/build/document-register-element.js", function () {
+                polyfill.has = polyfill.loaded = true;
+                window.dispatchEvent(new CustomEvent("CustomElementsReady"));
+            });
+            return true;
+        }
     };
+    
+    window.T.elements.custom = function (tag, options, obj) {
+        var need_polyfill = window.T.elements.polyfill();
         
-    if (!document.registerElement)
-        window.T.load(Polyfills.WebComponents);
+        if (need_polyfill === false || polyfill.loaded === true)
+            register();
+        else
+            window.addEventListener("CustomElementsReady", function () {
+                register();
+            });
+  
+        function register() {
+            try {
+                obj = document.registerElement(tag, options);
+            } catch (e) {}
+        }
+    };
     
     window.T.elements.register = function (elements, callback) {
         if (elements === undefined)
@@ -54,17 +77,8 @@
         else
             arr = is_e_str ? [elements] : elements;
         
-        if (document.registerElement)
-            reg();
-        else
-            window.T.load(Polyfills.WebComponents, function () {
-                reg();
-            });
-        
-        function reg() {
-            for (var i = 0, t = arr.length; i < t; i++)
-                arr[i] = T.API + "/elements/" + arr[i] + ".js";
-            window.T.load(arr, callback);
-        }
+        for (var i = 0, t = arr.length; i < t; i++)
+            arr[i] = T.API + "/elements/" + arr[i] + ".js";
+        window.T.load(arr, callback);
     };
 })(window);

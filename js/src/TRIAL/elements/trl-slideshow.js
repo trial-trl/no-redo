@@ -14,9 +14,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 (function (window) {
-    window.T.elements.Slideshow = document.registerElement(window.T.elements.TRL_SLIDESHOW, {
+    window.T.elements.custom(window.T.elements.TRL_SLIDESHOW, {
         prototype: Object.create(HTMLDivElement.prototype, {
             createdCallback: {
                 value: function () {
@@ -158,9 +157,9 @@
                         this.defineInterval();
                     }
                     current = before = this.position;
-                    if (!this.unidirectional) {
-                        this.controller.previous.style.display = "";
-                    }
+                    if (!this.unidirectional)
+                        if (this.controller.previous)
+                            this.controller.previous.style.display = "";
                     if (this.controller.next)
                         this.controller.next.style.display = "";
                     if (this.controller.conclude)
@@ -281,9 +280,6 @@
                                 });
                             }
                         }
-                        if (this.controller.previous) {
-                            this.controller.previous.style.display = "none";
-                        }
                         if (this.controller.conclude) {
                             this.controller.conclude.style.display = "none";
                         }
@@ -349,5 +345,5 @@
                 }
             }
         })
-    });
+    }, window.T.elements.Slideshow);
 })(window);
