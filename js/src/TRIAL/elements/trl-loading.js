@@ -28,6 +28,8 @@
  * 20/06/2017, 16:39:34 => start(): renamed createSVGShape() to svg()
  * 
  * 12/01/2018, 01:48:40 => updated document.registerElement() code to newer window.T.elements.custom() code
+ * 
+ * 17/03/2018, 19:10:44 => removed createdCallback(). Now trl-loading.css is bundled with trl-loading.js when loaded by loadjs()
  */
 (function (window) {
     function missing(x) {
@@ -38,31 +40,8 @@
     }
     window.T.elements.custom(window.T.elements.TRL_LOADING, {
         prototype: Object.create(HTMLDivElement.prototype, {
-            createdCallback: {
-                value: function () {
-                    var that = this;
-                    this.stylesheet = document.getElementById("trl-loading-style");
-                    if (!this.stylesheet) {
-                        this.style.display = "none !important";
-                        missing(function () {
-                            window.T.Utils.ajax({
-                                url: T.CSS + "/elements/trl-loading",
-                                onloadend: function (e) {
-                                    var s = document.createElement("style");
-                                    s.id = "trl-loading-style";
-                                    s.appendChild(document.createTextNode(e.target.response));
-                                    document.head.appendChild(s);
-                                    that.stylesheet = s.sheet;
-                                    that.updateStyle();
-                                    that.style.display = "";
-                                }
-                            });
-                        });
-                    }
-                }
-            },
             attributeChangedCallback: {
-                value: function (attr_name, old_value, new_value) {
+                value: function () {
                     this.updateStyle();
                 }
             },

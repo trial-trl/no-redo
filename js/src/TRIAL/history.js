@@ -25,7 +25,9 @@
                 try {
                     history.pushState(state, title, url);
                     document.title = title;
-                } catch (e) {}
+                } catch (e) {
+                    console.error(e);
+                }
             } else {
                 location.assign(url);
             }

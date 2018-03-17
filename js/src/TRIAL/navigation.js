@@ -14,15 +14,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
+/* 
+ * T.Navigation.scroll():
+ *      24/10/2016
+ *          19:30:52 => added T.Navigation.scroll()
+ *          19:59:38 => 
+ *              added support to horizontal scroll
+ *              options.to => options.y (vertical) / options.x (horizontal
+ *          
+ * T.Navigation.noRefresh():
+ *      27/12/2016, 00:58:55 => created 
+ *      26/02/2017, 18:43:25 => added to Library
+ * 
+ * 16/06/2017, 23:06:15 => moved DynamicPageLoading() to navigation.js as module with name noRefresh()
+ */
 (function (window) {
     window.T.Navigation = window.T.Navigation || {};
-    /* 24/10/2016
-     *      19:30:52 => added scroll()
-     *      19:59:38 => 
-     *          added support to horizontal scroll
-     *          options.to => options.y (vertical) / options.x (horizontal)
-     */
+    
     window.T.Navigation.scroll = function (options) {
         var y = {
                 initial: window.pageYOffset,
@@ -139,22 +147,19 @@
         }
     };
     
-    /* created on 27/12/2016, 00:58:55 
-     * added to Library on 26/02/2017, 18:43:25
-     * moved DynamicPageLoading() to navigation.js as module with name noRefresh() on 16/06/2017, 23:06:15
-     */
     window.T.Navigation.noRefresh = function (options) {
-        var state = {title: document.title, url: location.href, page: document.documentElement.innerHTML},
+        var state = {title: document.title, url: location.href, page: document.documentElement.outerHTML},
                 api = {
                     load: function (q) {
                         if (!q.url)
-                            loadPage(q.e.state.page);
+                            loadPage(new DOMParser().parseFromString(q.e.state.page, "text/html"));
                         else
                             window.T.load("utils", function () {
                                 window.T.Utils.ajax({
                                     event: q.e,
                                     url: q.url,
                                     method: "GET",
+                                    response: "document",
                                     onloadend: function (e) {
                                         loadPage(e.target.response, true);
                                     }
@@ -215,21 +220,25 @@
                             }
                         }
 
-                        function loadPage(response, update) {
+                        function loadPage(html, update) {
                             try {
-                                var html = new DOMParser().parseFromString(response, "text/html"),
+                                var str_html = html instanceof HTMLDocument ? html.documentElement.outerHTML : html,
                                         content = {
                                             current: document.getElementById("ajax-content"),
                                             loaded: html.getElementById("ajax-content")
                                         };
-                                content.current.className = content.loaded.className;
+                                try {
+                                    content.current.className = content.loaded.className;
+                                } catch (e) {}
+                                try {
+                                    document.documentElement.className = html.documentElement.className;
+                                } catch (e) {}
                                 content.current.innerHTML = content.loaded.innerHTML;
-                                document.documentElement.className = html.documentElement.className;
                                 document.title = html.title;
                                 loadStyles(html);
                                 loadScripts(html);
                                 if (update) {
-                                    var data = {title: document.title, url: location.href, page: response};
+                                    var data = {title: document.title, url: location.href, page: str_html};
                                     if (options.onsave)
                                         options.onsave(data);
                                     window.T.History.add(data, html.title, q.url);

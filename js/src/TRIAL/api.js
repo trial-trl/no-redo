@@ -629,7 +629,7 @@
         /* added on 15/06/2017 22:46 */
         T.load = function (jss, fn) {
             var js = [];
-            var lib = document.querySelector("script[href*=\"loadjs\"]");
+            var lib = window["loadjs"] && typeof window["loadjs"] === "function" && !!document.querySelector("script[src*=\"loadjs\"]");
             var jss_str = typeof jss === "string";
             
             if (!jss_str && !(jss.constructor === Array))
@@ -653,7 +653,7 @@
                 js.push(url);
             };
             
-            if (!(!!lib)) {
+            if (!lib) {
                 var s = document.createElement("script");
                 s.src = T.LOADJS;
                 s.onload = load.bind(this, fn);
