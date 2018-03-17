@@ -17,6 +17,12 @@
 
 "use strict";
 
+<<<<<<< HEAD
+=======
+// moved from T.js to Elements.js on 15/06/2017 22:41:06
+
+// 16/03/2018 10:57:31 => added window.T.elements.TRL_PAGINATION
+>>>>>>> 0667e22 (Version 0.2.1)
 (function (window) {
     var polyfill = {has: false, loading: false, loaded: false};
   
@@ -30,6 +36,7 @@
     window.T.elements.TRL_LOADING = 'trl-loading';
     window.T.elements.TRL_LOGIN_BUTTON = 'trl-login-button';
     window.T.elements.TRL_LOGO = 'trl-logo';
+    window.T.elements.TRL_PAGINATION = 'trl-pagination';
     window.T.elements.TRL_POPUP = 'trl-popup';
     window.T.elements.TRL_RATING = 'trl-rating';
     window.T.elements.TRL_SELECTABLE_ITEMS = 'trl-selectable-items';
@@ -61,7 +68,7 @@
   
         function register() {
             try {
-                obj = document.registerElement(tag, options);
+                window.T.elements[obj] = document.registerElement(tag, options);
             } catch (e) {}
         }
     };
@@ -73,12 +80,15 @@
         if (!is_e_str && !(elements.constructor === Array))
             throw new TypeError("(T.register) Param must be a string or array");
         if (is_e_str && elements === "all")
-            arr = [window.T.elements.TRL_BUTTON, window.T.elements.TRL_CIRCLE_PERCENTAGE, window.T.elements.TRL_EDITABLE, window.T.elements.TRL_LOADING, window.T.elements.TRL_LOGIN_BUTTON, window.T.elements.TRL_LOGO, window.T.elements.TRL_POPUP, window.T.elements.TRL_RATING, window.T.elements.TRL_SELECTABLE_ITEMS, window.T.elements.TRL_SLIDESHOW, window.T.elements.TRL_SUGGESTIONS, window.T.elements.TRL_TABS];
+            arr = [window.T.elements.TRL_BUTTON, window.T.elements.TRL_CIRCLE_PERCENTAGE, window.T.elements.TRL_EDITABLE, window.T.elements.TRL_LOADING, window.T.elements.TRL_LOGIN_BUTTON, window.T.elements.TRL_LOGO, window.T.elements.TRL_PAGINATION, window.T.elements.TRL_POPUP, window.T.elements.TRL_RATING, window.T.elements.TRL_SELECTABLE_ITEMS, window.T.elements.TRL_SLIDESHOW, window.T.elements.TRL_SUGGESTIONS, window.T.elements.TRL_TABS];
         else
             arr = is_e_str ? [elements] : elements;
         
-        for (var i = 0, t = arr.length; i < t; i++)
+        for (var i = 0, t = arr.length; i < t; i++) {
+            if (arr[i] === window.T.elements.TRL_LOADING || window.T.elements.TRL_CIRCLE_PERCENTAGE)
+                arr.push(T.CSS + "/elements/" + arr[i] + ".css");
             arr[i] = T.API + "/elements/" + arr[i] + ".js";
+        }
         window.T.load(arr, callback);
     };
 })(window);
