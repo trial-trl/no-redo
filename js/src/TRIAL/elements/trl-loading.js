@@ -23,31 +23,8 @@
     }
     window.T.elements.custom(window.T.elements.TRL_LOADING, {
         prototype: Object.create(HTMLDivElement.prototype, {
-            createdCallback: {
-                value: function () {
-                    var that = this;
-                    this.stylesheet = document.getElementById("trl-loading-style");
-                    if (!this.stylesheet) {
-                        this.style.display = "none !important";
-                        missing(function () {
-                            window.T.Utils.ajax({
-                                url: T.CSS + "/elements/trl-loading",
-                                onloadend: function (e) {
-                                    var s = document.createElement("style");
-                                    s.id = "trl-loading-style";
-                                    s.appendChild(document.createTextNode(e.target.response));
-                                    document.head.appendChild(s);
-                                    that.stylesheet = s.sheet;
-                                    that.updateStyle();
-                                    that.style.display = "";
-                                }
-                            });
-                        });
-                    }
-                }
-            },
             attributeChangedCallback: {
-                value: function (attr_name, old_value, new_value) {
+                value: function () {
                     this.updateStyle();
                 }
             },
