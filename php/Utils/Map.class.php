@@ -143,9 +143,13 @@ Database::setAuth('trial105', 'i1eDq8*5lVwHLk*!gB');
         }
         $query->where($where)->values($values);
         return Query::helper($query->run(), function ($query) {
-            $result = $query->getResult()[0];
-            $result['polygon'] = json_decode('[' . preg_replace(['/POLYGON/i', '/(\(|\))/i', '/(-[0-9]{1,2}.[0-9]{10,})\s(-[0-9]{1,2}.[0-9]{10,})/i'], ['', '', '{"lng":$1,"lat":$2}'], $result['polygon']) . ']', true);
-            return $result;
+            if ($query->existRows()) {
+              $result = $query->getResult()[0];
+              $result['polygon'] = json_decode('[' . preg_replace(['/POLYGON/i', '/(\(|\))/i', '/(-[0-9]{1,2}.[0-9]{10,})\s(-[0-9]{1,2}.[0-9]{10,})/i'], ['', '', '{"lng":$1,"lat":$2}'], $result['polygon']) . ']', true);
+              return $result;
+            } else {
+              return [];
+            }
         });
     }
     
