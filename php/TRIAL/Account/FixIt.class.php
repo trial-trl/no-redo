@@ -8,7 +8,7 @@
  * @copyright (c) 2016, TRIAL
  * @author Matheus Leonardo dos Santos Martins
  * 
- * @version 1.03NC
+ * @version 1.1
  * @package Account
  */
 
@@ -16,9 +16,6 @@ namespace NoRedo\TRIAL\Account;
 
 use \PDO, \DateTime,
         NoRedo\TRIAL\Account as TRIALAccount, NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select, NoRedo\Utils\SQL\Insert, NoRedo\Utils\Message;
-
-Database::setHost('localhost');
-Database::setAuth('root', '');
 
 class FixIt implements \JsonSerializable {
     
@@ -30,6 +27,7 @@ class FixIt implements \JsonSerializable {
     const ACCOUNT_TYPE = 'type';
     const LEVEL = 'level';
     const XP = 'experience';
+    const FRANCHISE_ID = 'franchise_id';
     const SIGNED_ON = 'register_date_time';
     
     private static $con;
@@ -39,6 +37,7 @@ class FixIt implements \JsonSerializable {
     private $type;
     private $level = 1;
     private $experience = 0;
+    private $franchise;
     private $register_date_time;
     
     private function __construct(array $copy = null) {
@@ -97,7 +96,7 @@ class FixIt implements \JsonSerializable {
      * @since 1.0
      */
     public static function get(int $id, string $type = TRIALAccount::USER)  {
-        return Query::helper((new Select(self::con()))->table($type === TRIALAccount::USER ? self::TABLE_CITIZENS : self::TABLE_GOVERNMENTS)->columns($type === TRIALAccount::USER ? [self::ID, self::USER, self::LEVEL, self::XP, '\'' . $type . '\' AS ' . self::ACCOUNT_TYPE]: [self::ID, self::USER])->where(self::USER . ' = :user')->values([':user' => $id])->fetchMode(PDO::FETCH_CLASS, self::class)->run(), function ($query) {
+        return Query::helper((new Select(self::con()))->table(($type === TRIALAccount::USER ? self::TABLE_CITIZENS : self::TABLE_GOVERNMENTS) . ' AS a')->columns($type === TRIALAccount::USER ? ['a.' . self::ID, 'a.' . self::USER, 'a.' . self::LEVEL, 'a.' . self::XP, 'c.place_id AS ' . self::FRANCHISE_ID, '\'' . $type . '\' AS ' . self::ACCOUNT_TYPE]: ['a.' . self::ID, 'a.' . self::USER])->leftJoin(['cities AS c ON a.franchise_owner = a.id'])->where('a.' . self::USER . ' = :user')->values([':user' => $id])->fetchMode(PDO::FETCH_CLASS, self::class)->run(), function ($query) {
             if ($query->existRows()) {
                 return $query->getResult()[0];
             }
@@ -147,6 +146,22 @@ class FixIt implements \JsonSerializable {
      */
     public function getXP() : int {
         return $this->experience;
+    }
+    
+    /**
+     * @return int Citizen franchise's Place ID
+     * @since 1.1
+     */
+    public function getFranchiseId() {
+        return $this->franchise;
+    }
+    
+    /**
+     * @return bool if Citizen has a franchise
+     * @since 1.1
+     */
+    public function hasFranchise(): bool {
+        return is_string($this->getFranchiseId());
     }
     
     /**

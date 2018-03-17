@@ -202,6 +202,16 @@
                     return this.getAttribute("trl-height") || "auto";
                 }
             },
+            fluid: {
+                set: function (b) {
+                    if (typeof b !== "boolean")
+                        throw new TypeError("trl-popup width argument must be an boolean value");
+                    this.setAttribute("trl-fluid", b);
+                },
+                get: function () {
+                    return this.hasAttribute("trl-fluid") ? this.getAttribute("trl-fluid") === "true" : true;
+                }
+            },
             keep: {
                 set: function (b) {
                     if (typeof b !== "boolean")
@@ -251,13 +261,12 @@
                             };
                     }
 
-                    configureControllers.call(this);
-
                     if (this.freeze)
                         document.documentElement.style.overflow = "hidden";
                     
                     window.T.load("design", function () {
                         document.body.appendChild(that);
+                        configureControllers.call(that);
                         that.style.display = "block";
                         calculateElements.call(that);
                         that.dispatchEvent(new CustomEvent("openstart"));
@@ -267,8 +276,10 @@
                                 return window.T.Animation.Easing.easeInOutQuart(p);
                             },
                             step: function (delta, t) {
-                                if (that.getAlignment() & that.ALIGNMENT_FIT_SCREEN) {
+                                if (that.getAlignment() & that.ALIGNMENT_FIT_SCREEN || !(that.getAlignment() & that.ALIGNMENT_CENTER_VERTICAL)) {
                                     popup_content.style.top = top - (top * delta) + "px";
+                                }
+                                if (that.getAlignment() & that.ALIGNMENT_FIT_SCREEN || !(that.getAlignment() & that.ALIGNMENT_CENTER_HORIZONTAL)) {
                                     popup_content.style.left = left - (left * delta) + "px";
                                 }
                                 if (that.getAlignment() & that.ALIGNMENT_CENTER_HORIZONTAL || center_container) {
@@ -279,8 +290,8 @@
                                         popup_content.style.marginLeft = "calc(-" + (size * delta) + "px + " + real_container_left + "%)";
                                     } else {
                                         var size = (that.sizes.width.size / 2) + center_horizontal_padding;
-                                        popup_content.style.left = "calc(" + (50 * delta) + "% + " + (left - (left * delta)) + "px)";
-                                        popup_content.style.marginLeft = "-" + (size * delta) + "px";
+                                        popup_content.style.left = "calc(" + (50 * delta) + "% + " + (left - (left * delta)) + that.sizes.width.unit + ")";
+                                        popup_content.style.marginLeft = "-" + (size * delta) + that.sizes.width.unit;
                                     }
                                 }
                                 if (that.getAlignment() & that.ALIGNMENT_CENTER_VERTICAL || center_container === true) {
@@ -303,8 +314,10 @@
                                     container.style.opacity = delta;
                                 }
                                 if (!(that.getAlignment() & that.ALIGNMENT_FIT_SCREEN)) {
-                                    popup_content.style.width = (that.sizes.width.size * delta) + that.sizes.width.unit;
-                                    popup_content.style.height = (that.sizes.height.size * delta) + that.sizes.height.unit;
+                                    if (that.width !== "auto" || that.fluid)
+                                        popup_content.style.width = that.width === "auto" ? "auto" : (that.sizes.width.size * delta) + that.sizes.width.unit;
+                                    if (that.height !== "auto" || that.fluid)
+                                        popup_content.style.height = that.height === "auto" ? "auto" : (that.sizes.height.size * delta) + that.sizes.height.unit;
                                 } else {
                                     popup_content.style.width = (100 * delta) + "%";
                                     popup_content.style.height = (100 * delta) + "%";
@@ -378,11 +391,11 @@
                     }
 
                     function calculateStyle(element, property) {
-                        var size, literal_size = window.getComputedStyle(element, null).getPropertyValue(property);
-                        if (literal_size !== "auto" && literal_size !== 0 && literal_size !== "0px" && literal_size !== "0%") {
-                            var is_px = literal_size.indexOf("px") !== -1;
+                        var size, actual_size = window.getComputedStyle(element, null).getPropertyValue(property);
+                        if (actual_size !== "auto" && actual_size !== 0 && actual_size !== "0px" && actual_size !== "0%") {
+                            var is_px = actual_size.indexOf("px") !== -1;
                             size = {
-                                size: is_px ? +(literal_size.replace("px", "")) : +(literal_size.replace("%", "")),
+                                size: is_px ? +(actual_size.replace("px", "")) : +(actual_size.replace("%", "")),
                                 unit: is_px ? "px" : "%"
                             };
                         } else {

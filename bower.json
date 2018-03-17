@@ -1,7 +1,7 @@
 {
   "name": "trl-no-redo",
   "description": "TRIAL's library of common front-end files used in all products",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "ignore": [
     "**/*.txt",
     "bower_components/",
