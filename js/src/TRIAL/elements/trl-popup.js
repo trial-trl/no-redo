@@ -271,6 +271,7 @@
                         calculateElements.call(that);
                         that.dispatchEvent(new CustomEvent("openstart"));
                         window.T.Animation.start({
+                            animation: "inverval",
                             duration: 200,
                             delta: function (p) {
                                 return window.T.Animation.Easing.easeInOutQuart(p);

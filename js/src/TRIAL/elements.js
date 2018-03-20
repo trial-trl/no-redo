@@ -85,7 +85,7 @@
             arr = is_e_str ? [elements] : elements;
         
         for (var i = 0, t = arr.length; i < t; i++) {
-            if (arr[i] === window.T.elements.TRL_LOADING || window.T.elements.TRL_CIRCLE_PERCENTAGE)
+            if (arr[i] === window.T.elements.TRL_LOADING || arr[i] === window.T.elements.TRL_CIRCLE_PERCENTAGE)
                 arr.push(T.CSS + "/elements/" + arr[i] + ".css");
             arr[i] = T.API + "/elements/" + arr[i] + ".js";
         }

@@ -96,7 +96,7 @@ class FixIt implements \JsonSerializable {
      * @since 1.0
      */
     public static function get(int $id, string $type = TRIALAccount::USER)  {
-        return Query::helper((new Select(self::con()))->table(($type === TRIALAccount::USER ? self::TABLE_CITIZENS : self::TABLE_GOVERNMENTS) . ' AS a')->columns($type === TRIALAccount::USER ? ['a.' . self::ID, 'a.' . self::USER, 'a.' . self::LEVEL, 'a.' . self::XP, 'c.place_id AS ' . self::FRANCHISE_ID, '\'' . $type . '\' AS ' . self::ACCOUNT_TYPE]: ['a.' . self::ID, 'a.' . self::USER])->leftJoin(['cities AS c ON a.franchise_owner = a.id'])->where('a.' . self::USER . ' = :user')->values([':user' => $id])->fetchMode(PDO::FETCH_CLASS, self::class)->run(), function ($query) {
+        return Query::helper((new Select(self::con()))->table(($type === TRIALAccount::USER ? self::TABLE_CITIZENS : self::TABLE_GOVERNMENTS) . ' AS a')->columns($type === TRIALAccount::USER ? ['a.' . self::ID, 'a.' . self::USER, 'a.' . self::LEVEL, 'a.' . self::XP, 'c.place_id AS ' . self::FRANCHISE_ID, '\'' . $type . '\' AS ' . self::ACCOUNT_TYPE]: ['a.' . self::ID, 'a.' . self::USER])->leftJoin(['cities AS c ON c.franchise_owner = a.id'])->where('a.' . self::USER . ' = :user')->values([':user' => $id])->fetchMode(PDO::FETCH_CLASS, self::class)->run(), function ($query) {
             if ($query->existRows()) {
                 return $query->getResult()[0];
             }

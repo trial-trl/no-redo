@@ -30,10 +30,6 @@
  */
 (function (window) {
     window.T.Navigation = window.T.Navigation || {};
-<<<<<<< HEAD
-=======
-    
->>>>>>> 0667e22 (Version 0.2.1)
     window.T.Navigation.scroll = function (options) {
         var y = {
                 initial: window.pageYOffset,
@@ -151,127 +147,135 @@
     };
     
     window.T.Navigation.noRefresh = function (options) {
-        var state = {title: document.title, url: location.href, page: document.documentElement.outerHTML},
-                api = {
-                    load: function (q) {
-                        if (!q.url)
-                            loadPage(new DOMParser().parseFromString(q.e.state.page, "text/html"));
-                        else
-                            window.T.load("utils", function () {
-                                window.T.Utils.ajax({
-                                    event: q.e,
-                                    url: q.url,
-                                    method: "GET",
-                                    response: "document",
-                                    onloadend: function (e) {
-                                        loadPage(e.target.response, true);
-                                    }
-                                });
-                            });
-
-                        function loadStyles(html) {
-                            var styles = {
-                                    current: [],
-                                    loaded: html.getElementsByClassName("ajax-style")
-                                };
-                            for (var i = 0, t = document.styleSheets.length; i < t; i++)
-                                styles.current.push(document.styleSheets[i].href);
-                            var d = document.getElementsByClassName("ajax-style");
-                            for (i = 0, t = d.length; i < t; i++)
-                                document.head.removeChild(d[i]);
-                            for (i = 0, t = styles.loaded.length; i < t; i++) {
-                                if (styles.current.indexOf(styles.loaded[i].href) === -1) {
-                                    if (styles.loaded[i] instanceof HTMLStyleElement) {
-                                        var style = document.createElement("style");
-                                        style.innerHTML = styles.loaded[i].innerHTML;
-                                    } else {
-                                        var style = document.createElement("link");
-                                        style.rel = "stylesheet";
-                                        style.type = "text/css";
-                                        style.href = styles.loaded[i].href;
-                                    }
-                                    style.classList.add("ajax-style");
-                                    document.head.appendChild(style);
-                                }
-                            }
+        var api = {};
+        api.load = (function (api) {
+          
+            function loadStyles(html) {
+                var styles = {
+                        current: [],
+                        loaded: html.getElementsByClassName("ajax-style")
+                    };
+                for (var i = 0, t = document.styleSheets.length; i < t; i++)
+                    styles.current.push(document.styleSheets[i].href);
+                var d = document.getElementsByClassName("ajax-style");
+                for (i = 0, t = d.length; i < t; i++)
+                    document.head.removeChild(d[i]);
+                for (i = 0, t = styles.loaded.length; i < t; i++) {
+                    if (styles.current.indexOf(styles.loaded[i].href) === -1) {
+                        if (styles.loaded[i] instanceof HTMLStyleElement) {
+                            var style = document.createElement("style");
+                            style.innerHTML = styles.loaded[i].innerHTML;
+                        } else {
+                            var style = document.createElement("link");
+                            style.rel = "stylesheet";
+                            style.type = "text/css";
+                            style.href = styles.loaded[i].href;
                         }
-
-                        function loadScripts(html) {
-                            var scripts = {
-                                    current: [],
-                                    loaded: html.getElementsByClassName("ajax-script")
-                                };
-                            for (var i = 0, t = document.scripts.length; i < t; i++) {
-                                if (!document.scripts[i])
-                                    continue;
-                                if (document.scripts[i].classList.contains("ajax-script")) {
-                                    document.body.removeChild(document.scripts[i]);
-                                    continue;
-                                }
-                                if (document.scripts[i].src !== undefined && document.scripts[i].src !== null && document.scripts[i].src !== "")
-                                    scripts.current.push(document.scripts[i].src);
-                            }
-                            for (var i = 0, t = scripts.loaded.length; i < t; i++) {
-                                if (scripts.current.indexOf(scripts.loaded[i].src) === -1) {
-                                    var s = document.createElement("script");
-                                    if (scripts.loaded[i].src)
-                                        s.src = scripts.loaded[i].src;
-                                    s.innerHTML = scripts.loaded[i].innerHTML;
-                                    s.classList.add("ajax-script");
-                                    document.body.appendChild(s);
-                                }
-                            }
-                        }
-
-                        function loadPage(html, update) {
-                            try {
-                                var str_html = html instanceof HTMLDocument ? html.documentElement.outerHTML : html,
-                                        content = {
-                                            current: document.getElementById("ajax-content"),
-                                            loaded: html.getElementById("ajax-content")
-                                        };
-                                try {
-                                    content.current.className = content.loaded.className;
-                                } catch (e) {}
-                                try {
-                                    document.documentElement.className = html.documentElement.className;
-                                } catch (e) {}
-                                content.current.innerHTML = content.loaded.innerHTML;
-                                document.title = html.title;
-                                loadStyles(html);
-                                loadScripts(html);
-                                if (update) {
-                                    var data = {title: document.title, url: location.href, page: str_html};
-                                    if (options.onsave)
-                                        options.onsave(data);
-                                    window.T.History.add(data, html.title, q.url);
-                                }
-                                if (options.onloaded) {
-                                    var custom = options;
-                                    custom.page = html;
-                                    options.onloaded(custom);
-                                }
-                            } catch (e) {
-                                console.error(e);
-                                if (options.onerror)
-                                    options.onerror(e);
-                                if (options.onloaded) {
-                                    var custom = options;
-                                    custom.error = e;
-                                    options.onloaded(custom);
-                                }
-                            }
-                        }
+                        style.classList.add("ajax-style");
+                        document.head.appendChild(style);
                     }
-                };
+                }
+            }
+
+            function loadScripts(html) {
+                var scripts = {
+                        current: [],
+                        loaded: html.getElementsByClassName("ajax-script")
+                    };
+                for (var i = 0, t = document.scripts.length; i < t; i++) {
+                    if (!document.scripts[i])
+                        continue;
+                    if (document.scripts[i].classList.contains("ajax-script")) {
+                        document.body.removeChild(document.scripts[i]);
+                        continue;
+                    }
+                    if (document.scripts[i].src !== undefined && document.scripts[i].src !== null && document.scripts[i].src !== "")
+                        scripts.current.push(document.scripts[i].src);
+                }
+                for (var i = 0, t = scripts.loaded.length; i < t; i++) {
+                    if (scripts.current.indexOf(scripts.loaded[i].src) === -1) {
+                        var s = document.createElement("script");
+                        if (scripts.loaded[i].src)
+                            s.src = scripts.loaded[i].src;
+                        s.innerHTML = scripts.loaded[i].innerHTML;
+                        s.classList.add("ajax-script");
+                        document.body.appendChild(s);
+                    }
+                }
+            }
+
+            function loadPage(html, update, url) {
+                try {
+                    var str_html = html instanceof HTMLDocument ? html.documentElement.outerHTML : html,
+                            content = {
+                                current: document.getElementById("ajax-content"),
+                                loaded: html.getElementById("ajax-content")
+                            };
+                    content.current.className = content.loaded.className;
+                    document.documentElement.className = html.documentElement.className;
+                    loadStyles(html);
+                    content.current.innerHTML = content.loaded.innerHTML;
+                    document.title = html.title;
+                    loadScripts(html);
+                    if (update) {
+                        var data = {title: document.title, url: location.href, page: str_html};
+                        if (options.onsave)
+                            options.onsave(data);
+                        window.T.History.add(data, html.title, url);
+                        api.currentState = data;
+                    }
+                    if (options.onloaded) {
+                        var custom = options;
+                        custom.page = html;
+                        options.onloaded(custom);
+                    }
+                } catch (e) {
+                    console.error(e);
+                    if (options.onerror)
+                        options.onerror(e);
+                    if (options.onloaded) {
+                        var custom = options;
+                        custom.error = e;
+                        options.onloaded(custom);
+                    }
+                }
+            }
+            
+            return function (q) {
+                if (typeof q.url === "undefined") {
+                    if (q.e.state && q.e.state.page)
+                        loadPage(new DOMParser().parseFromString(q.e.state.page, "text/html"));
+                } else
+                    window.T.load("utils", function () {
+                        window.T.Utils.ajax({
+                            event: q.e,
+                            url: q.url,
+                            method: "GET",
+                            response: "document",
+                            onloadend: function (e) {
+                                loadPage(e.target.response, true, q.url);
+                            }
+                        });
+                    });
+            };
+        })(api);
+        
+        var prestate = {
+          title: document.title,
+          url: location.href,
+          page: document.documentElement.outerHTML
+        };
         if (options.onsave)
-            options.onsave(state);
+            options.onsave(prestate, true);
         window.T.load("history", function () {
-            window.T.History.replace(state);
+            window.T.History.replace(prestate);
             window.addEventListener("popstate", function (e) {
-                api.load({e: e});
+                if (typeof options.onnavigate === "undefined" || (typeof options.onnavigate === "function" && options.onnavigate.call(api, e)))
+                    api.load({e: e});
+                api.currentState = e.state;
             });
         });
+        
         return api;
     };
 })(window);

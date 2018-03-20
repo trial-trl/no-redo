@@ -17,15 +17,6 @@
 (function (window) {
     window.T = window.T || {};
     window.T.Animation = {
-<<<<<<< HEAD
-        /*
-         * Easing Functions - inspired from http://gizma.com/easing/
-         * only considering the t value for the range [0, 1] => [0, 1]
-         * 
-         * by: gre / easing.js, GitHub
-         */
-=======
->>>>>>> 0667e22 (Version 0.2.1)
         Easing: {
             // no easing, no acceleration
             linear: function (t) { return t; },
@@ -65,20 +56,6 @@
                   start = timestamp;
                 var timePassed = timestamp - start;
                 var progress = timePassed / options.duration;
-<<<<<<< HEAD
-                if (progress > 1) {
-                    progress = 1;
-                }
-                var delta = options.delta(progress);
-                options.step(delta, progress);
-                if (progress === 1) {
-                    if (options.onfinish) {
-                        options.onfinish();
-                    }
-                    clearInterval(animation);
-                }
-            }, options.delay || 10);
-=======
                 options.step(options.delta ? options.delta(progress) : progress, progress);
                 if (timePassed < options.duration)
                   window.requestAnimationFrame(step);
@@ -102,7 +79,6 @@
                   }
               }, options.delay || 10);
             }
->>>>>>> 0667e22 (Version 0.2.1)
         }
     };
 })(window);
