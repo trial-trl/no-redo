@@ -29,7 +29,7 @@
  * 
  * 12/01/2018, 01:48:40 => updated document.registerElement() code to newer window.T.elements.custom() code
  * 
- * 17/03/2018, 19:10:44 => removed createdCallback(). Now trl-loading.css is bundled with trl-loading.js when loaded by loadjs()
+ * 17/03/2018, 19:10:44 => createdCallback(): now trl-loading.css is bundled with trl-loading.js when loaded by loadjs()
  */
 (function (window) {
     function missing(x) {
@@ -40,6 +40,11 @@
     }
     window.T.elements.custom(window.T.elements.TRL_LOADING, {
         prototype: Object.create(HTMLDivElement.prototype, {
+            createdCallback: {
+                value: function () {
+                    this.updateStyle();
+                }
+            },
             attributeChangedCallback: {
                 value: function () {
                     this.updateStyle();
@@ -92,6 +97,12 @@
                         }
                     };
                     missing(function () {
+                        if (!that.stylesheet)
+                            for (var i in document.styleSheets)
+                                if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf("trl-loading.css")) {
+                                    that.stylesheet = document.styleSheets[i];
+                                    break;
+                                }
                         window.T(that.stylesheet).style(css_changes);
                     });
                 }
