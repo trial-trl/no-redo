@@ -1,17 +1,20 @@
 <?php
 
-/* 
- * Description of Map
- * 
- * Last edition: 18/06/2016 22h08min
+/*
+ * (c) 2016 TRIAL.
+ * Created on 18/06/2016, 22:08.
  *
- * Created on ??/??/2016
- * @author Matheus Leonardo dos Santos Martins
- * @copyright (c) 2016, TRIAL
- * 
- * @package TRIAL
- * 
- * @version 1.2
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 namespace NoRedo\Utils;
@@ -20,6 +23,15 @@ require_once __DIR__ . '/../autoload.inc.php';
 
 use NoRedo\Utils\Database, NoRedo\Utils\SQL\Query, NoRedo\Utils\SQL\Select;
 
+/**
+ * Description of Map
+ *
+ * @copyright (c) 2016, TRIAL
+ * @author MLSM<mlsm@trialent.com>
+ * 
+ * @version 1.2
+ * @package \NoRedo\Utils
+ */
 class Map {
     
     private static $con;
@@ -105,8 +117,8 @@ class Map {
         $where = '';
         $values = [];
         if (is_string($county)) {
-            $where .= 'c.county = :county';
-            $values += [':county' => $county];
+            $where .= 'CONVERT(CAST(c.county AS BINARY) USING utf8) LIKE :county';
+            $values += [':county' => '%'. $county . '%'];
             if (!empty($state) && is_string($state)) {
                 $where .= ' AND s.abbr = :abbr';
                 $values += [':abbr' => $state];
