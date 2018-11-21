@@ -21,39 +21,49 @@ namespace NoRedo\Database\Proxy;
 
 /**
  *
- * @author Matheus Leonardo dos Santos Martins <mlsm@trialent.com>
+ * @copyright (c) 2018, TRIAL
+ * @author MLSM<mlsm@trialent.com>
+ * 
+ * @version 1.01
  * @package \NoRedo\Database\Proxy
  */
 interface IProxy {
   
   /**
    * 
+   * @param \NoRedo\Database\Model|int $model
+   * 
+   * @since 1.0
+   * @since 1.01 signature changed
    */
-  public function get(int $model_id);
+  public function get($model);
   
   /**
    * 
-   * @param \NoRedo\Database\Model $model
+   * @param \NoRedo\Database\Model|array $model
+   * 
+   * @since 1.0
+   * @since 1.01 signature changed
    */
-  public function insert(\NoRedo\Database\Model $model): int;
+  public function insert($model): int;
   
   /**
    * 
-   * @param int   $model_id
+   * @param \NoRedo\Database\Model|int   $model
    * @param array $changes
+   * 
+   * @since 1.0
+   * @since 1.01 signature changed
    */
-  public function edit(int $model_id, array $changes): bool;
+  public function edit($model, array $changes): bool;
   
   /**
    * 
-   * @param int $model_id
-   */
-  public function deleteById(int $model_id): bool;
-  
-  /**
+   * @param \NoRedo\Database\Model|int $model
    * 
-   * @param \NoRedo\Database\Model $model
+   * @since 1.0
+   * @since 1.01 signature changed
    */
-  public function delete(\NoRedo\Database\Model $model);
+  public function delete($model);
   
 }
