@@ -22,15 +22,14 @@ namespace NoRedo\Database;
 use NoRedo\Database\Model;
 
 /**
- * Description of Proxy
  *
  * @copyright (c) 2018, TRIAL
- * @author Matheus Leonardo dos Santos Martins
+ * @author MLSM<mlsm@trialent.com>
  * 
- * @version 1.0
+ * @version 1.01
  * @package \NoRedo\Database
  */
-class Proxy implements Proxy\IProxy {
+abstract class Proxy implements Proxy\IProxy {
   
   const ID = 'id';
   
@@ -86,22 +85,35 @@ class Proxy implements Proxy\IProxy {
     return $this->columns;
   }
 
-  public function get(int $model_id) {
-    
+  public function get($model) {
+    $model_id = $this->getIdentifier($model);
+    $dsql = $this->getConnection()->dsql();
+    return $this->getConnection()->atomic(function () use ($dsql, $model_id) {
+      $data = $dsql->table($this->getTable())->field(array_values($this->getColumns()))->where(self::ID, $model_id)->getRow();
+      if (!empty($data)) {
+        return static::fetchDataIntoModel($data);
+      }
+      return null;
+    });
   }
 
-  public function edit(int $model_id, array $changes): bool {
+  public function edit($model, array $changes): bool {
+    $model_id = $this->getIdentifier($model);
     $q = $this->getConnection()->dsql()->table($this->getTable());
     foreach ($changes as $k => $v) {
       $q->set($k, $v);
     }
-    return $q->where(Model::ID, $model_id)->update();
+    $update = $q->where(self::ID, $model_id)->update();
+    return true;//$update->rowCount() >= 1;
   }
 
-  public function insert(Model $model): int {
+  public function insert($model): int {
+    if (!($model instanceof Model) && !is_array($model)) {
+      throw new \InvalidArgumentException;
+    }
     $q = $this->getConnection()->dsql()->table($this->getTable());
     return $this->getConnection()->atomic(function () use ($q, $model) {
-      $put = $model->toArray();
+      $put = $model instanceof Model ? $model->toDatabase() : $model;
       $unknown_columns = array_diff(
               array_keys($put), 
               array_values($this->getColumns())
@@ -117,23 +129,42 @@ class Proxy implements Proxy\IProxy {
     });
   }
   
-  public function deleteById(int $model_id): bool {
+  /**
+   * 
+   * @param Model|int $model
+   * @return bool
+   */
+  public function delete($model): bool {
+    $model_id = $this->getIdentifier($model);
     if ($model_id > 0) {
       return $this->getConnection()->atomic(function () use ($model_id) {
-        $deleted = $this->getConnection()->dsql()->table($this->getTable())->where(Model::ID, $model_id)->delete();
+        $deleted = $this->getConnection()->dsql()->table($this->getTable())->where(self::ID, $model_id)->delete();
         return $deleted->rowCount() >= 1;
       });
     }
     return false;
   }
-
+  
   /**
    * 
-   * @param Model $model
-   * @return bool|int
+   * @throws \InvalidArgumentException
+   * 
+   * Created on 06/06/2018 15:48:08
    */
-  public function delete(Model $model) {
-    return 1;
+  protected function getIdentifier($model): int {
+    $is_obj = $model instanceof Model;
+    $is_int = is_int($model) || is_numeric($model);
+    if (!$is_obj && !$is_int) {
+      throw new \InvalidArgumentException;
+    }
+    return (int) ($is_obj ? $model->getId() : $model);
   }
+  
+  /**
+   * 
+   * @param array $data
+   * @since 1.01
+   */
+  abstract public static function fetchDataIntoModel(array $data): Model;
 
 }
