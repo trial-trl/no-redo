@@ -19,18 +19,18 @@
 
 namespace NoRedo\Database;
 
-use NoRedo\Database\Proxy;
+use \DateTime,
+    NoRedo\Database\Proxy;
 
 /**
- * Description of Model
  *
  * @copyright (c) 2018, TRIAL
- * @author Matheus Leonardo dos Santos Martins
+ * @author MLSM<mlsm@trialent.com>
  * 
  * @version 1.0
  * @package Model
  */
-abstract class Model {
+abstract class Model implements \JsonSerializable {
   
   /** @var int */
   private $id;
@@ -200,6 +200,26 @@ abstract class Model {
   }
   
   /**
+   * 
+   * @param DateTime|string $obj
+   * @return string
+   * @throws \InvalidArgumentException
+   */
+  protected static function parseDate(&$obj): string {
+    $is_datetime = $obj instanceof DateTime;
+    $is_str      = is_string($obj);
+    if ($is_str) {
+      $str = $obj;
+      $obj = DateTime::createFromFormat('Y-m-d H:i:s', $obj);
+    } else if ($is_datetime) {
+      $str = $obj->format('Y-m-d H:i:s');
+    } else {
+      throw new \InvalidArgumentException();
+    }
+    return $str;
+  }
+  
+  /**
    * Returns this model as array
    * <p>
    * Models that are extending {@link DatabaseModel} needs to override this 
@@ -207,15 +227,62 @@ abstract class Model {
    * </p>
    * <p>
    * public function toArray(): array {<br />
-   * &nbsp;&nbsp;&nbsp;&nbsp;return array_merge(<i>data to return</i>, parent::toArray());<br />
+   * &nbsp;&nbsp;&nbsp;&nbsp;return <i>[data to return]</i>;<br />
    * }
    * </p>
    * 
    * @return array Model as array
    */
-  public function toArray(): array {
-    return [Proxy::ID => $this->getId()];
+  public final function toArray(): array {
+    return array_merge([Proxy::ID => $this->getId()], $this->__toArray());
   }
+  
+  /**
+   * Returns this model as database-compatible data
+   * <p>
+   * Models that are extending {@link DatabaseModel} needs to override this 
+   * method to support return it's database-compatible data as in example below:
+   * </p>
+   * <p>
+   * public function toDatabase(): array {<br />
+   * &nbsp;&nbsp;&nbsp;&nbsp;return <i>[data to return]</i>;<br />
+   * }
+   * </p>
+   * 
+   * @return array Model as array
+   */
+  public final function toDatabase(): array {
+    $model = $this->toArray();
+    array_walk($model, function (&$v, $k) use (&$model) {
+      $this->__filterToDatabase($v, $k, $model);
+      if ($v === '') {
+        $v = null;
+      } else if ($v === null) {
+        unset($model[$k]);
+      }
+    });
+    return $model;
+  }
+  
+  public function jsonSerialize() {
+    return $this->toArray();
+  }
+  
+  protected function __toArray(): array {
+    return [];
+  }
+  
+  /**
+   * Callback function for filtering data before using it to manipulate database.
+   * 
+   * <p>To <b>unset</b> some entry from array, set $value to null.</p>
+   * <p>To keep some entry, but with <b>NULL</b> value, set $value to empty string.</p>
+   * 
+   * @param mixed $value Value of array entry
+   * @param mixed $key   Key of array entry
+   * @param array $arr   Entries
+   */
+  protected function __filterToDatabase(&$value, $key, array &$arr) {}
   
   abstract protected function revertColumn(string $column, $old);
   

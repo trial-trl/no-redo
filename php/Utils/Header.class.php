@@ -23,7 +23,7 @@ namespace NoRedo\Utils;
  * Description of Header
  *
  * @copyright (c) 2018, TRIAL
- * @author Matheus Leonardo dos Santos Martins
+ * @author MLSM<mlsm@trialent.com>
  * 
  * @version 1.0
  * @package \NoRedo\Utils
