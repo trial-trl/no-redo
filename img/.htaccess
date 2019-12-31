@@ -1,4 +1,6 @@
 Options -Indexes
 RewriteEngine On
 
+RewriteRule ^group-pattern-photo$ TRIAL/trl_pattern_group_photo_bg.svg [NC,L]
+RewriteRule ^pattern-photo$ TRIAL/trl_pattern_photo_bg.svg [NC,L]
 RewriteRule ^transparent$ dot.gif [NC,L]
