@@ -89,15 +89,11 @@ function url_exists(string $url): bool {
  * @return array
  */
 function get_user_agent(): array {
-  $ch = curl_init('https://helloacm.com/api/parse-user-agent?s=' . urlencode($_SERVER['HTTP_USER_AGENT']));
-  curl_setopt($ch, CURLOPT_POST, false);
+  $ch = curl_init('https://helloacm.com/api/parse-user-agent');
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   $agent = json_decode(curl_exec($ch), true);
   curl_close($ch);
-  return is_array($agent) ? $agent : [];
+  return $agent;
 }
 
 /**
