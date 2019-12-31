@@ -17,33 +17,29 @@
 
 'use strict';
 
-window.T = (function (T) {
+window.T = ( ( T ) => {
   
-  T.History = {
-    
-    add: function (state, title, url) {
-      if (history.pushState) {
-        try {
-          history.pushState(state, title, url);
-          document.title = title;
-        } catch (e) {
-          console.error(e);
+    T.History = {
+
+        add( state, title, url ) {
+            if ( history.pushState ) {
+                history.pushState( state, title, url );
+                document.title = title;
+            } else {
+                location.assign( url );
+            }
+        },
+
+        replace( state, title, url ) {
+            try {
+                history.replaceState( state, title || null, url || null );
+            } catch (e) {}
         }
-      } else {
-        location.assign(url);
-      }
-    },
-    
-    replace: function (state, title, url) {
-      try {
-        history.replaceState(state, title || null, url || null);
-      } catch (e) {}
-    }
-    
-  };
+
+    };
+
+    return T;
   
-  return T;
-  
-})(window.T || {});
+} )( window.T || {} );
     
-window.dispatchEvent(new CustomEvent('T.History.loaded'));
+window.dispatchEvent( new CustomEvent( 'T.History.loaded' ) );

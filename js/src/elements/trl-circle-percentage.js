@@ -14,7 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-(function (window) {
+
+'use strict';
+
+( ( T ) => {
     /*
      * TRIAL Circle Percentage
      * Added on: 18/08/2016, 13:38:31
@@ -22,46 +25,59 @@
      * Modification of CSS Script "Pure CSS Circular Percentage Bar"
      * in http://www.cssscript.com/pure-css-circular-percentage-bar/
      */
-    window.T.elements.custom(window.T.elements.TRL_CIRCLE_PERCENTAGE, {
-        prototype: Object.create(HTMLDivElement.prototype, {
-            createdCallback: {
-                value: function () {
-                    var circle = this;
-                    this.stylesheet = document.getElementById("trl-circle-percentage-style");
-                    if (!this.stylesheet) {
-                        var s = document.createElement("link");
-                        s.id = "trl-circle-percentage-style";
-                        s.rel = "stylesheet";
-                        s.type = "text/css";
-                        s.href = T.CSS + "/elements/trl-circle-percentage";
-                        document.head.appendChild(s);
-                    }
-                    this.percentage = document.createElement("span");
-                    this.slice = document.createElement("div");
-                    this.bar = document.createElement("div");
-                    this.fill = document.createElement("div");
-
-                    this.bar.classList.add("bar");
-                    this.fill.classList.add("fill");
-
-                    this.slice.classList.add("slice");
-                    this.slice.appendChild(this.bar);
-                    this.slice.appendChild(this.fill);
-
-                    this.percentage.innerHTML = this.getAttribute("trl-percentage") + "%";
-                    circle.appendChild(this.percentage);
-                    circle.appendChild(this.slice);
-                }
-            },
-            attributeChangedCallback: {
-                value: function (attr_name, old_value, new_value) {
-                    switch (attr_name) {
-                        case "trl-percentage":
-                            this.percentage.innerHTML = new_value + "%";
-                            break;
-                    }
-                }
+    T.elements.custom( T.elements.TRL_CIRCLE_PERCENTAGE, class extends HTMLElement {
+        
+        constructor() {
+            super();
+        }
+        
+        connectedCallback() {
+            var circle = this;
+            this.stylesheet = document.getElementById("trl-circle-percentage-style");
+            if (!this.stylesheet) {
+                var s = document.createElement("link");
+                s.id = "trl-circle-percentage-style";
+                s.rel = "stylesheet";
+                s.type = "text/css";
+                s.href = T.CSS + "/elements/trl-circle-percentage";
+                document.head.appendChild(s);
             }
-        })
-    }, window.T.elements.CirclePercentage);
-})(window);
+            this.percentage_el = document.createElement("span");
+            this.slice = document.createElement("div");
+            this.bar = document.createElement("div");
+            this.fill = document.createElement("div");
+
+            this.bar.classList.add("bar");
+            this.fill.classList.add("fill");
+
+            this.slice.classList.add("slice");
+            this.slice.appendChild(this.bar);
+            this.slice.appendChild(this.fill);
+
+            this.percentage_el.innerHTML = this.percentage + '%';
+            circle.appendChild(this.percentage_el);
+            circle.appendChild(this.slice);
+        }
+        
+        static get observedAttributes() {
+            return [ 'trl-percentage' ];
+        }
+        
+        attributeChangedCallback( name, oldValue, newValue ) {
+            if ( name === 'trl-percentage' && this.percentage_el ) {
+                this.percentage_el.innerHTML = newValue + "%";
+            }
+        }
+        
+        set percentage( percentage ) {
+            this.setAttribute( 'trl-percentage', percentage || '0' );
+        }
+        
+        get percentage() {
+            return this.getAttribute( 'trl-percentage' ) || '0';
+        }
+    }, 'CirclePercentage' );
+
+    window.dispatchEvent( new CustomEvent( 'T.elements.CirclePercentage.loaded' ) );
+  
+} )( window.T || {} );
