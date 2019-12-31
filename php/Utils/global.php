@@ -41,9 +41,9 @@ function get_header(string $n, string $d = ''): Header {
  */
 /* Created on 27/09/2018 13:44:13 */
 function get_ip(): string {
-  $client  = $_SERVER['HTTP_CLIENT_IP'];
-  $forward = $_SERVER['HTTP_X_FORWARDED_FOR'];
-  $remote  = $_SERVER['REMOTE_ADDR'];
+  $client  = isset($_SERVER['HTTP_CLIENT_IP']) ? $_SERVER['HTTP_CLIENT_IP'] : '';
+  $forward = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : '';
+  $remote  = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
   return filter_var($client, FILTER_VALIDATE_IP) 
           ? $client
           : (filter_var($forward, FILTER_VALIDATE_IP)
@@ -89,11 +89,15 @@ function url_exists(string $url): bool {
  * @return array
  */
 function get_user_agent(): array {
-  $ch = curl_init('https://helloacm.com/api/parse-user-agent');
+  $ch = curl_init('https://helloacm.com/api/parse-user-agent?s=' . urlencode($_SERVER['HTTP_USER_AGENT']));
+  curl_setopt($ch, CURLOPT_POST, false);
   curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+  curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+  curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
   $agent = json_decode(curl_exec($ch), true);
   curl_close($ch);
-  return $agent;
+  return is_array($agent) ? $agent : [];
 }
 
 /**
