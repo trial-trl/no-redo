@@ -19,100 +19,90 @@
 
 'use strict';
 
-(function (T) {
+( ( T ) => {
   
-  T.elements.custom(T.elements.TRL_SUGGESTIONS, {
-    prototype: Object.create(HTMLDivElement.prototype, {
-      createdCallback: {
-        value: function () {
-          this.setup();
+    T.elements.custom( T.elements.TRL_SUGGESTIONS, class extends HTMLElement {
+        
+        constructor() {
+            super();
+            this.accepted = [];
+            
+            this.setup();
         }
-      },
-      attributeChangedCallback: {
-        value: function (attr_name, old_value, new_value) {
-          if (attr_name === 'trl-store-accepted-suggestions') {
-            if (new_value === 'true') {
-              this.open();
-            } else {
-              this.close();
+        
+        connectedCallback() {
+            this.setup();
+        }
+        
+        static get observedAttributes() {
+            return [ 'trl-store-accepted-suggestions' ];
+        }
+        
+        attributeChangedCallback( name, oldValue, newValue ) {
+            if ( name === 'trl-store-accepted-suggestions' ) {
+                if ( newValue === 'true' ) this.open();
+                else                       this.close();
             }
-          }
         }
-      },
-      attachedCallback: {
-        value: function () {
-          this.setup();
+        
+        set opened(opened) {
+            this.setAttribute( 'trl-opened', opened ? 'true' : 'false' );
         }
-      },
-      accepted: {
-        value: []
-      },
-      opened: {
-        set: function (opened) {
-          this.setAttribute('trl-opened', opened ? 'true' : 'false');
-        },
-        get: function () {
-          return this.getAttribute('trl-opened') === 'true';
+        
+        get opened() {
+            return this.getAttribute( 'trl-opened' ) === 'true';
         }
-      },
-      close: {
-        value: function () {
-          if (this.opened)
-            this.opened = false;
+        
+        close() {
+            if ( this.opened ) this.opened = false;
         }
-      },
-      open: {
-        value: function () {
-          if (!this.opened)
-            this.opened = true;
+        
+        open() {
+            if ( !this.opened ) this.opened = true;
         }
-      },
-      storeAcceptedSuggestions: {
-        set: function (store) {
-          this.setAttribute('trl-store-accepted-suggestions', store.toString());
-        },
-        get: function () {
-          return this.getAttribute('trl-store-accepted-suggestions') === 'true';
+        
+        set storeAcceptedSuggestions( store ) {
+            this.setAttribute( 'trl-store-accepted-suggestions', store.toString() );
         }
-      },
-      onacceptsuggestion: {
-        set: function (callback) {
-          this.addEventListener('acceptsuggestion', callback);
+        
+        get storeAcceptedSuggestions() {
+            return this.getAttribute( 'trl-store-accepted-suggestions' ) === 'true';
         }
-      },
-      setup: {
-        value: function () {
-          var that = this,
-              observer = new MutationObserver(x);
+        
+        set onacceptsuggestion(callback) {
+            this.addEventListener( 'acceptsuggestion', callback );
+        }
+        
+        setup() {
+            var that     = this,
+                observer = new MutationObserver( x );
 
-          observer.observe(this, {
-            childList : true,
-            attributes: true
-          });
+            observer.observe( this, {
+                childList : true,
+                attributes: true
+            } );
 
-          function x() {
+            function x() {
 
-            for (var i = 0, total = that.children.length; i < total; i++) {
+                for ( var i = 0, total = that.children.length; i < total; i++ ) {
 
-              var suggestion = that.children[i];
+                    var suggestion = that.children[ i ];
 
-              suggestion.onclick = function (e) {
-                if (that.storeAcceptedSuggestions) {
-                  that.accepted.push(e.target);
-                  that.removeChild(e.target);
+                    suggestion.onclick = ( e ) => {
+                        if ( that.storeAcceptedSuggestions ) {
+                            that.accepted.push( e.target );
+                            that.removeChild( e.target );
+                        }
+                        that.dispatchEvent( new CustomEvent( 'acceptsuggestion', { detail: { suggestion: e.target } } ) );
+                        that.close();
+                    };
+
                 }
-                that.dispatchEvent(new CustomEvent('acceptsuggestion', { detail: { suggestion: e.target } }));
-                that.close();
-              };
 
             }
-
-          }
         }
-      }
-    })
-  }, 'Suggestions');
+    }, 'Suggestions' );
+
+    window.dispatchEvent( new CustomEvent( 'T.elements.Suggestions.loaded' ) );
   
-  window.dispatchEvent(new CustomEvent('T.elements.Suggestions.loaded'));
-  
-})(window.T);
+} )( window.T || {} );

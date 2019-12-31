@@ -17,95 +17,120 @@
 
 'use strict';
 
-window.T = (function (T) {
+window.T = ( ( T ) => {
+
+    T.elements = T.elements || {};
+    
+    T.elements.TRIAL = T.elements.TRIAL || {};
+
+    T.elements.ALL = [
+        T.elements.TRL_CIRCLE_PERCENTAGE = 'trl-circle-percentage', 
+        T.elements.TRL_EDITABLE          = 'trl-editable', 
+        T.elements.TRL_LOADING           = 'trl-loading', 
+        T.elements.TRL_LOGO              = 'trl-logo', 
+        T.elements.TRL_PAGINATION        = 'trl-pagination', 
+        T.elements.TRL_POPUP             = 'trl-popup', 
+        T.elements.TRL_SELECTABLE        = 'trl-selectable', 
+        T.elements.TRL_SLIDESHOW         = 'trl-slideshow', 
+        T.elements.TRL_SUGGESTIONS       = 'trl-suggestions', 
+        T.elements.TRL_TABS              = 'trl-tabs'
+    ];
+
+    T.elements.custom = ( tag, clazz, obj, options ) => {
+        window.customElements.define( tag, clazz, options );
+        T.elements[ obj ] = clazz;
+    };
+
+    T.elements.register = ( elements, callback ) => {
+        if ( elements === undefined ) {
+            throw new TypeError( '(T.register) Param isn\'t defined' );
+        }
+
+        var is_e_str = typeof elements === 'string';
+
+        if ( !is_e_str && Array !== elements.constructor )
+            throw new TypeError( '(T.register) Param must be a string or array' );
+
+        var arr = elements === 'all' 
+                  ? T.elements.ALL
+                  : ( is_e_str ? [ elements ] : elements );
+                  
+        var load = [];
+
+        for ( let i = 0, t = arr.length, a; i < t, a = arr[ i ]; i++ ) {
+
+            if ( a === T.elements.TRL_LOADING || a === T.elements.TRL_CIRCLE_PERCENTAGE ) {
+                load.push( T.CSS + '/elements/' + a + '.css' );
+            }
+
+            load.push( T.API + '/elements/' + a + '.js' );
+
+        }
+
+        T.load( load, callback );
+
+    };
+    
+    T = ( function ( T ) {
+
+        function Element( selector ) {
+            this.view = typeof selector === 'string'
+                        ? document.querySelector( selector ) 
+                        : selector instanceof HTMLElement 
+                            ? selector 
+                            : null;
+            if ( this.view ) {
+                this.parent = this.view.parentNode;
+            }
+        }
+
+        Element.prototype.getView = function () {
+            return this.view;
+        };
+
+        Element.prototype.hide = function () {
+            this.view.hidden = true;
+        };
+
+        Element.prototype.show = function () {
+            this.view.hidden = false;
+        };
+
+        Element.prototype.isAttached = function () {
+            return this.view.parentNode instanceof HTMLElement;
+        };
+
+        Element.prototype.dettach = function () {
+            if ( !this.isAttached() ) return;
+            
+            this.hide();
+            setTimeout( function () {
+                this.parent.removeChild( this.view );
+            }.bind( this ), 10 );
+        };
+
+        Element.prototype.attach = function () {
+            if ( this.isAttached() ) return;
+            
+            this.parent.appendChild( this.view );
+            setTimeout( function () {
+                this.show();
+            }.bind( this ), 10 );
+        };
+
+        Element.prototype.clear = function () {
+            while ( this.view.firstChild )
+                this.view.removeChild( this.view.firstChild );
+        };
+
+        T.Element = Element;
+
+        return T;
+
+    } )( T || {} );
+
+    return T;
   
-  var polyfill = {
-    has     : false,
-    loading : false,
-    loaded  : false
-  };
-
-  T.elements = {};
-  T.elements.TRIAL = T.elements.TRIAL || {};
-  
-  T.elements.TRL_BUTTON = 'trl-button';
-  T.elements.TRL_CIRCLE_PERCENTAGE = 'trl-circle-percentage';
-  T.elements.TRL_EDITABLE = 'trl-editable';
-  T.elements.TRL_LOADING = 'trl-loading';
-  T.elements.TRL_LOGIN_BUTTON = 'trl-login-button';
-  T.elements.TRL_LOGO = 'trl-logo';
-  T.elements.TRL_PAGINATION = 'trl-pagination';
-  T.elements.TRL_POPUP = 'trl-popup';
-  T.elements.TRL_RATING = 'trl-rating';
-  T.elements.TRL_SELECTABLE_ITEMS = 'trl-selectable-items';
-  T.elements.TRL_SLIDESHOW = 'trl-slideshow';
-  T.elements.TRL_SUGGESTIONS = 'trl-suggestions';
-  T.elements.TRL_TABS = 'trl-tabs';
-  T.elements.ALL = [T.elements.TRL_BUTTON, T.elements.TRL_CIRCLE_PERCENTAGE, T.elements.TRL_EDITABLE, T.elements.TRL_LOADING, T.elements.TRL_LOGIN_BUTTON, T.elements.TRL_LOGO, T.elements.TRL_PAGINATION, T.elements.TRL_POPUP, T.elements.TRL_RATING, T.elements.TRL_SELECTABLE_ITEMS, T.elements.TRL_SLIDESHOW, T.elements.TRL_SUGGESTIONS, T.elements.TRL_TABS];
-  
-  T.elements.polyfill = function () {
+} )( window.T || {} );
     
-    if ('registerElement' in document)
-      return false;
-    
-    T.load(T.BOWER + '/document-register-element/build/document-register-element.js', function () {
-      polyfill.has = polyfill.loaded = true;
-      window.dispatchEvent(new CustomEvent('CustomElementsReady'));
-    });
-    return true;
-    
-  };
-  
-  T.elements.custom = function (tag, options, obj) {
-    
-    var need_polyfill = T.elements.polyfill();
-
-    if (need_polyfill === false || polyfill.loaded === true)
-      register();
-    else
-      window.addEventListener('CustomElementsReady', register);
-
-    function register() {
-      
-      try {
-        
-        T.elements[obj] = document.registerElement(tag, options);
-        
-      } catch (e) {}
-      
-    }
-    
-  };
-
-  T.elements.register = function (elements, callback) {
-    
-    if (elements === undefined)
-      throw new TypeError('(T.register) Param isn\'t defined');
-    
-    var is_e_str = typeof elements === 'string';
-
-    if (!is_e_str && elements.constructor !== Array)
-      throw new TypeError('(T.register) Param must be a string or array');
-    
-    var arr = elements === 'all' 
-              ? T.elements.ALL
-              : (is_e_str ? [elements] : elements);
-
-    for (var i = 0, t = arr.length; i < t; i++) {
-      
-      if (arr[i] === T.elements.TRL_LOADING || arr[i] === T.elements.TRL_CIRCLE_PERCENTAGE)
-        arr.push(T.CSS + '/elements/' + arr[i] + '.css');
-      
-      arr[i] = T.API + '/elements/' + arr[i] + '.js';
-      
-    }
-    
-    T.load(arr, callback);
-    
-  };
-    
-  return T;
-  
-})(window.T || {});
-    
-window.dispatchEvent(new CustomEvent('T.elements.loaded'));
+window.dispatchEvent( new CustomEvent( 'T.elements.loaded' ) );
