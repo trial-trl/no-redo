@@ -24,6 +24,7 @@ limitations under the License.
       Author     : Matheus Leonardo dos Santos Martins <mlsm@trialent.com>
       Renamed to common.css on 09/01/2018, ~20:20
 */
+@import url(fonts/HammersmithOne.css);
 * {
   box-sizing: border-box;
 }
@@ -156,23 +157,23 @@ a.current {
   background-repeat: no-repeat;
 }
 #footer-developer,
-[owner],
+[trl-owner],
 #footer-links {
   position: relative;
   clear: both;
   width: 100%;
+  font-family: HammersmithOne;
 }
 #copyright,
-[copyright] {
+[trl-copyright] {
   width: 100%;
   color: rgba(255, 255, 255, 0.6);
 }
 /* removed "line-height" property on 26/06/2017, 22:43:20 */
 #footer-developer,
-[owner] {
-  font-size: 16px;
+[trl-owner] {
+  font-size: 1em;
   text-align: center;
-  background: #222;
 }
 #footer-links {
   text-align: center;
@@ -194,15 +195,18 @@ a.current {
 /* changed [logo] to trl-logo on 17/12/2016, 16:13:42 */
 /* removed "top" property on 26/06/2017, 22:43:20 */
 #footer-developer > #logo-developer,
-[owner] > trl-logo {
+[trl-owner] > trl-logo {
   position: relative;
   float: left;
   clear: both;
-  opacity: 0.6;
   margin: 0 auto;
   background-color: transparent;
   background-repeat: no-repeat;
   background-size: 100%;
+}
+[trl-owner] a {
+  color: #fff;
+  text-decoration: underline;
 }
 trl-slideshow,
 [container-slideshow-items] {
