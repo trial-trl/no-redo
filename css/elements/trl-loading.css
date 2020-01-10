@@ -221,7 +221,7 @@ and open the template in the editor.
 
 @keyframes loadingUpRightMidBottom {
     0%, 14.28571428571429% {
-        transform: rotateZ(45deg);
+        transform: rotate3d(0, 0, 0, 0) rotateZ(45deg);
     }
     7.142857142857143% {
 
@@ -230,28 +230,28 @@ and open the template in the editor.
         z-index: 6;
     }
     21.42857142857143% {
-        transform: rotate3d(20, -20, 0, 180deg) rotateZ(45deg);
+        transform: rotate3d(1, -1, 0, 180deg) rotateZ(45deg);
     }
     21.42857142857144%, 28.57142857142857% {
-        transform: rotateZ(45deg);
+        transform: rotate3d(0, 0, 0, 0) rotateZ(45deg);
     }
     35.71428571428571% {
-        transform: rotate3d(20, -20, 0, 180deg) rotateZ(45deg);
+        transform: rotate3d(1, -1, 0, 180deg) rotateZ(45deg);
     }
     35.71428571428572%, 42.85714285714286% {
-        transform: rotateZ(45deg);
+        transform: rotate3d(0, 0, 0, 0) rotateZ(45deg);
     }
     50% {
-        transform: rotate3d(20, -20, 0, 180deg) rotateZ(45deg);
+        transform: rotate3d(1, -1, 0, 180deg) rotateZ(45deg);
     }
     50.00000000000001%, 57.14285714285714% {
-        transform: rotateZ(45deg);
+        transform: rotate3d(0, 0, 0, 0) rotateZ(45deg);
     }
     64.28571428571429% {
-        transform: rotate3d(20, -20, 0, 180deg) rotateZ(45deg);
+        transform: rotate3d(1, -1, 0, 180deg) rotateZ(45deg);
     }
     64.28571428571430% {
-        transform: rotateZ(45deg);
+        transform: rotate3d(0, 0, 0, 0) rotateZ(45deg);
     }
     78.57142857142857% {
 
@@ -263,7 +263,7 @@ and open the template in the editor.
 
     }
     100% {
-        transform: rotateZ(45deg);
+        transform: rotate3d(0, 0, 0, 0) rotateZ(45deg);
     }
 }
 
