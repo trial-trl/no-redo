@@ -317,7 +317,7 @@ window.T = ( () => {
                     );
                     var trialName = trl.replace( '{}', 'TRIAL' );
                     var p = options.type === T.prototype.UI.Copyright.OWN 
-                            ? `${ period } ₢ ${ trialName }. ${ options.phrase || 'Todos os direitos reservados' }`
+                            ? `${ period } ₢ ${ trialName }.<br />${ options.phrase || 'Todos os direitos reservados' }`
                             : `${ period }. ${ options.phrase || 'Desenvolvido pela' } ${ trialName }`;
                   
                     T.prototype.getElement().innerHTML = `
