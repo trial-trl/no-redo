@@ -379,9 +379,10 @@ window.T = ( ( T ) => {
           b /= 255;
           max = Math.max(r, g, b);
           min = Math.min(r, g, b);
-          l = Math.round(((max + min) / 2) * 100);
+          l = (max + min) / 2;
           if (max === min) {
             h = s = 0;
+            l = Math.round(l * 100);
           } else {
             d = max - min;
             s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
