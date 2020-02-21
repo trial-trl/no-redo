@@ -29,7 +29,7 @@ window.T = ( ( T ) => {
         root: '/',
         config( options ) {
             if ( options ) {
-                this.root = options.root ? '/' + this.clearSlashes( options.root ) + '/' : '/';
+                this.root = options.root ? '/' + this.clearSlashes( options.root ) : '/';
                 
                 if ( options.filterRouter && 'function' === typeof options.filterRouter ) {
                     this.__filterRouter = options.filterRouter;
@@ -43,8 +43,9 @@ window.T = ( ( T ) => {
             if ( typeof removeQueryString === 'undefined' || removeQueryString === true ) {
                 fragment = fragment.replace( /\?(.*)$/, '' ).replace( /\#(.*)$/, '' );
             }
-            fragment = this.root !== '/' ? '/' + fragment.replace( this.clearSlashes( this.root ), '' ) : fragment;
-            return this.clearSlashes( fragment ) || '/';
+            fragment = this.root !== '/' ? fragment.replace( this.clearSlashes( this.root ), '' ) : fragment;
+            fragment = this.clearSlashes( fragment );
+            return '/' + fragment;
         },
         clearSlashes( path ) {
             return path.toString().replace( /\/$/, '' ).replace( /^\//, '' );
@@ -214,7 +215,7 @@ window.T = ( ( T ) => {
                 }
             }
             
-            history.pushState( this.__data, null, this.root + this.clearSlashes( path ) );
+            history.pushState( this.__data, null, this.root + '/' + this.clearSlashes( path ) );
             return this;
         },
         applyLinkRouting( into ) {

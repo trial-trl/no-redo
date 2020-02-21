@@ -25,6 +25,8 @@ limitations under the License.
       Renamed to common.css on 09/01/2018, ~20:20
 */
 
+@import url(fonts/HammersmithOne.css);
+
 * {
     box-sizing: border-box;
 }
@@ -107,14 +109,14 @@ trl-popup [background], .background-opacity-black {
     top: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(248, 254, 247, 1);
+    background-color: #f8fef7;
 }
 
 .background-loading {
     display: none;
     width: 100%;
     height: 100%;
-    background-color: rgba(248, 254, 247, 1);
+    background-color: #f8fef7;
 }
 
 /* 21/11/2016, 20:21:10 => removed code below
@@ -181,22 +183,41 @@ a.current {
     background-repeat: no-repeat;
 }
 
-#footer-developer, [owner], #footer-links {
+#footer-developer, [trl-owner], #footer-links {
     position: relative;
     clear: both;
     width: 100%;
+    font-family: HammersmithOne;
 }
 
-#copyright, [copyright] {
+[trl-copyright], [trl-copyright] > a {
+    font-family: inherit;
+}
+
+#copyright, [trl-copyright] {
     width: 100%;
-    color: rgba(255, 255, 255, 0.6);
+}
+
+[trl-owner].light [trl-copyright] {
+  color: rgba(51, 51, 51, 0.6);
+}
+
+[trl-owner].light a {
+  color: #333
+}
+
+[trl-owner].dark [trl-copyright] {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[trl-owner].dark a {
+  color: #fff
 }
 
 /* removed "line-height" property on 26/06/2017, 22:43:20 */
-#footer-developer, [owner] {
-    font-size: 16px;
+#footer-developer, [trl-owner] {
+    font-size: 1em;
     text-align: center;
-    background: #222;
 }
 
 #footer-links {
@@ -221,7 +242,7 @@ a.current {
 
 /* changed [logo] to trl-logo on 17/12/2016, 16:13:42 */
 /* removed "top" property on 26/06/2017, 22:43:20 */
-#footer-developer > #logo-developer, [owner] > trl-logo {
+#footer-developer > #logo-developer, [trl-owner] > trl-logo {
     position: relative;
     float: left;
     clear: both;
@@ -230,6 +251,10 @@ a.current {
     background-color: transparent;
     background-repeat: no-repeat;
     background-size: 100%;
+}
+
+[trl-owner] a {
+    text-decoration: underline;
 }
 
 trl-slideshow, [container-slideshow-items] {
