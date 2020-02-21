@@ -92,7 +92,7 @@
                 }
                 if ( this.clickable ) {
                     this.onclick = () => {
-                        this.activeEditMode = true;
+                        this.setAttribute( 'trl-editing', 'true' );
                     };
                 }
             }
@@ -116,6 +116,7 @@
                 switch ( this.content ) {
                     case 'select':
                         var select_data = JSON.parse( decodeURIComponent( atob( this.getAttribute( 'data-select' ) ) ) );
+                        select_data.unshift( { value: '', innerHTML: this.placeholder || this.title } );
                         var select_default_value = this.getAttribute('data-value') || null;
                         for ( var i = 0, total = select_data.length, data; i < total, data = select_data[ i ]; i++ ) {
                             var option = document.createElement( 'option' );
@@ -132,14 +133,14 @@
                         s.style.width = 'auto';
                         break;
                     case 'textarea':
-                        s.placeholder = this.placeholder;
+                        s.placeholder = this.placeholder || this.title;
                         s.innerHTML   = this.original_value;
                         s.onclick     = ( e ) => e.stopPropagation();
                         s.style.width = 'auto';
                         break;
                     default:
                         s.type        = this.content;
-                        s.placeholder = this.title || '';
+                        s.placeholder = this.placeholder || this.title;
                         s.value       = this.original_value;
                         s.onclick     = ( e ) => e.stopPropagation();
                         s.style.width = this.offsetWidth + 'px';
