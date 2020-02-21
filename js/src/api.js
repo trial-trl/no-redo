@@ -23,14 +23,6 @@
 'use strict';
 
 window.T = ( () => {
-  
-    var HOST    = location.protocol + '//' + location.hostname + 
-                  ( location.port ? ':' + location.port : '' );
-    var BOWER   = HOST    + '/bower_components';
-    var LIBRARY = BOWER   + '/trl-no-redo';
-    var CSS     = LIBRARY + '/css';
-    var API     = LIBRARY + '/js/src';
-    var LOADJS  = BOWER   + '/loadjs/dist/loadjs.min.js';
 
     var _ = ( () => {
 
@@ -313,7 +305,7 @@ window.T = ( () => {
                     var trl = '<a href=\'https://trialent.com\'>{}</a>';
                     var trialLogo = trl.replace( 
                             '{}', 
-                            `<trl-logo trl-compact="true" trl-color="${ options.color || '#fff' }" trl-scale="${ options.scale || .5 }" ${ options.width ? ' trl-width="' + options.width + '"' : '' }" ${ options.height ? ' trl-height="' + options.height + '"' : '' }"></trl-logo>`
+                            `<trl-logo trl-slogan="false" trl-color="${ options.color || options.theme && options.theme === 'dark' ? '#fff' : '' }" trl-theme="${ options.theme }" trl-scale="${ options.scale || .5 }" ${ options.width ? ' trl-width="' + options.width + '"' : '' }" ${ options.height ? ' trl-height="' + options.height + '"' : '' }"></trl-logo>`
                     );
                     var trialName = trl.replace( '{}', 'TRIAL' );
                     var p = options.type === T.prototype.UI.Copyright.OWN 
@@ -321,7 +313,7 @@ window.T = ( () => {
                             : `${ period }. ${ options.phrase || 'Desenvolvido pela' } ${ trialName }`;
                   
                     T.prototype.getElement().innerHTML = `
-                        <footer trl-owner class="center-horizontal">
+                        <footer trl-owner class="center-horizontal ${ options.theme || 'dark' }">
                             ${ trialLogo }
                             <span trl-copyright>${ p }</span>
                         </footer>
@@ -330,18 +322,28 @@ window.T = ( () => {
             }
         };
 
-        Object.defineProperty( T, 'HOST',    { value: HOST    } );
-        Object.defineProperty( T, 'BOWER',   { value: BOWER   } );
-        Object.defineProperty( T, 'LIBRARY', { value: LIBRARY } );
-        Object.defineProperty( T, 'CSS',     { value: CSS     } );
-        Object.defineProperty( T, 'API',     { value: API     } );
-        Object.defineProperty( T, 'LOADJS',  { value: LOADJS  } );
-
         return T;
 
     } )();
 
     _ = ( ( T ) => {
+        
+        T.HOST    = location.protocol + '//' + location.hostname + 
+                      ( location.port ? ':' + location.port : '' );
+        T.BOWER   = T.HOST    + '/bower_components';
+        T.LIBRARY = T.BOWER   + '/trl-no-redo';
+        T.CSS     = T.LIBRARY + '/css';
+        T.API     = T.LIBRARY + '/js/src';
+        T.LOADJS  = T.BOWER   + '/loadjs/dist/loadjs.min.js';
+        
+        T.setHost = function ( url ) {
+            T.HOST    = url;
+            T.BOWER   = T.HOST    + '/bower_components';
+            T.LIBRARY = T.BOWER   + '/trl-no-redo';
+            T.CSS     = T.LIBRARY + '/css';
+            T.API     = T.LIBRARY + '/js/src';
+            T.LOADJS  = T.BOWER   + '/loadjs/dist/loadjs.min.js';
+        };
 
         T.Constants = {
             Response: {
@@ -455,10 +457,18 @@ window.T = ( () => {
                     case 'utils':
                     case 'elements':
                     case 'design':
-                        url = T.API + '/' + url + '.js';
+                        var firstChar = url.substring(0, 1);
+                        var remainingStr = url.substring(1, url.length);
+                        if ( ( !T[ firstChar.toUpperCase() + remainingStr ] && !T[ firstChar + remainingStr ] ) || ( url === 'design' && !T.Animation && !T.Color ) ) {
+                            url = T.API + '/' + url + '.js';
+                        } else {
+                            url = null;
+                        }
                         break;
                 }
-                js.push( url );
+                if ( url ) {
+                    js.push( url );
+                }
             };
 
             if ( !lib ) {
@@ -470,11 +480,15 @@ window.T = ( () => {
                 load( fn );
 
             function load( callback ) {
-                loadjs( js, {
-                    success() {
-                        T.dispatchCallback( callback );
-                    }
-                } );
+                if ( js.length > 0 ) {
+                    loadjs( js, {
+                        success() {
+                            T.dispatchCallback( callback );
+                        }
+                    } );
+                } else {
+                    T.dispatchCallback( callback );
+                }
             }
         };
 
@@ -867,8 +881,14 @@ window.T = ( () => {
 
                 options = options || {};
 
-                this.__blockName = blockName;
+                this.__rawBlockName = blockName;
+                this.__blockName = blockName.split( '/' ).pop();
                 this.__into = options.into || document.body;
+                this.__template = options.template || {
+                    extension: options.templateExtension || 'php',
+                    mimeType: options.templateMimeType || 'text/html',
+                    args: options.templateArgs || {}
+                };
                 this.__lazyLoadTemplate = options.lazyLoadTemplate || false;
                 this.__listeners = {};
 
@@ -924,10 +944,8 @@ window.T = ( () => {
 
                     } else {
 
-                        this.updateView( options.templateArgs, function ( template ) {
-
+                        this.updateView( function ( template ) {
                             return initBlock.call( this, template, options );
-
                         }.bind( this ) );
 
                     }
@@ -946,8 +964,14 @@ window.T = ( () => {
             MVC.Block.prototype = {
 
                 getFileUrl( ext ) {
-
-                    return MVC.Block.config.dir + '/' + this.__blockName + '/' + this.__blockName + '.' + ext;
+                
+                    var dir = MVC.Block.config.dir;
+                    if ( this.__rawBlockName.indexOf( '/' ) !== -1 ) {
+                        var splittedPath = this.__rawBlockName.split( '/' );
+                        splittedPath.pop();
+                        dir += '/' + splittedPath;
+                    }
+                    return dir + '/' + this.__blockName + '/' + this.__blockName + '.' + ext;
 
                 },
 
@@ -963,71 +987,74 @@ window.T = ( () => {
 
                 },
 
-                updateView( templateArgs, ontemplate, onupdate ) {
+                updateView( ontemplate, onupdate ) {
 
                     var that = this;
+                    
+                    var config = {};
 
-                    var url = '';
+                    config.ext = this.__template.extension;
+                    config.type = this.__template.mimeType;
 
-                    var args = [];
+                    if ( this.hasListener( 'loadtemplate' ) ) {
 
-                    for ( var i in templateArgs ) {
-                        args.push( i + '=' + templateArgs[ i ] );
-                    }
-
-                    if ( this.hasListener( 'loadtemplateurl' ) ) {
-
-                        url = this.dispatch({
-                          eventType: 'loadtemplateurl',
+                        config = this.dispatch( {
+                          eventType: 'loadtemplate',
                           emitter: null
-                        }, templateArgs );
-
-                    } else {
-
-                        url = this.getFileUrl( 'php' );
+                        }, this.__template.args );
 
                     }
-
-                    if ( args.length > 0 ) {
-
-                        url += '?' + args.join( '&' );
-
+                        
+                    if ( config.ext ) {
+                        config.url = this.getFileUrl( config.ext );
                     }
+                    
+                    if ( config.ext === 'php' ) {
 
-                    T.load( 'utils', ( ) => {
+                        var args = [];
 
-                        T.Utils.ajax( {
-                            url: url,
-                            response: 'document',
-                            onloadend: ( e ) => {
-                                var onload = that.dispatch( 'load', e );
-                                if ( typeof onload === 'undefined' || onload ) {
-                                    parseTemplate.call( that, e.target.response );
-                                }
-
-                            }
-                        } );
-
-                    } );
-
-                    function parseTemplate( response ) {
-
-                        var template = response.body.firstChild || document.createElement( 'div' );
-
-                        var appendTemplate = ontemplate && ontemplate( template ) === false ? false : true;
-
-                        if ( appendTemplate === true && template ) {
-
-                            this.__element = template;
-                            this.__element.addToPage = addToPage.bind( this );
-                            this.__element.removeFromPage = removeFromPage.bind( this );
-
-                            this.__element.addToPage();
-
-                            onupdate();
-
+                        for ( var i in this.__template.args ) {
+                            args.push( i + '=' + this.__template.args[ i ] );
                         }
 
+                        if ( args.length > 0 ) {
+                            config.url += '?' + args.join( '&' );
+                        }
+
+                        T.load( 'utils', ( ) => {
+
+                            T.Utils.ajax( {
+                                url: config.url,
+                                response: config.type || 'document',
+                                onloadend: ( e ) => {
+                                    var onload = that.dispatch( 'load', e );
+                                    if ( typeof onload === 'undefined' || onload ) {
+                                        var response = e.target.response;
+                                        var template = response && response.body ? response.body.firstChild : ( response ? response : document.createElement( 'div' ) );
+
+                                        var appendTemplate = ontemplate && ontemplate.call( config, template ) === false ? false : true;
+
+                                        if ( appendTemplate === true ) {
+                                            insertTemplate.call( that, template );
+                                        }
+                                    }
+
+                                }
+                            } );
+
+                        } );
+                    
+                    } else {
+                        
+                        T.load( config.url, function () {
+                            if ( ontemplate ) {
+                                ontemplate( true );
+                            }
+                            if ( typeof onupdate === 'function' ) {
+                                onupdate();
+                            }
+                        } );
+                        
                     }
 
                 },
@@ -1057,7 +1084,7 @@ window.T = ( () => {
                     } else {
                         
                         pushArray.call( this.__listeners, eventType, listener );
-                        pushArray.call( this, 'on' + eventType, listener );
+                        pushArray.call( this.__listeners, 'on' + eventType, listener );
 
                     }
                     
@@ -1133,18 +1160,24 @@ window.T = ( () => {
                                 new CustomEvent( eventType, data || null )
                         );
 
-                    } else {
+                    } else if ( this.__listeners ) {
 
-                        var call = dispatch[ 'on' + eventType ];
+                        var call = this.__listeners[ 'on' + eventType ];
+                        var result;
                         
                         for ( var i in call ) {
                             
                             var fn = call[ i ];
                             if ( typeof fn === 'function' ) {
-                                return fn.call( this, data || null );
+                                var called = fn.call( this, data || null );
+                                if ( called && !result ) {
+                                    result = called;
+                                }
                             }
                         
                         }
+                        
+                        return result;
 
                     }
 
@@ -1192,6 +1225,24 @@ window.T = ( () => {
 
             };
 
+            function insertTemplate( template ) {
+                if ( !template ) {
+                    return;
+                }
+                
+                if ( typeof template === 'string' ) {
+                    var shadow = document.createElement( 'div' );
+                    shadow.innerHTML = template;
+                    template = shadow.firstChild;
+                }
+
+                this.__element = template;
+                this.__element.addToPage = addToPage.bind( this );
+                this.__element.removeFromPage = removeFromPage.bind( this );
+
+                this.__element.addToPage();
+            }
+
             function initBlock( template, options ) {
 
                 var that = this;
@@ -1236,15 +1287,7 @@ window.T = ( () => {
 
                             }
 
-                            if ( template ) {
-
-                                that.__element = template;
-                                that.__element.addToPage = addToPage.bind( that );
-                                that.__element.removeFromPage = removeFromPage.bind( that );
-
-                                that.__element.addToPage();
-
-                            }
+                            insertTemplate.call( that, template );
 
                         }
 
