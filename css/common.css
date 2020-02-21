@@ -164,10 +164,25 @@ a.current {
   width: 100%;
   font-family: HammersmithOne;
 }
+[trl-copyright],
+[trl-copyright] > a {
+  font-family: inherit;
+}
 #copyright,
 [trl-copyright] {
   width: 100%;
+}
+[trl-owner].light [trl-copyright] {
+  color: rgba(51, 51, 51, 0.6);
+}
+[trl-owner].light a {
+  color: #333;
+}
+[trl-owner].dark [trl-copyright] {
   color: rgba(255, 255, 255, 0.6);
+}
+[trl-owner].dark a {
+  color: #fff;
 }
 /* removed "line-height" property on 26/06/2017, 22:43:20 */
 #footer-developer,
@@ -199,13 +214,13 @@ a.current {
   position: relative;
   float: left;
   clear: both;
+  opacity: 0.6;
   margin: 0 auto;
   background-color: transparent;
   background-repeat: no-repeat;
   background-size: 100%;
 }
 [trl-owner] a {
-  color: #fff;
   text-decoration: underline;
 }
 trl-slideshow,

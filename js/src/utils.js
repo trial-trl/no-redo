@@ -35,6 +35,13 @@ window.T = ( ( T ) => {
         }
         __ajax_interceptors.push( f );
     };
+    
+    T.Utils.ajax_removeInterceptor = function ( f ) {
+        if ( typeof f !== 'function' ) {
+            throw new TypeError();
+        }
+        __ajax_interceptors.splice( __ajax_interceptors.indexOf( f ), 1 );
+    };
 
     T.Utils.ajax = function ( options ) {
         var e = options.event || event || null,
