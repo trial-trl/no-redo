@@ -27,8 +27,6 @@ window.T = ( ( T ) => {
     function _( c, cookies ) {
         var m = [];
         if ( !T.Utils )        m.push( 'utils' );
-        if ( cookies === true 
-             && !T.Cookies )   m.push( 'cookies' );
         if ( m.length > 0 )    T.load( m, c );
         else                   c();
     }
@@ -62,11 +60,11 @@ window.T = ( ( T ) => {
 
     T.Account = {
         
-        URL: '/TRIALAccount',//https://conta.trialent.com
+        URL: 'https://conta.trialent.com',
         
-        LOGIN: '/TRIALAccount/api/login',
+        LOGIN: this.URL + '/api/login',
         
-        LOGOUT: '/TRIALAccount/api/logout',
+        LOGOUT: this.URL + '/api/logout',
         
         open() {
             var url = this.URL + '/entrar/' + _defs;
@@ -110,6 +108,10 @@ window.T = ( ( T ) => {
                 throw new TypeError( 'accountId must be a number' );
             }
             _auth = accountId;
+        },
+        
+        removeAuthorization() {
+            _auth = undefined;
         },
         
         customWindow() {
@@ -169,6 +171,26 @@ window.T = ( ( T ) => {
         
         getProfile( fields, onsuccess ) {
             _request( this.URL + '/api/profile?fields=' + fields.join( ',' ), onsuccess );
+        },
+        
+        editProfile( field, newValue, onsuccess ) {
+            _checkAuthorization();
+            _( () => {
+                T.Utils.ajax( {
+                    url: this.URL + '/api/update-account',
+                    headers: [
+                        'Authorization: Client-ID ' + _auth
+                    ],
+                    data: {
+                        field: field,
+                        value: newValue
+                    },
+                    response: 'json',
+                    onloadend: ( e ) => {
+                        onsuccess( e.target.response, e.target.status );
+                    }
+                } );
+            } );
         },
         
         login( options ) {

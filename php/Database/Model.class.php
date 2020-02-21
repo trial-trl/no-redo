@@ -31,6 +31,10 @@ use \DateTime,
  * @package Model
  */
 abstract class Model implements \JsonSerializable {
+
+  const QUERY_IGNORE_ID = 'ignore_id';
+  const QUERY_LIMIT = 'limit';
+  const QUERY_OFFSET = 'offset';
   
   /** @var int */
   private $id;
@@ -105,17 +109,52 @@ abstract class Model implements \JsonSerializable {
   }
   
   /**
+   * 
+   * @throws \InvalidArgumentException
+   * 
+   * Created on 16/02/2020 02:24:34
+   */
+  protected static function parseValue(&$value) {
+    if (is_string($value) && ($value[0] === '{' || $value[0] === '[')) {
+      $tmp = json_decode($value, true);
+      if (json_last_error() == JSON_ERROR_NONE) {
+        $value = $tmp;
+        $raw = static::getIdentifier($value);
+      }
+    } else if ($value instanceof DateTime || (is_string($value) && (bool) strtotime($value))) {
+      $raw = static::parseDate($value);
+    }
+    return $raw ?? null;
+  }
+  
+  /**
+   * 
+   * @throws \InvalidArgumentException
+   * 
+   * Created on 16/02/2020 02:24:34
+   */
+  protected static function getIdentifier($model) {
+    if (is_array($model) && !empty($model[Proxy::ID])) {
+      return $model[Proxy::ID];
+    } else if ($model instanceof self) {
+      return $model->getId();
+    }
+    return null;
+  }
+  
+  /**
    * @param string $column    Proxy-column related to property
    * @param mixed  $property  Model's property to be assigned the value
    * @param mixed  $value     Value to be assigned
    */
   protected function set(string $column, &$property, $value) {
-    $property = $value;
+    $put = static::parseValue($value);
     if (!$this->inDatabase() || !array_key_exists($column, $this->original)) {
-      $this->original[$column] = $value;
+      $this->original[$column] = $put;
     } else {
-      $this->changes[$column] = $value;
+      $this->changes[$column] = $put;
     }
+    $property = $value;
   }
   
   public function inDatabase(): bool {
