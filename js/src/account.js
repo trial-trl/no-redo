@@ -173,6 +173,25 @@ window.T = ( ( T ) => {
             _request( this.URL + '/api/profile?fields=' + fields.join( ',' ), onsuccess );
         },
         
+        inviteUser( email, onsuccess ) {
+            _checkAuthorization();
+            _( () => {
+                T.Utils.ajax( {
+                    url: this.URL + '/api/invite',
+                    headers: [
+                        'Authorization: Client-ID ' + _auth
+                    ],
+                    data: {
+                        email: email
+                    },
+                    response: 'json',
+                    onloadend: ( e ) => {
+                        onsuccess( e.target.response, e.target.status );
+                    }
+                } );
+            } );
+        },
+        
         editProfile( field, newValue, onsuccess ) {
             _checkAuthorization();
             _( () => {

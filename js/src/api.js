@@ -884,12 +884,12 @@ window.T = ( () => {
                 this.__rawBlockName = blockName;
                 this.__blockName = blockName.split( '/' ).pop();
                 this.__into = options.into || document.body;
-                this.__template = options.template || {
-                    extension: options.templateExtension || 'php',
-                    mimeType: options.templateMimeType || 'text/html',
-                    args: options.templateArgs || {}
-                };
-                this.__lazyLoadTemplate = options.lazyLoadTemplate || false;
+                this.__template = options.template || {};
+                this.__template.auto = this.__template.auto || options.templateAuto || options.lazyLoadTemplate || true;
+                this.__template.extension = this.__template.extension || options.templateExtension || 'php';
+                this.__template.mimeType = this.__template.mimeType || options.templateMimeType || 'text/html';
+                this.__template.args = this.__template.args || options.templateArgs || {};
+                this.__template.loaded = false;
                 this.__listeners = {};
 
                 var definedProperties = Object.getOwnPropertyNames( options );
@@ -937,19 +937,7 @@ window.T = ( () => {
                 this.__element = this.__into.querySelector( '#' + this.__blockName );
 
                 if ( !( this.__element instanceof HTMLElement ) ) {
-
-                    if ( this.__lazyLoadTemplate ) {
-
-                        initBlock.call( this, null, options );
-
-                    } else {
-
-                        this.updateView( function ( template ) {
-                            return initBlock.call( this, template, options );
-                        }.bind( this ) );
-
-                    }
-
+                    _init.call( this, options );
                 }
 
             };
@@ -987,76 +975,13 @@ window.T = ( () => {
 
                 },
 
-                updateView( ontemplate, onupdate ) {
-
-                    var that = this;
+                updateView( data ) {
+                    this.__template.args = data || this.__template.args;
                     
-                    var config = {};
-
-                    config.ext = this.__template.extension;
-                    config.type = this.__template.mimeType;
-
-                    if ( this.hasListener( 'loadtemplate' ) ) {
-
-                        config = this.dispatch( {
-                          eventType: 'loadtemplate',
-                          emitter: null
-                        }, this.__template.args );
-
-                    }
-                        
-                    if ( config.ext ) {
-                        config.url = this.getFileUrl( config.ext );
-                    }
-                    
-                    if ( config.ext === 'php' ) {
-
-                        var args = [];
-
-                        for ( var i in this.__template.args ) {
-                            args.push( i + '=' + this.__template.args[ i ] );
-                        }
-
-                        if ( args.length > 0 ) {
-                            config.url += '?' + args.join( '&' );
-                        }
-
-                        T.load( 'utils', ( ) => {
-
-                            T.Utils.ajax( {
-                                url: config.url,
-                                response: config.type || 'document',
-                                onloadend: ( e ) => {
-                                    var onload = that.dispatch( 'load', e );
-                                    if ( typeof onload === 'undefined' || onload ) {
-                                        var response = e.target.response;
-                                        var template = response && response.body ? response.body.firstChild : ( response ? response : document.createElement( 'div' ) );
-
-                                        var appendTemplate = ontemplate && ontemplate.call( config, template ) === false ? false : true;
-
-                                        if ( appendTemplate === true ) {
-                                            insertTemplate.call( that, template );
-                                        }
-                                    }
-
-                                }
-                            } );
-
-                        } );
-                    
-                    } else {
-                        
-                        T.load( config.url, function () {
-                            if ( ontemplate ) {
-                                ontemplate( true );
-                            }
-                            if ( typeof onupdate === 'function' ) {
-                                onupdate();
-                            }
-                        } );
-                        
-                    }
-
+                    _whenTemplateIsLoaded.call( this, function () {
+                        _parseTemplate.call( this );
+                        _insertTemplate.call( this );
+                    }.bind( this ) );
                 },
 
                 on( eventType, listener, onElement ) {
@@ -1224,26 +1149,101 @@ window.T = ( () => {
                 }
 
             };
-
-            function insertTemplate( template ) {
-                if ( !template ) {
-                    return;
-                }
                 
-                if ( typeof template === 'string' ) {
-                    var shadow = document.createElement( 'div' );
-                    shadow.innerHTML = template;
-                    template = shadow.firstChild;
+            function _loadTemplate() {
+
+                var that = this;
+
+                var config = {};
+
+                config.ext = this.__template.extension;
+                config.type = this.__template.mimeType;
+
+                if ( this.hasListener( 'loadtemplate' ) ) {
+
+                    config = this.dispatch( {
+                      eventType: 'loadtemplate',
+                      emitter: null
+                    }, this.__template.args );
+
                 }
 
-                this.__element = template;
-                this.__element.addToPage = addToPage.bind( this );
-                this.__element.removeFromPage = removeFromPage.bind( this );
+                if ( config.ext ) {
+                    config.url = this.getFileUrl( config.ext );
+                }
 
-                this.__element.addToPage();
+                if ( config.ext === 'php' ) {
+
+                    var args = [];
+
+                    for ( var i in this.__template.args ) {
+                        args.push( i + '=' + this.__template.args[ i ] );
+                    }
+
+                    if ( args.length > 0 ) {
+                        config.url += '?' + args.join( '&' );
+                    }
+
+                    T.load( 'utils', ( ) => {
+
+                        T.Utils.ajax( {
+                            url: config.url,
+                            response: config.type || 'document',
+                            onloadend: ( e ) => {
+                                var onload = that.dispatch( 'load', e );
+                                if ( typeof onload === 'undefined' || onload ) {
+                                    var response = e.target.response;
+                                    that.__template._ = response && response.body ? response.body.firstChild : ( response ? response : document.createElement( 'div' ) );
+                                    _notifyTemplateIsLoaded.call( that );
+                                }
+
+                            }
+                        } );
+
+                    } );
+                    
+                } else {
+                    T.load( config.url, _notifyTemplateIsLoaded.bind( that ) );
+                }
+            }
+            
+            function _notifyTemplateIsLoaded() {
+                this.__template.loaded = true;
+                this.dispatch( 'templateloaded' );
+            }
+            
+            function _parseTemplate() {
+                if ( this.hasListener( 'parsetemplate' ) ) {
+
+                    this.__template._ = this.dispatch( {
+                        eventType: 'parsetemplate',
+                        emitter: null
+                    }, this.__template._ );
+
+                }
             }
 
-            function initBlock( template, options ) {
+            function _insertTemplate() {
+                if ( !this.__template._ ) return;
+                
+                if ( typeof this.__template._ === 'string' ) {
+                    var shadow = document.createElement( 'div' );
+                    shadow.innerHTML = this.__template._;
+                    this.__template._ = shadow.firstChild;
+                }
+
+                this.__element = this.__template._;
+                this.__element.addToPage = _addToPage.bind( this );
+                this.__element.removeFromPage = _removeFromPage.bind( this );
+
+                this.__element.addToPage();
+                    
+                if ( this.__template._ ) {
+                    this.dispatch( 'templateready' );
+                }
+            }
+
+            function _init( options ) {
 
                 var that = this;
                 var load = [];
@@ -1255,6 +1255,8 @@ window.T = ( () => {
                 if ( !options.hasOwnProperty( 'hasJs' )  || options.hasJs === true ) {
                     load.push( this.jsPath );
                 }
+
+                _loadTemplate.call( that );
 
                 loadjs( load, {
 
@@ -1275,40 +1277,39 @@ window.T = ( () => {
                     success() {
 
                         var blockInstanceClass = MVC.Block.config.exports[ that.name.charAt( 0 ).toUpperCase() + that.name.slice( 1 ) ];
+                        
+                        _constructor();
+                        
+                        if ( that.__template.auto === true ) {
+                            _whenTemplateIsLoaded.call( that, that.updateView );
+                        }
+                        _whenTemplateIsReady.call( that, __init );
+                        
+                        function _constructor() {
+                            if ( that.jsFile ) {
 
-                        if ( template ) {
+                                var inject = [ null, that ];
 
-                            if ( that.hasListener( 'parsetemplate' ) ) {
+                                if ( options.inject && Array === options.inject.constructor ) {
+                                    inject = inject.concat( options.inject );
+                                }
 
-                                template = that.dispatch( {
-                                    eventType: 'parsetemplate',
-                                    emitter: null
-                                }, template );
+                                that.instance = new ( blockInstanceClass.bind.apply( blockInstanceClass, inject ) );
+                                that.on( 'initialize', function () {
+                                    if ( that.instance.init ) {
+                                        that.instance.init();
+                                    }
+                                } );
 
                             }
-
-                            insertTemplate.call( that, template );
-
                         }
-
-                        if ( that.jsFile ) {
-
-                            var inject = [ null, that ];
-
-                            if ( options.inject && Array === options.inject.constructor ) {
-
-                                inject = inject.concat( options.inject );
-
-                            }
-
-                            that.instance = new ( blockInstanceClass.bind.apply( blockInstanceClass, inject ) );
-
+                        
+                        function __init() {
+                            that.dispatch( {
+                                eventType: 'initialize',
+                                emitter: null
+                            } );
                         }
-
-                        that.dispatch( {
-                            eventType: 'initialize',
-                            emitter: null
-                        } );
 
                     }
 
@@ -1317,17 +1318,29 @@ window.T = ( () => {
                 return false;
 
             };
-
-            function addToPage() {
-
-                this.__into.appendChild( this.__element );
-
+                        
+            function _whenTemplateIsLoaded( _do ) {
+                if ( this.__template.loaded === true ) {
+                    _do.call( this );
+                } else {
+                    this.on( 'templateloaded', _do );
+                }
+            }
+                        
+            function _whenTemplateIsReady( _do ) {
+                if ( this.__template._ ) {
+                    _do.call( this );
+                } else {
+                    this.on( 'templateready', _do );
+                }
             }
 
-            function removeFromPage() {
+            function _addToPage() {
+                this.__into.appendChild( this.__element );
+            }
 
+            function _removeFromPage() {
                 this.__into.removeChild( this.__element );
-
             }
 
             return MVC;
