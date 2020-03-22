@@ -186,14 +186,16 @@ abstract class Proxy implements Proxy\IProxy {
    * @param array $columns
    * @return type
    */
-  public function get($model, callable $cb = null, array $columns = []) {
-    $model_id = $this->getIdentifier($model);
+  public function get($model = null, callable $cb = null, array $columns = []) {
+    $model_id = $model !== null ? $this->getIdentifier($model) : null;
     $dsql = $this->getConnection()->dsql();
     $columns = $this->parseColumns($columns);
     return $this->getConnection()->atomic(function () use ($dsql, $model_id, $cb, $columns) {
       $q = $dsql->table($this->getTable(), $this->getAlias(false))
-                ->field($columns)
-                ->where($this->getAlias() . self::ID, $model_id);
+                ->field($columns);
+      if (!empty($model_id)) {
+        $q->where($this->getAlias() . self::ID, $model_id);
+      }
       if (is_callable($cb)) {
         $cb($q);
       }
@@ -260,7 +262,7 @@ abstract class Proxy implements Proxy\IProxy {
     $q = $this->getConnection()->dsql()->table($this->getTable());
     return $this->getConnection()->atomic(function () use ($q, $model) {
       $put = $model instanceof Model ? $model->toDatabase() : $model;
-      $this->parseColumns($put, false);
+      $this->parseColumns(array_keys($put), false);
       foreach ($put as $c => $v) {
         $q->set($c, $v);
       }
