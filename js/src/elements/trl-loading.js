@@ -27,15 +27,31 @@
         }
         
         static get observedAttributes() {
-            return ['trl-color', 'trl-size', 'trl-duration'];
+            return ['trl-color', 'trl-size', 'trl-duration', 'trl-loading'];
         }
         
-        attributeChangedCallback() {
-            this.updateStyle();
+        attributeChangedCallback( name, oldValue, newValue ) {
+            if ( name === 'trl-loading' ) {
+                if ( ( !oldValue || oldValue === 'false' ) && newValue === 'true' ) {
+                    this.start();
+                } else if ( oldValue === 'true' && newValue === 'false' ) {
+                    this.stop();
+                }
+            } else {
+                this.updateStyle();
+            }
         }
         
         connectedCallback() {
             this.updateStyle();
+        }
+        
+        set loading( loading ) {
+            this.setAttribute( 'trl-loading', loading === true || loading === 'true' ? 'true' : 'false' );
+        }
+        
+        get loading() {
+            return this.getAttribute( 'trl-loading' ) === 'true' || this.children.length > 0;
         }
         
         set color( color ) {
@@ -125,6 +141,8 @@
 
             this.appendChild( loading );
             
+            this.loading = true;
+            
             function addPieceInto( into ) {
                 return {
                     at( positionArr, svgPath ) {
@@ -165,6 +183,8 @@
         }
         
         stop() {
+            this.loading = false;
+            
             while ( this.firstChild ) {
                 this.removeChild( this.firstChild );
             }
