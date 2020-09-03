@@ -118,8 +118,8 @@ abstract class Model implements \JsonSerializable {
     if (is_string($value) && ($value[0] === '{' || $value[0] === '[')) {
       $tmp = json_decode($value, true);
       if (json_last_error() == JSON_ERROR_NONE) {
+        $raw = ($value[0] === '{' ? static::getIdentifier($value) : null) ?? $value;
         $value = $tmp;
-        $raw = static::getIdentifier($value);
       }
     } else if ($value instanceof DateTime || (is_string($value) && (bool) strtotime($value))) {
       $raw = static::parseDate($value);
@@ -150,9 +150,9 @@ abstract class Model implements \JsonSerializable {
   protected function set(string $column, &$property, $value) {
     $put = static::parseValue($value);
     if (!$this->inDatabase() || !array_key_exists($column, $this->original)) {
-      $this->original[$column] = $put;
+      $this->original[$column] = $put ?? $value;
     } else {
-      $this->changes[$column] = $put;
+      $this->changes[$column] = $put ?? $value;
     }
     $property = $value;
   }
@@ -174,7 +174,7 @@ abstract class Model implements \JsonSerializable {
    * @return array
    */
   public function getChanges(): array {
-    return $this->changes;
+    return !empty($this->changes) ? $this->changes : $this->original;
   }
   
   /**
@@ -249,7 +249,13 @@ abstract class Model implements \JsonSerializable {
     $is_str      = is_string($obj);
     if ($is_str) {
       $str = $obj;
-      $obj = DateTime::createFromFormat('Y-m-d H:i:s', $obj);
+      $str = preg_replace('/\b\d{4}-\d{2}-\d{2}\b/', 'Y-m-d', $str);
+      $str = preg_replace('/\b\d{2}\/\d{2}\/\d{4}\b/', 'm/d/Y', $str);
+      $str = preg_replace('/\b\d{2}\.\d{2}\.\d{4}\b/', 'd.m.Y', $str);
+      $str = preg_replace('/\b\d{2}:\d{2}\b:\d{2}\b/', 'H:i:s', $str);
+      $str = preg_replace('/\b\d{2}:\d{2}\b/', 'H:i', $str);
+      $str = preg_replace('/\.\d{3}\b/', '.v', $str);
+      $obj = DateTime::createFromFormat($str, $obj);
     } else if ($is_datetime) {
       $str = $obj->format('Y-m-d H:i:s');
     } else {
