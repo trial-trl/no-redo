@@ -32,3 +32,9 @@ RewriteRule ^css/elements/trl-loading?$ css/elements/trl-loading.css [NC,L]
 RewriteRule ^javascript/T/elements/(.*)$ js/src/elements/$1 [NC,L]
 RewriteRule ^javascript/T/(.*)$ js/src/$1 [NC,L]
 RewriteRule ^javascript/T$ js/src/api.js [NC,L]
+
+RewriteRule ^img/group-pattern-photo?$ img/TRIAL/trl_pattern_group_photo_bg.svg [NC,L]
+RewriteRule ^img/pattern-photo?$ img/TRIAL/trl_pattern_photo_bg.svg [NC,L]
+
+RewriteRule ^group-pattern-photo?$ images/TRIAL/trl_pattern_group_photo_bg.svg [NC,L]
+RewriteRule ^pattern-photo?$ images/TRIAL/trl_pattern_photo_bg.svg [NC,L]

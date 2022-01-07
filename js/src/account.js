@@ -50,7 +50,7 @@ window.T = ( ( T ) => {
                 headers: [
                     'Authorization: Client-ID ' + _auth
                 ],
-                response: 'json',
+                response: T.Constants.Response.JSON,
                 onloadend: ( e ) => {
                     onsuccess( e.target.response );
                 }
