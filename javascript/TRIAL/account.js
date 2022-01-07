@@ -43,7 +43,7 @@
             window.T.Utils.ajax({
                 data: data,
                 url: window.T.Account.SERVER,
-                response: "json",
+                response: T.Constants.Response.JSON,
                 onloadend: options.onloadend
             });
         });

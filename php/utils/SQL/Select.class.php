@@ -168,11 +168,11 @@ class Select extends Query implements SelectClauses {
     }
     
     private function setFetchMode() {
-        if ($this->fetch_mode['mode'] && $this->fetch_mode['object'] && $this->fetch_mode['construct']) {
+        if (isset($this->fetch_mode) && $this->fetch_mode['mode'] && $this->fetch_mode['object'] && $this->fetch_mode['construct']) {
             $this->statement->setFetchMode($this->fetch_mode['mode'], $this->fetch_mode['object'], $this->fetch_mode['construct']);
-        } else if ($this->fetch_mode['mode'] && $this->fetch_mode['object']) {
+        } else if (isset($this->fetch_mode) && $this->fetch_mode['mode'] && $this->fetch_mode['object']) {
             $this->statement->setFetchMode($this->fetch_mode['mode'], $this->fetch_mode['object']);
-        } else if ($this->fetch_mode['mode']) {
+        } else if (isset($this->fetch_mode) && $this->fetch_mode['mode']) {
             $this->statement->setFetchMode($this->fetch_mode['mode']);
         } else {
             $this->statement->setFetchMode(PDO::FETCH_ASSOC);
