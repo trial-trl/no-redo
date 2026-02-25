@@ -330,16 +330,16 @@ window.T = ( () => {
         
         T.HOST    = location.protocol + '//' + location.hostname + 
                       ( location.port ? ':' + location.port : '' );
-        T.BOWER   = T.HOST    + '/bower_components';
-        T.LIBRARY = T.BOWER   + '/trl-no-redo';
+        T.LIBRARY = T.HOST    + '/no-redo';
+        T.BOWER   = T.LIBRARY + '/bower_components';
         T.CSS     = T.LIBRARY + '/css';
         T.API     = T.LIBRARY + '/js/src';
         T.LOADJS  = T.BOWER   + '/loadjs/dist/loadjs.min.js';
         
         T.setHost = function ( url ) {
             T.HOST    = url;
-            T.BOWER   = T.HOST    + '/bower_components';
-            T.LIBRARY = T.BOWER   + '/trl-no-redo';
+            T.LIBRARY = T.HOST    + '/no-redo';
+            T.BOWER   = T.LIBRARY + '/bower_components';
             T.CSS     = T.LIBRARY + '/css';
             T.API     = T.LIBRARY + '/js/src';
             T.LOADJS  = T.BOWER   + '/loadjs/dist/loadjs.min.js';
