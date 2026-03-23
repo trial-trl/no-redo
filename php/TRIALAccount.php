@@ -78,7 +78,7 @@ class TRIALAccount {
         }
         if ($result != null) {
             error_log(4, 0);
-            $equal = $result[0]['password'] == $password ? true : false;
+            $equal = password_verify($password, $result[0]['password']) ? true : $password === $result[0]['password'];
             error_log(5, 0);
             $message = $equal == false ? MESSAGE_EMAIL_OR_PASSWORD_INVALID : !$this->accountIsActivated($result[0]['activated']) ? MESSAGE_NOT_ACTIVATED : MESSAGE_EXIST;
             error_log(6, 0);
