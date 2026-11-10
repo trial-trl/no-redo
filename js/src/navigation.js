@@ -375,67 +375,55 @@ window.T = ( ( T ) => {
         api.load = ( ( api ) => {
 
             function loadStyles( html ) {
-                var styles = {
-                    current : [],
-                    loaded  : html.getElementsByClassName(options.cssClass)
-                };
-                
-                for ( var i = 0, t = document.styleSheets.length; i < t; i++ ) {
-                    styles.current.push( document.styleSheets[ i ].href );
-                }
-                
-                var d = document.getElementsByClassName( options.cssClass );
-                for ( i = 0, t = d.length; i < t; i++ ) {
-                    try { document.head.removeChild(d[i]); } 
-                    catch (e) {}
-                }
-                
-                for ( i = 0, t = styles.loaded.length, x; i < t, x = styles.loaded[ i ]; i++ ) {
-                    if ( styles.current.indexOf( x.href ) === -1 ) {
-                        if ( x instanceof HTMLStyleElement ) {
-                            var style = document.createElement( 'style' );
-                            style.innerHTML = x.innerHTML;
-                        } else {
-                            var style = document.createElement( 'link' );
-                            style.rel = 'stylesheet';
-                            style.type = 'text/css';
-                            style.href = x.href;
-                        }
-                        style.classList.add( options.cssClass );
-                        document.head.appendChild( style );
+                var loaded = Array.prototype.slice.call( html.getElementsByClassName( options.cssClass ) ),
+                    wanted = loaded.map( ( x ) => x.href || null );
+
+                // The last page's styles go, except the ones this page also has (no flash, no reload).
+                Array.prototype.slice.call( document.getElementsByClassName( options.cssClass ) ).forEach( ( d ) => {
+                    if ( d instanceof HTMLLinkElement && wanted.indexOf( d.href ) !== -1 ) return;
+                    if ( d.parentNode ) d.parentNode.removeChild( d );
+                } );
+
+                var current = Array.prototype.map.call( document.querySelectorAll( 'link[rel="stylesheet"]' ), ( l ) => l.href );
+
+                loaded.forEach( ( x ) => {
+                    var style;
+                    if ( x instanceof HTMLStyleElement ) {
+                        style = document.createElement( 'style' );
+                        style.innerHTML = x.innerHTML;
+                    } else {
+                        if ( current.indexOf( x.href ) !== -1 ) return;
+                        style = document.createElement( 'link' );
+                        style.rel = 'stylesheet';
+                        style.type = 'text/css';
+                        style.href = x.href;
                     }
-                }
+                    style.classList.add( options.cssClass );
+                    document.head.appendChild( style );
+                } );
             }
 
             function loadScripts( html ) {
-                var scripts = {
-                    current : [],
-                    loaded  : html.getElementsByClassName(options.jsClass)
-                };
-                for ( let i = 0, t = document.scripts.length, d; i < t, d = document.scripts[ i ]; i++ ) {
-                    if ( !d ) continue;
-                    
+                var loaded = Array.prototype.slice.call( html.getElementsByClassName( options.jsClass ) ),
+                    current = [];
+
+                // A snapshot: removing from the live list while walking it skipped scripts.
+                Array.prototype.slice.call( document.scripts ).forEach( ( d ) => {
                     if ( d.classList.contains( options.jsClass ) ) {
-                        try { 
-                            document.body.removeChild( d );
-                        } catch ( e ) {}
-                        continue;
+                        if ( d.parentNode ) d.parentNode.removeChild( d );
+                        return;
                     }
-                    
-                    if ( d.src !== undefined &&
-                         d.src !== null && 
-                         d.src !== '' )
-                        scripts.current.push( d.src );
-                }
-                for ( let i = 0, t = scripts.loaded.length, x; i < t, x = scripts.loaded[ i ]; i++ ) {
-                    if ( -1 === scripts.current.indexOf( x.src ) ) {
-                        var s = document.createElement( 'script' );
-                        if ( x.src ) s.src = x.src;
-                        s.innerHTML = x.innerHTML;
-                        s.classList.add( options.jsClass );
-                        document.body.appendChild( s );
-                    }
-                }
+                    if ( d.src ) current.push( d.src );
+                } );
+
+                loaded.forEach( ( x ) => {
+                    if ( x.src && current.indexOf( x.src ) !== -1 ) return;
+                    var s = document.createElement( 'script' );
+                    if ( x.src ) s.src = x.src;
+                    s.innerHTML = x.innerHTML;
+                    s.classList.add( options.jsClass );
+                    document.body.appendChild( s );
+                } );
             }
 
             function loadPage( html, update, url ) {
